@@ -1,4 +1,4 @@
-<section class="flex max-w-screen-xl mx-auto items-center justify-between p-4 max-md:flex-col max-md:items-start">
+<section class="flex fixed top-0 right-0 left-0 bg-white max-w-screen-xl mx-auto items-center justify-between p-4 max-md:flex-col max-md:items-start z-10">
     <div class="flex lg:hidden max-w-screen-xl items-center justify-between w-full">
         <div class="navbar-burger bg-gray-100 flex flex-col justify-center py-0 lg:hidden">
             <div class="relative sm:max-w-xl mx-auto">

@@ -9,3 +9,6 @@ p {
 a {
     font-family: 'Futura Pt', sans-serif;
 }
+.content__height {
+    min-height: calc(100vh - 63px);
+}

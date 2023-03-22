@@ -10,11 +10,17 @@
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 </head>
 <body>
-    @include('partials.navbar')
-
-    @yield('content')
-
-    @include('partials.footer')
+    <div class="flex flex-col justify-between h-full">
+        <div>
+            @include('partials.navbar')
+        </div>
+        <div class="content__height justify-center items-center flex">
+            @yield('content')
+        </div>
+        <div>
+            @include('partials.footer')
+        </div>
+    </div>
 </body>
 <script src="{{ asset('assets/js/navbar.js') }}"></script>
 </html>
