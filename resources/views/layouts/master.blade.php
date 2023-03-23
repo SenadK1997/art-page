@@ -14,7 +14,7 @@
         <div>
             @include('partials.navbar')
         </div>
-        <div class="content__height justify-center items-center flex">
+        <div class="content__height justify-center items-baseline flex">
             @yield('content')
         </div>
         <div>

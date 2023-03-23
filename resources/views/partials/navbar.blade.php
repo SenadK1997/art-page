@@ -1,26 +1,26 @@
-<section class="flex fixed top-0 right-0 left-0 bg-white max-w-screen-xl mx-auto items-center justify-between p-4 max-md:flex-col max-md:items-start z-10">
-    <div class="flex lg:hidden max-w-screen-xl items-center justify-between w-full">
-        <div class="navbar-burger bg-gray-100 flex flex-col justify-center py-0 lg:hidden">
-            <div class="relative sm:max-w-xl mx-auto">
-                <nav x-data="{ open: false }">
-                    <button class="text-gray-500 w-10 h-10 relative focus:outline-none bg-white">
-                        <span class="sr-only">Open main menu</span>
-                        <div class="flex flex-col gap-y-1 w-5 absolute left-1/2 top-1/2   transform  -translate-x-1/2 -translate-y-1/2">
-                            <span aria-hidden="true" class="flex h-0.5 w-5 bg-current"></span>
-                            <span aria-hidden="true" class="flex h-0.5 w-5 bg-current"></span>
-                            <span aria-hidden="true" class="flex h-0.5 w-5 bg-current"></span>
-                        </div>
-                    </button>
-                </nav>
+<section class="flex fixed top-0 right-0 left-0 bg-white max-w-full mx-auto items-center justify-between p-4 max-md:flex-col max-md:items-start z-10 shadow-stone-100 shadow-lg">
+    <div class="flex max-w-7xl mx-auto justify-between items-center w-full">
+        <div class="flex lg:hidden items-center justify-between w-full">
+            <div class="navbar-burger bg-gray-100 flex flex-col justify-center py-0 lg:hidden">
+                <div class="relative sm:max-w-xl mx-auto">
+                    <nav x-data="{ open: false }">
+                        <button class="text-gray-500 w-10 h-10 relative focus:outline-none bg-white">
+                            <span class="sr-only">Open main menu</span>
+                            <div class="flex flex-col gap-y-1 w-5 absolute left-1/2 top-1/2   transform  -translate-x-1/2 -translate-y-1/2">
+                                <span aria-hidden="true" class="flex h-0.5 w-5 bg-current"></span>
+                                <span aria-hidden="true" class="flex h-0.5 w-5 bg-current"></span>
+                                <span aria-hidden="true" class="flex h-0.5 w-5 bg-current"></span>
+                            </div>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+            <div>
+                <a href="/" class="text-3xl">
+                    FOCO ART
+                </a>
             </div>
         </div>
-        <div>
-            <a href="/" class="text-3xl">
-                FOCO ART
-            </a>
-        </div>
-    </div>
-
     <div class="flex gap-x-5 max-md:hidden max-[1023px]:hidden">
         <a href="/shop" class="text-xl animate-bounce hover:animate-none">shop</a>
         <a href="/about" class="text-xl">about</a>
@@ -74,4 +74,5 @@
 			</div>
 		</nav>
 	</div>
+</div>
 </section>
