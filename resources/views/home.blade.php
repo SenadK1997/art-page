@@ -8,7 +8,7 @@ Homepage || Foco-art
 
 @section('content')
 
-<section class="flex flex-col max-w-screen-xl mx-auto items-center mt-[120px] max-md:mt-8 mb-[64px]">
+<section class="flex flex-col max-w-screen-xl mx-auto items-center mt-[120px] max-md:mt-18 mb-[64px]">
     <div class="flex max-w-screen-xl mx-auto justify-between w-full gap-x-3 p-2 max-md:flex-col max-md:items-center max-md:w-full">
         <div class="flex flex-col w-full h-[450px] p-5 bg-[url('https://i.ibb.co/7ktbnPC/focoslika1.jpg')] bg-cover max-md:bg-contain max-md:bg-no-repeat max-md:min-h-full hover:animate-pulse">
             <p class="text-white text-xl">Umjetnicko djelo</p>

@@ -8,7 +8,7 @@ Product || Foco-art
 
 @section('content')
 
-<section class="flex mx-auto max-w-screen-xl items-center justify-center w-full h-[90vh] gap-x-24 max-md:flex-col max-md:gap-y-4">
+<section class="flex mx-auto max-w-screen-xl items-center justify-center w-full h-[90vh] gap-x-24 max-md:flex-col max-md:gap-y-4 max-md:mt-[40px]">
     <div class="flex flex-col justify-center">
         <div class="border-stone-900 border-solid border-4">
             <img src="{{ $product->url }}" alt="" class="object-cover p-3">

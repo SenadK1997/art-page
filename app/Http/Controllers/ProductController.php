@@ -36,4 +36,12 @@ class ProductController extends Controller
             "items" => $items
         ]);
     }
+    public function search() : View
+    {
+        $search_text = $_GET['query'];
+        $products = Product::where('title', 'LIKE', '%' .$search_text. '%')->get();
+
+        return view('/search', 
+        ['items' => $products], compact('products'));
+    }
 }
