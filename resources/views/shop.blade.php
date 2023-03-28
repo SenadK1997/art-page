@@ -9,11 +9,17 @@ Shop || Foco-art
 @section('content')
 
 <section class="flex flex-col justify-center w-full p-4 mx-auto max-w-screen-xl items-center mt-[80px] max-md:justify-center gap-x-[100px] max-md:mt-[40px]">
-    <form class="flex w-full max-w-screen-xl p-10" type="get" action="{{ url('/search') }}">
+    <form class="flex w-full max-w-screen-xl p-10" type="get" action="{{ url('/shop') }}">
         <div class="flex w-full max-w-screen-xl">
             <input type="search" class="mr-sm-2 p-2 border-gray-200 border-b-[2px] min-w-full outline-none" placeholder="Search" name="query">
             <button type="submit"></button>
-        </form>
+        </div>    
+    </form> 
+    <div>
+        <h1>test</h1>
+        {{-- @foreach ($items as $product)
+            <h1>{{ $product->tags }}</h1>
+        @endforeach --}}
     </div>
     {{-- <div class="flex w-full">
         @foreach ($item->tags as $tag)
@@ -33,7 +39,11 @@ Shop || Foco-art
             <div class="text-center flex flex-col justify-center">
                 <p>{{ $item->title }}</p>
                 <p class="text-[13px] text-gray-400">Cijena: {{ $item->price }} KM</p>
+                {{-- <p>{{ $tags }}</p> --}}
             </div>
+            @foreach ($item->tags as $tag)
+                <span>{{ $tag->name }} </span>
+            @endforeach
         </div>
         @endforeach
     </div>

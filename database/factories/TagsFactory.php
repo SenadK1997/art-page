@@ -16,8 +16,9 @@ class TagsFactory extends Factory
      */
     public function definition(): array
     {
+        $array_tags = [1,5,9];
         return [
-            'name' => $this->faker->name
+            'name' => $this->faker->name,
         ];
     }
 }

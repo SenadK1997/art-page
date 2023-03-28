@@ -8,7 +8,7 @@ About || Foco-art
 
 @section('content')
 
-<section class="flex max-w-screen-xl mx-auto items-center mt-[55px] max-md:mt-8 p-4 gap-x-6 max-md:flex-col max-md:gap-y-4">
+<section class="flex max-w-screen-xl mx-auto items-center mt-[55px] max-md:mt-[80px] p-4 gap-x-6 max-md:flex-col max-md:gap-y-4">
     <div class="flex w-1/2 min-w-1/2 max-md:w-full">
         <img src="https://i.ibb.co/yp4Hk6c/viber-image-2023-03-21-14-57-45-119.jpg" alt="" class="hover:animate-pulse">
     </div>
@@ -18,5 +18,4 @@ About || Foco-art
         </p>
     </div>
 </section>
-
 @endsection

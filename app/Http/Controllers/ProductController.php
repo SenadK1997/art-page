@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Tags;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends Controller
 {
@@ -16,11 +17,25 @@ class ProductController extends Controller
         ]);
     }
 
-    public function shop(): View
-    {
+    public function shop(Request $request): View
+    {   
+        $query = $request->get('query');
+
+        if (strlen($query) > 0) {
+            $products = Product::where('title', 'LIKE', '%' .$query. '%')->get();
+
+            return view('/shop', 
+            ['items' => $products], compact('products'));
+        }
         $items = Product::all();
-        // $all_tags = Tags::all();
-        foreach ($items as $item) {
+        
+        // foreach ($items as $item) {
+        //     dd($item->tags->toArray());
+        // }
+        return view('shop', [
+           "items" => $items,
+        ]);
+        /* foreach ($items as $item) {
             $tags = [];
             $tags_ids = json_decode($item->tags_ids);
 
@@ -28,20 +43,12 @@ class ProductController extends Controller
                 $tag = Tags::find($id); // 
                     array_push($tags, $tag);
             }
+            $tags = $item->tags;
+        } */
 
-            $item->tags = $tags;
-        }
-        // $items->put('all_tags', $all_tags)
-        return view('shop', [
-            "items" => $items
-        ]);
-    }
-    public function search() : View
-    {
-        $search_text = $_GET['query'];
-        $products = Product::where('title', 'LIKE', '%' .$search_text. '%')->get();
-
-        return view('/search', 
-        ['items' => $products], compact('products'));
+         //return view('shop', [
+           // "items" => $items,
+            /* "tags" => $tags */
+       // ]);
     }
 }
