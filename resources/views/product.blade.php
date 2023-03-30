@@ -28,6 +28,11 @@ Product || Foco-art
         <h1 class="text-[26px]">{{ $product->title }}</h1>
         <p>{{ $product->description }}</p>
         <p class="text-justify">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempora, dolores laboriosam aliquam atque voluptatem quibusdam explicabo vel sed nemo saepe? Praesentium aspernatur minus deleniti, molestiae laboriosam harum enim recusandae quaerat.</p>
+        <div class="flex gap-x-4">
+            @foreach ($product->tags as $item)
+                <p class="text-white bg-gray-700 hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{{ $item->name }}</p>
+            @endforeach
+        </div>
         <a href="/shop" class="flex justify-center items-center ease-in duration-300 min-w-[120px] max-w-[150px] py-2 text-center border-solid border-2 border-stone-900 text-white bg-stone-900 hover:text-stone-900 hover:bg-white gap-x-3 max-md:hidden">
             <svg stroke="currentColor" fill="#ccb17a" stroke-width="1" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             Naruci sliku

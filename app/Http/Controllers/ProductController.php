@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Tags;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\Request;
+// use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+
 
 class ProductController extends Controller
 {
@@ -13,42 +16,55 @@ class ProductController extends Controller
     public function show(string $id): View
     {
         return view('product', [
-            'product' => Product::findOrFail($id)
+            'product' => Product::findOrFail($id),
         ]);
     }
 
     public function shop(Request $request): View
     {   
         $query = $request->get('query');
+        $items = Product::all();
+        
+        $qtags = $request->get('qtags');
 
+        $cleared = $request->get('clear_tags');
+        $tags = Tags::all();
+        
+       if (isset($qtags)) {
+            $tags_id =[];
+            foreach ($qtags as $q) {
+                $tagValue = $q;
+                $tags_id[] = $tagValue;
+            }
+            $tags_id = is_array($tags_id) ? $tags_id : Arr::wrap($tags_id);
+            $items = Product::whereHas('tags', function ($query) use ($tags_id) {
+                $query->whereIn('tags_id', $tags_id);
+            })->get();    
+        }
+        else if ($request->has($cleared)) {
+            dd('test');
+        }
+            
+        $tags = Tags::all();
         if (strlen($query) > 0) {
             $products = Product::where('title', 'LIKE', '%' .$query. '%')->get();
 
             return view('/shop', 
-            ['items' => $products], compact('products'));
+            [
+                'items' => $products,
+                'tags' => $tags,
+                'qtags' => $qtags
+            ], 
+            compact('products'));
         }
-        $items = Product::all();
+
+        // $items = Product::all();
+        $tags = Tags::all();
         
-        // foreach ($items as $item) {
-        //     dd($item->tags->toArray());
-        // }
         return view('shop', [
            "items" => $items,
+           "tags" => $tags,
+           "qtags" => $qtags
         ]);
-        /* foreach ($items as $item) {
-            $tags = [];
-            $tags_ids = json_decode($item->tags_ids);
-
-            foreach ($tags_ids as $id) { // 1
-                $tag = Tags::find($id); // 
-                    array_push($tags, $tag);
-            }
-            $tags = $item->tags;
-        } */
-
-         //return view('shop', [
-           // "items" => $items,
-            /* "tags" => $tags */
-       // ]);
     }
 }
