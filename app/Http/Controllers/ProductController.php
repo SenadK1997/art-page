@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function shop(Request $request): View
     {   
         $query = $request->get('query');
-        $items = Product::all();
+        $items = Product::paginate(12);
         
         $qtags = $request->get('qtags');
 
@@ -39,7 +39,7 @@ class ProductController extends Controller
             $tags_id = is_array($tags_id) ? $tags_id : Arr::wrap($tags_id);
             $items = Product::whereHas('tags', function ($query) use ($tags_id) {
                 $query->whereIn('tags_id', $tags_id);
-            })->get();    
+            })->paginate(12);    
         }
         else if ($request->has($cleared)) {
             dd('test');
@@ -58,7 +58,6 @@ class ProductController extends Controller
             compact('products'));
         }
 
-        // $items = Product::all();
         $tags = Tags::all();
         
         return view('shop', [

@@ -24,7 +24,7 @@ Shop || Foco-art
                 </button>
                 <!-- Dropdown menu -->
                 <div id="dropdownBgHover" class="z-10 hidden w-48 bg-white rounded-lg shadow dark:bg-gray-700">
-                    <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
+                    <ul class="max-h-[550px] h-full overflow-y-scroll max-md:h-[350px] p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
                         <form type="get" action="{{ url('/shop') }}" method="get" action="submit">
                             <button type="submit" class="flex items-center font-bold gap-x-2 w-full ml-2 text-sm text-gray-900 rounded dark:text-gray-300 mb-2">
                                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 10.5a.5.5 0 01.5-.5h3a.5.5 0 010 1h-3a.5.5 0 01-.5-.5zm-2-3a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zm-2-3a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5z" clip-rule="evenodd"></path></svg>    
@@ -62,11 +62,11 @@ Shop || Foco-art
                 <p class="text-[13px] text-gray-400">Cijena: {{ $item->price }} KM</p>
                 {{-- <p>{{ $tags }}</p> --}}
             </div>
-            {{-- @foreach ($item->tags as $tag)
-                <p>{{ $tag->name }}</p>
-            @endforeach --}}
         </div>
         @endforeach
+    </div>
+    <div class="flex gap-x-5">
+        {{ $items->links() }}
     </div>
 </section>
 @endsection
