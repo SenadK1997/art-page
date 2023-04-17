@@ -8,9 +8,41 @@
     <link href="https://fonts.cdnfonts.com/css/futura-pt" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+    @include('admin.partials.dashboard-sidebar')
     @yield('content')
 </body>
+@stack('scripts');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>
+<script>
+    // Function to handle tag deletion
+    function deleteTag(tagId) {
+        // Send an AJAX request to the delete route
+        $.ajax({
+            url: '/admin/tag/trash/' + tagId,
+            type: 'DELETE',
+            data: {
+                '_token': '{{ csrf_token() }}',
+                'tagId': tagId
+            },
+            success: function (response) {
+                // Reload the page after successful deletion
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    $(document).on('click', '.delete-btn', function () {
+        var tagId = $(this).data('id');
+        // Call the deleteTag function with the tagId
+        deleteTag(tagId);
+    });
+</script>
+
 </html>

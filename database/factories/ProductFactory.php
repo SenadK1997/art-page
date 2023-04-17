@@ -16,13 +16,11 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {   
-        $array = "[1, 2, 3]";
         return [
             'title' => $this->faker->name,
             'amount' => $this->faker->numberBetween(0,9),
             'description' => $this->faker->sentence,
             'price' => $this->faker->numberBetween(20, 100),
-            'tags_ids' => $array,
             'url' => 'https://fastly.picsum.photos/id/251/200/300.jpg?hmac=9xXOWzHXFkhqJDfiXSZARyy0pDmdAyazrrJw6VNgoKc'
         ];
     }

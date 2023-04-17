@@ -12,3 +12,19 @@ a {
 .content__height {
     min-height: calc(100vh - 63px);
 }
+.table__width {
+    max-width: calc(100% - 262px);
+}
+ 
+  .tag {
+    display: flex;
+    border-radius: 15px;
+    border: 1px solid rgb(53, 53, 243);
+    background-color: rgb(72, 72, 208);
+    color: #fff;
+    align-items: center;
+    text-align: center;
+    padding: 5px 15px;
+    cursor: pointer;
+  }
+  

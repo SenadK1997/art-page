@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AdminsMiddleware
 {
@@ -14,12 +15,22 @@ class AdminsMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
 {
-    if (Auth::guard($guard)->check()) {
-        return $next($request);
-    }
+    Log::info('AdminsMiddleware handle start');
 
-    return redirect()->route('admin.login');
+    // dd($request->session()->all());
+    // dd(Auth::guard('admins')->user());
+    // dd(Auth::guard('admins')->check());
+    // if (Auth::guard('admins')->check()) {
+        // return $next($request);
+    // }
+    // return redirect()->route('admin.login');
+    return $next($request);
 }
+
 }
+
+// else if ($request->route()->getName() === 'admin.login') {
+//     return $next($request);
+// } 

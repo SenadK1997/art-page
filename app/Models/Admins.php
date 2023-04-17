@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Admins extends Model implements Authenticatable
 {
     use HasFactory;
-
+    protected $guard = 'admins';
     protected $fillable = [
         'username',
         'password',

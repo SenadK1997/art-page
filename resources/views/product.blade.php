@@ -28,7 +28,7 @@ Product || Foco-art
         <h1 class="text-[26px]">{{ $product->title }}</h1>
         <p>{{ $product->description }}</p>
         <p class="text-justify">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempora, dolores laboriosam aliquam atque voluptatem quibusdam explicabo vel sed nemo saepe? Praesentium aspernatur minus deleniti, molestiae laboriosam harum enim recusandae quaerat.</p>
-        <div class="flex gap-x-4">
+        <div class="flex gap-x-1 flex-row flex-wrap">
             @foreach ($product->tags as $item)
                 <p class="text-white bg-gray-700 hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{{ $item->name }}</p>
             @endforeach

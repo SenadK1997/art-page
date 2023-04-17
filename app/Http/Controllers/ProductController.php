@@ -42,7 +42,7 @@ class ProductController extends Controller
             })->paginate(12);    
         }
         else if ($request->has($cleared)) {
-            dd('test');
+            dd('Request has cleared');
         }
             
         $tags = Tags::all();

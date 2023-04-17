@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('amount');
             $table->string('url');
             $table->float('price');
-            $table->json('tags_ids');
             $table->timestamps();
         });
     }
