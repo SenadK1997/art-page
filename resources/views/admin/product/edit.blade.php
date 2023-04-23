@@ -6,17 +6,22 @@
 
 @section('content')
 <div class="relative overflow-x-auto sm:rounded-lg p-7 w-full flex flex-col table__width h-[100vh]">
-  <form method="POST" action="{{ route('admin.product.update', $product->id) }}" class="max-w-xl w-full mx-auto">
+  <form method="POST" action="{{ route('admin.product.update', $product->id) }}" class="max-w-xl w-full mx-auto" enctype="multipart/form-data">
       @csrf
       @method('PUT')
     <div class="flex gap-x-16 max-w-screen-xl">
       <div class="flex flex-col gap-y-3 max-w-[300px]">
+          @if (session('success'))
+              <div class="alert alert-success">
+                  {{ session('success') }}
+              </div>
+          @endif
         <div class="flex border-stone-900 border-solid border-4 w-fit">
-          <img src="{{ $product->url }}" alt="" class="flex object-cover p-3 w-fit h-fit">
+          <img src="{{ asset('storage/images/'.$product->url) }}" alt="" class="flex object-cover p-3 w-fit h-fit">
         </div>
         <div class="mb-4 max-w-[300px]">
-          <label for="url" class="block text-gray-700 font-bold mb-2">URL:</label>
-          <input type="text" name="url" value="{{ $product->url }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <label for="image" class="block text-gray-700 font-bold mb-2">Change Image:</label>
+          <input type="file" name="image" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
         <div class="flex gap-x-1 flex-row flex-wrap min-w-[400px]">
           @foreach ($product->tags as $item)
@@ -35,18 +40,18 @@
       <div class="flex flex-col w-full min-w-[340px] max-w-[350px]">
         <div class="mb-4">
           <label for="title" class="block text-gray-700 font-bold mb-2">Title:</label>
-          <input type="text" name="title" value="{{ $product->title }}" class="flex w-full shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <input type="text" name="title" value="{{ $product->title }}" class="flex w-full shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" maxlength="25">
         </div>
       
         <div class="mb-4">
           <label for="description" class="block text-gray-700 font-bold mb-2">Description:</label>
-          <textarea name="description" class="shadow appearance-none border rounded w-full py-2 h-[80px] px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ $product->description }}</textarea>
+          <textarea name="description" class="shadow appearance-none border rounded w-full py-2 h-[80px] px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" maxlength="255">{{ $product->description }}</textarea>
         </div>
         <div class="flex flex-col">
           <div class="flex items-center w-full justify-between">
             <div class="mb-4">
               <label for="amount" class="block text-gray-700 font-bold mb-2">Amount:</label>
-              <input type="number" name="amount" value="{{ $product->amount }}" class="max-w-[80px] shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              <input type="number" name="amount" value="{{ $product->amount }}" class="max-w-[80px] shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" max="100">
             </div>
             {{-- Tagovi --}}
               <div class="flex items-center mt-4">
@@ -61,7 +66,7 @@
               </div>
               <div class="mb-4">
                 <label for="price" class="block text-gray-700 font-bold mb-2">Price (BAM):</label>
-                <input type="number" name="price" value="{{ $product->price }}" class="max-w-[100px] shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="number" name="price" value="{{ $product->price }}" class="max-w-[100px] shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" max="100000">
               </div>
           </div>
               <div id="selectedTagsContainer" class="flex flex-row flex-wrap gap-x-2 gap-y-2 overflow-scroll">

@@ -71,3 +71,11 @@ Route::middleware(['admins'])->group(function () {
     Route::delete('/admin/tag/trash/{id}', [AdminController::class, 'trash'])
         ->name('admin.tag.trash');
 });
+
+// CART SECTION
+
+Route::get('shop/cart', [ProductController::class, 'cart'])->name('shop.cart');
+Route::post('shop/cart/add', [ProductController::class, 'addToCart'])->name('shop.cart.add');
+Route::post('shop/cart/update/{itemId}', [ProductController::class, 'updateCart'])->name('shop.cart.update');
+Route::delete('shop/cart/remove/{itemId}', [ProductController::class, 'removeFromCart'])->name('shop.cart.remove');
+Route::get('shop/cart/checkout', [ProductController::class, 'checkout'])->name('shop.cart.checkout');

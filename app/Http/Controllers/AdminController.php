@@ -9,6 +9,7 @@ use App\Models\Admins;
 use App\Models\Product;
 use App\Models\Tags;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -26,6 +27,24 @@ class AdminController extends Controller
     public function create()
     {
         return view ('admin/product/create');
+    }
+    public function store(Request $request)
+    {
+        $product = new Product;
+        $product->title = $request->input('title');
+        $product->description = $request->input('description');
+        $product->amount = $request->input('amount');
+        // Request od slika
+        
+        $image = $request->file('image');
+        $imageName = uniqid() . '_' . $image->getClientOriginalName();
+        $path = $image->storeAs('public/images', $imageName);
+        $product->url = $imageName;
+
+        $product->price = $request->input('price');
+        $product->save();
+
+        return redirect()->route('admin.product.products');
     }
     public function edit($id)
     {
@@ -51,21 +70,31 @@ class AdminController extends Controller
     }
     public function update(Request $request, $id)
     {
-        $newData = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'amount' => 'required|integer|min:0',
-            'url' => 'required|url',
-            'price' => 'required|numeric|min:0',
-            'selected_tags' => 'sometimes'
-        ]);
-            $product = Product::findOrFail($id);
-            $product->title = $newData['title'];
-            $product->description = $newData['description'];
-            $product->amount = $newData['amount'];
-            $product->url = $newData['url'];
-            $product->price = $newData['price'];
+        // $newData = $request->validate([
+        //     'title' => 'required|max:255',
+        //     'description' => 'required',
+        //     'amount' => 'required|integer|min:0',
+        //     'image' => 'required|image',
+        //     'price' => 'required|numeric|min:0',
+        //     'selected_tags' => 'sometimes'
+        // ]);
+        // dd($request->all());
+        $product = Product::findOrFail($id);
+            $product->title = $request->input('title');
+            $product->description = $request->input('description');
+            $product->amount = $request->input('amount');
+            
+            // image
+            if($request->file('image')) {
+                $image = $request->file('image');
+                $imageName = uniqid() . '_' . $image->getClientOriginalName();
+                $path = $image->storeAs('public/images/', $imageName);
+                $product->url = $imageName;
+            }
+
+            $product->price = $request->input('price');
             $product->save();
+
             $selectedTags = explode(',', $request->input('selected_tags', []));
                 if(!empty($request->input('selected_tags'))) {
                     // Check currect tags
@@ -75,7 +104,7 @@ class AdminController extends Controller
                     // Attach difference
                     $product->tags()->attach($tagsToAttach);
                 }
-            return redirect()->route('admin.product.edit', $product->id);
+            return redirect()->route('admin.product.edit', $product->id)->with('success', 'Product updated successfully');
     }
     public function delete($id) {
         $product = Product::findOrFail($id);

@@ -181,6 +181,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Gloudemans\ShoppingCart\ShoppingcartServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -194,7 +195,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
     ],
 
     /*
@@ -209,6 +209,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Cart' => Gloudemans\ShoppingCart\Facades\Cart::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

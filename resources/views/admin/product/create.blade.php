@@ -19,7 +19,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.product.store') }}" method="POST" class="mt-6">
+            <form action="{{ route('admin.product.store') }}" method="POST" class="mt-6" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-4">
@@ -38,8 +38,8 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="url" class="block text-gray-700 font-bold mb-2">URL</label>
-                    <input type="url" name="url" id="url" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('url') }}" required>
+                    <label for="image" class="block text-gray-700 font-bold mb-2">Add Image</label>
+                    <input type="file" name="image" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                 </div>
 
                 <div class="mb-4">
