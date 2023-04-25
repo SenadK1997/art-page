@@ -18,8 +18,8 @@
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mx-auto relative border">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 justify-between w-full max-w-screen-xl">
             <tr>
-                <th scope="col" class="px-6 py-3">Name</th>
-                <th scope="col" class="px-6 py-3 text-right">Actions</th>
+                <th scope="col" class="px-6 py-3">Naziv</th>
+                <th scope="col" class="px-6 py-3 text-right">Akcije</th>
             </tr>
         </thead>
         <tbody>

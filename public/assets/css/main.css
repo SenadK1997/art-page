@@ -10,7 +10,7 @@ a {
     font-family: 'Futura Pt', sans-serif;
 }
 .content__height {
-    min-height: calc(100vh - 63px);
+    min-height: calc(100vh - 85px);
 }
 .table__width {
     max-width: calc(100% - 262px);
@@ -28,3 +28,20 @@ a {
     cursor: pointer;
   }
   
+  @media (min-width: 640px) {
+    table {
+      display: inline-table !important;
+    }
+
+    thead tr:not(:first-child) {
+      display: none;
+    }
+  }
+
+  td:not(:last-child) {
+    border-bottom: 0;
+  }
+
+  th:not(:last-child) {
+    border-bottom: 2px solid rgba(0, 0, 0, .1);
+  }

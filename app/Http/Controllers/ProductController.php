@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function shop(Request $request): View
     {   
         $query = $request->get('query');
-        // $items = Product::paginate(12);
+        $items = Product::paginate(12);
         
         $qtags = $request->get('qtags');
 
@@ -48,19 +48,20 @@ class ProductController extends Controller
             
         $tags = Tags::all();
         if (strlen($query) > 0) {
-            $products = Product::where('title', 'LIKE', '%' .$query. '%')->paginate(12);
+            $items = Product::where('title', 'LIKE', '%' .$query. '%')->paginate(12);
 
             return view('/shop', 
             [
-                'items' => $products,
+                'items' => $items,
                 'tags' => $tags,
                 'qtags' => $qtags
             ], 
-            compact('products'));
+            compact('items'));
         }
 
         $tags = Tags::all();
-        $items = Product::paginate(12);
+        
+        
         return view('shop', [
            "items" => $items,
            "tags" => $tags,
@@ -69,6 +70,9 @@ class ProductController extends Controller
     }
     public function cart()
     {
+        // foreach (Cart::content() as $item) {
+        //     dd($item);
+        // }
         return view('shop.cart', [
             'cartItems' => Cart::content(),
         ]);
@@ -76,18 +80,25 @@ class ProductController extends Controller
     public function addToCart(Request $request)
     {
         $product_id = $request->input('product_id');
-        $product_url = $request->input('product_url');
+        
+        $image = $request->input('product_url');
+        $product_url = $image;
+        
         $product_title = $request->input('product_title');
+        $product_description = $request->input('product_description');
         $product_price = $request->input('product_price');
         $product_quantity = $request->input('quantity');
-        // dd($request);
 
     Cart::add([
         'id' => $product_id,
         'name' => $product_title,
         'qty' => $product_quantity,
         'price' => $product_price,
-    ], ['url' => $product_url,]);
+        'options' => [
+            'url' => $product_url,
+            'description' => $product_description
+        ]
+    ]);
 
     return redirect()->route('shop.cart');
     }

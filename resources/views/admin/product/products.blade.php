@@ -18,12 +18,12 @@
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mx-auto relative border">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 justify-between w-full max-w-screen-xl">
             <tr>
-                <th scope="col" class="px-6 py-3">Title</th>
-                <th scope="col" class="px-6 py-3">Description</th>
-                <th scope="col" class="px-6 py-3">Amount</th>
-                <th scope="col" class="px-6 py-3 text-center">URL</th>
-                <th scope="col" class="px-6 py-3 flex gap-x-2 justify-center items-center">Price <p>(BAM)</p></th>
-                <th scope="col" class="px-6 py-3">Actions</th>
+                <th scope="col" class="px-6 py-3">Naslov</th>
+                <th scope="col" class="px-6 py-3">Opis</th>
+                <th scope="col" class="px-6 py-3">Kolicina</th>
+                <th scope="col" class="px-6 py-3 text-center">Slika</th>
+                <th scope="col" class="px-6 py-3 flex gap-x-2 justify-center items-center">Cijena <p>(BAM)</p></th>
+                <th scope="col" class="px-6 py-3">Akcije</th>
             </tr>
         </thead>
         <tbody>
@@ -43,7 +43,6 @@
                     @if ($product->url)
                         <img src="{{ asset('storage/images/'.$product->url) }}" alt="Product Image" class="flex max-w-[100px] max-h-[70px] mx-auto">
                     @endif
-                    {{-- {{ dd($product->url) }} --}}
                 </td>                
                 <td class="px-6 py-4 text-center">{{ $product->price }}</td>
                 <td class="px-6 py-4">
