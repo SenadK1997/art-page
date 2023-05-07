@@ -17,4 +17,10 @@ class Product extends Model
         ->withPivot('tags_id')
         ->withTimestamps();
     }
+    public function images():BelongsToMany
+    {
+        return $this->belongsToMany(Images::class, 'product_images')
+        ->withPivot('images_id')
+        ->withTimestamps();
+    }
 }

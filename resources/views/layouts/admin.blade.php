@@ -17,32 +17,4 @@
 </body>
 @stack('scripts');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>
-<script>
-    // Function to handle tag deletion
-    function deleteTag(tagId) {
-        // Send an AJAX request to the delete route
-        $.ajax({
-            url: '/admin/tag/trash/' + tagId,
-            type: 'DELETE',
-            data: {
-                '_token': '{{ csrf_token() }}',
-                'tagId': tagId
-            },
-            success: function (response) {
-                // Reload the page after successful deletion
-                location.reload();
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-
-    $(document).on('click', '.delete-btn', function () {
-        var tagId = $(this).data('id');
-        // Call the deleteTag function with the tagId
-        deleteTag(tagId);
-    });
-</script>
-
 </html>

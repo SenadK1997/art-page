@@ -27,6 +27,12 @@
              </a>
           </li>
           <li>
+            <a href="/admin/image/images" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+               <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect x="16.7" y="1.6" transform="matrix(-.707 -.707 .707 -.707 24 57.941)" fill="#FFA000" width="14.6" height="44.8"></rect><g fill="#9E6400"><rect x="17.9" y="20.2" transform="matrix(-.707 -.707 .707 -.707 21.177 51.125)" width="6.6" height="2"></rect><rect x="22.3" y="15.2" transform="matrix(-.707 -.707 .707 -.707 29.833 44.71)" width="3.7" height="2"></rect><rect x="25.9" y="12.2" transform="matrix(-.707 -.707 .707 -.707 40.49 43.125)" width="6.6" height="2"></rect><rect x="31.2" y="6.3" transform="matrix(.707 -.707 .707 .707 3.643 25.147)" width="2" height="3.7"></rect><rect x="6.3" y="31.2" transform="matrix(-.707 -.707 .707 -.707 -8.794 60.71)" width="3.7" height="2"></rect><rect x="9.9" y="28.2" transform="matrix(-.707 -.707 .707 -.707 1.863 59.125)" width="6.6" height="2"></rect><rect x="14.3" y="23.2" transform="matrix(-.707 -.707 .707 -.707 10.52 52.71)" width="3.7" height="2"></rect></g></svg>
+               <span class="flex-1 ml-3 whitespace-nowrap">Dimenzije i cijena</span>
+            </a>
+         </li>
+          <li>
              <a href="/" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z"></path></svg>
                 <span class="flex-1 ml-3 whitespace-nowrap">Pocetna</span>

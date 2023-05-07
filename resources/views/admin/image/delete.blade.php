@@ -6,6 +6,6 @@
 
 @section('content')
 <div>
-    {{$tag->id}}
+    {{$img->id}}
 </div>
 @endsection

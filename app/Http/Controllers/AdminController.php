@@ -8,8 +8,12 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Admins;
 use App\Models\Product;
 use App\Models\Tags;
+use App\Models\Images;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic;
+
+use function App\Providers\cmToPx;
 
 class AdminController extends Controller
 {
@@ -37,10 +41,34 @@ class AdminController extends Controller
         // Request od slika
         
         $image = $request->file('image');
-        $imageName = uniqid() . '_' . $image->getClientOriginalName();
-        $path = $image->storeAs('public/images', $imageName);
-        $product->url = $imageName;
-
+        if ($image) {
+            $maxSize = 2 * 1024 * 1024; // 2 MB
+            if ($image->getSize() > $maxSize) {
+                $quality = 75; // Starting quality
+                $imagePath = 'public/images/' . $product->url;
+                $image = ImageManagerStatic::make($image);
+                do {
+                    $quality -= 5;
+                    $image->encode('jpg', $quality);
+                } while ($image->filesize() > $maxSize);
+                // Save the image
+                Storage::put($imagePath, $image->__toString());
+            } else {
+                $imageName = uniqid() . '_' . $image->getClientOriginalName();
+                $path = $image->storeAs('public/images', $imageName);
+                $product->url = $imageName;
+            }
+        }
+        // $imageName = uniqid() . '_' . $image->getClientOriginalName(); 
+        // $path = $image->storeAs('public/images', $imageName);
+        // $imagePath = 'public/images/' . $imageName;
+        // dd($image->getClientOriginalExtension());
+        // $img = ImageManagerStatic::make($image);
+        // $img->encode('jpg', 75);
+    
+    // Save the image
+        // Storage::put($imagePath, $img->__toString());
+        // $product->url = $imageName;
         $product->price = $request->input('price');
         $product->save();
 
@@ -50,61 +78,43 @@ class AdminController extends Controller
     {
         // Retrieve the product with the given ID
         $product = Product::findOrFail($id);
-        // $tags_id = [];
-        // foreach ($product->tags as $tag){
-        //     array_push($tags_id, $tag->pivot->tags_id);
-        // }
-        // dd($tags_id);
+        // dd($product->images->product_id);
+
         $allTags = Tags::all();
-        
         $currentTags = $product->tags->pluck('id')->toArray(); // store id
-
         $allTagsId = Tags::all()->pluck('id')->toArray();
-
-        // dd(array_diff($allTagsId, $currentTags));
         $tagsIdToShow = array_diff($allTagsId, $currentTags);
-
         $tags = $allTags->whereIn('id', $tagsIdToShow);
 
         return view('admin.product.edit', compact('product', 'tags'));
     }
     public function update(Request $request, $id)
     {
-        // $newData = $request->validate([
-        //     'title' => 'required|max:255',
-        //     'description' => 'required',
-        //     'amount' => 'required|integer|min:0',
-        //     'image' => 'required|image',
-        //     'price' => 'required|numeric|min:0',
-        //     'selected_tags' => 'sometimes'
-        // ]);
-        // dd($request->all());
         $product = Product::findOrFail($id);
-            $product->title = $request->input('title');
-            $product->description = $request->input('description');
-            $product->amount = $request->input('amount');
-            
-            // image
-            if($request->file('image')) {
-                $image = $request->file('image');
-                $imageName = uniqid() . '_' . $image->getClientOriginalName();
-                $path = $image->storeAs('public/images/', $imageName);
-                $product->url = $imageName;
+        $product->title = $request->input('title');
+        $product->description = $request->input('description');
+        $product->amount = $request->input('amount');
+        // image
+        if($request->file('image')) {
+            $image = $request->file('image');
+            $imageName = uniqid() . '_' . $image->getClientOriginalName();
+            $path = $image->storeAs('public/images/', $imageName);
+            $product->url = $imageName;
+        }
+
+        $product->price = $request->input('price');
+        $product->save();
+
+        $selectedTags = explode(',', $request->input('selected_tags', []));
+            if(!empty($request->input('selected_tags'))) {
+                // Check currect tags
+                $currentTags = $product->tags->pluck('id')->toArray();
+                // Get new tags to attach
+                $tagsToAttach = array_diff($selectedTags, $currentTags);
+                // Attach difference
+                $product->tags()->attach($tagsToAttach);
             }
-
-            $product->price = $request->input('price');
-            $product->save();
-
-            $selectedTags = explode(',', $request->input('selected_tags', []));
-                if(!empty($request->input('selected_tags'))) {
-                    // Check currect tags
-                    $currentTags = $product->tags->pluck('id')->toArray();
-                    // Get new tags to attach
-                    $tagsToAttach = array_diff($selectedTags, $currentTags);
-                    // Attach difference
-                    $product->tags()->attach($tagsToAttach);
-                }
-            return redirect()->route('admin.product.edit', $product->id)->with('success', 'Product updated successfully');
+        return redirect()->route('admin.product.edit', $product->id)->with('success', 'Product updated successfully');
     }
     public function delete($id) {
         $product = Product::findOrFail($id);
@@ -212,6 +222,71 @@ class AdminController extends Controller
         Auth::guard('admins')->logout();
 
         return redirect()->route('admin.login');
+    }
+    public function images()
+    {
+        $imgs = Images::all();
+        
+        return view ('admin/image/images', compact('imgs'));
+
+    }
+    public function createImage()
+    {
+        return view('admin/image/create');
+    }
+    public function saveImage(Request $request)
+    {
+        // $newData = $request->validate([
+        //     'sirina' => 'required|max:255',
+        //     'duzina' => 'required|max:255',
+        //     'cijena' => 'required|max:255',
+        //     'boja-okvira' => 'required|max:255',
+        // ]);
+        $imageWidth = $request->input('sirina');
+        $imageHeight = $request->input('duzina');
+        $imagePrice = $request->input('cijena');
+        $imageColor = $request->input('boja-okvira');
+
+            $imgs = new Images;
+            $imgs->width = $imageWidth;
+            $imgs->height = $imageHeight;
+            $imgs->price = $imagePrice;
+            $imgs->color = $imageColor;
+            $imgs->save();
+
+            return redirect()->route('admin.image.images');
+    }
+    public function editImage($id)
+    {
+        $img = Images::findOrFail($id);
+        return view('admin/image/edit', compact('img'));
+    }
+    public function remakeImage(Request $request, $id)
+    {
+        $img = Images::findOrFail($id);
+        $imageWidth = $request->input('sirina');
+        $imageHeight = $request->input('duzina');
+        $imagePrice = $request->input('cijena');
+        $imageColor = $request->input('boja-okvira');
+
+        $img->width = $imageWidth;
+        $img->height = $imageHeight;
+        $img->price = $imagePrice;
+        $img->color = $imageColor;
+        $img->save();
+
+        return redirect()->route('admin.image.images');
+    }
+    public function deleteImages($id)
+    {
+        $img = Images::findOrFail($id);
+        $img->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Uspjesno obrisan',
+            'reload' => true
+        ]);
+        return redirect()->route('admin.image.images');
     }
 }
 
