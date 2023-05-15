@@ -62,7 +62,7 @@ Shop || Foco-art
             </a>
             <div class="text-center flex flex-col justify-center">
                 <p>{{ $item->title }}</p>
-                <p class="text-[13px] text-gray-400">Cijena: {{ $item->price }} KM</p>
+                <p class="text-[13px] text-gray-400">Cijena: {{ $item->images->min('price') ?? 'N/A' }} KM</p>
                 {{-- <p>{{ $tags }}</p> --}}
             </div>
         </div>

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer('width');
             $table->integer('height');
             $table->float('price');
-            $table->string('color');
             $table->timestamps();
         });
     }

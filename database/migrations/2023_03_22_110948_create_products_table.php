@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('description');
             $table->integer('amount');
             $table->string('url');
-            $table->float('price');
             $table->timestamps();
         });
     }

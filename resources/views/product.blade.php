@@ -17,7 +17,9 @@ Product || Foco-art
         </div>
         <div class="text-center flex flex-col justify-center">
             <p>{{ $product->title }}</p>
-            <p class="text-[13px] text-gray-400">Cijena: {{ $product->price }} KM</p>
+            {{-- @foreach ($product->images->sortBy('price') as $item) --}}
+                <p class="text-[15px] text-gray-400" id="product-price">Cijena: {{ $product->images->min('price') ?? 'N/A' }} KM</p>
+            {{-- @endforeach --}}
         </div>
     </div>
     <div class="flex flex-col gap-y-4 justify-center max-w-[50%] max-md:w-1/2 max-md:max-w-full whitespace-normal break-words">
@@ -47,8 +49,8 @@ Product || Foco-art
                 <label for="size-selector" class="block font-medium mb-2">Izaberi dimenziju</label>
                 <div class="relative">
                     <select id="size-selector" name="color-selector" class="block appearance-none w-full bg-gray-100 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                        @foreach ($product->images as $item)
-                            <option value="border-y-[#ddd] border-x-[#eee]">{{ $item->width }} x {{ $item->height }}</option>
+                        @foreach ($product->images->sortBy('price') as $item)
+                            <option value="{{ $item->price }}">{{ $item->width }} x {{ $item->height }} cm</option>
                         @endforeach
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -71,7 +73,7 @@ Product || Foco-art
             <input type="hidden" name="product_url" value="{{ $product->url }}">
             <input type="hidden" name="product_title" value="{{ $product->title }}">
             <input type="hidden" name="product_description" value="{{ $product->description }}">
-            <input type="hidden" name="product_price" value="{{ $product->price }}">
+            <input type="hidden" name="product_price" value="{{ $product->images->first()->price ?? 0 }}">
             <input type="hidden" name="quantity" value="1" min="1">
             <button type="submit" class="flex px-2 rounded-lg justify-center items-center ease-in duration-300 min-w-[120px] max-w-[150px] py-2 text-center border-solid border-2 border-stone-900 text-white bg-stone-900 hover:text-stone-900 hover:bg-white gap-x-3 max-md:hidden">
                 <svg stroke="currentColor" fill="#ccb17a" stroke-width="1" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -86,6 +88,16 @@ Product || Foco-art
         $('#color-selector').on('change', function() {
             let color = $(this).val();
             $('#okvir').removeClass().addClass('border-[20px] rounded-[2px] relative okvir__slike ' + color);
+        });
+        const sizeSelector = document.getElementById('size-selector');
+        const priceDisplay = document.getElementById('product-price');
+
+        sizeSelector.addEventListener('change', (event) => {
+            const selectedOption = sizeSelector.options[sizeSelector.selectedIndex];
+            const newPrice = selectedOption.value;
+            const priceInput = document.querySelector('input[name="product_price"]');
+            priceInput.value = newPrice;
+            priceDisplay.innerText = 'Cijena:' + newPrice + ' KM';
         });
     </script>
 @endpush

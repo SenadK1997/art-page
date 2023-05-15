@@ -9,6 +9,7 @@ use App\Models\Admins;
 use App\Models\Product;
 use App\Models\Tags;
 use App\Models\Images;
+use Illuminate\Console\View\Components\Alert;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic;
@@ -69,7 +70,6 @@ class AdminController extends Controller
     // Save the image
         // Storage::put($imagePath, $img->__toString());
         // $product->url = $imageName;
-        $product->price = $request->input('price');
         $product->save();
 
         return redirect()->route('admin.product.products');
@@ -78,15 +78,22 @@ class AdminController extends Controller
     {
         // Retrieve the product with the given ID
         $product = Product::findOrFail($id);
-        // dd($product->images->product_id);
-
+        $imgs = Images::all();
+        // dd($product->images);
+        // Dimension Images
+        $allImages = Images::all();
+        $currentImages = $product->images->pluck('id')->toArray();
+        $allImagesId = Images::all()->pluck('id')->toArray();
+        $imagesIdToShow = array_diff($allImagesId, $currentImages);
+        $images = $allImages->whereIn('id', $imagesIdToShow);
+        // Tags
         $allTags = Tags::all();
         $currentTags = $product->tags->pluck('id')->toArray(); // store id
         $allTagsId = Tags::all()->pluck('id')->toArray();
         $tagsIdToShow = array_diff($allTagsId, $currentTags);
         $tags = $allTags->whereIn('id', $tagsIdToShow);
 
-        return view('admin.product.edit', compact('product', 'tags'));
+        return view('admin.product.edit', compact('product', 'tags', 'images', 'imgs'));
     }
     public function update(Request $request, $id)
     {
@@ -102,19 +109,38 @@ class AdminController extends Controller
             $product->url = $imageName;
         }
 
-        $product->price = $request->input('price');
         $product->save();
-
         $selectedTags = explode(',', $request->input('selected_tags', []));
             if(!empty($request->input('selected_tags'))) {
-                // Check currect tags
+                // Check current tags
                 $currentTags = $product->tags->pluck('id')->toArray();
                 // Get new tags to attach
                 $tagsToAttach = array_diff($selectedTags, $currentTags);
                 // Attach difference
                 $product->tags()->attach($tagsToAttach);
             }
-        return redirect()->route('admin.product.edit', $product->id)->with('success', 'Product updated successfully');
+            if (!empty($request->input('shownWidth') && $request->input('shownHeight') && $request->input('shownPrice'))) {
+                $sirinaValues = $request->input('shownWidth');
+                $duzinaValues = $request->input('shownHeight');
+                $cijenaValues = $request->input('shownPrice');
+                $images = [];
+                foreach ($sirinaValues as $index => $sirinaValue) {
+                    $duzinaValue = $duzinaValues[$index];
+                    $cijenaValue = $cijenaValues[$index];
+                    $image = new Images([
+                        'width' => $sirinaValue,
+                        'height' => $duzinaValue,
+                        'price' => $cijenaValue,
+                    ]);
+                    $image->save();
+                    $images[] = $image;
+                }
+                $image->save();
+                $product->images()->saveMany($images);
+            } else if (empty($product->images)) {
+                return back()->with('error', 'Trebas dodati najmanje jednu dimenziju');
+            }
+            return redirect()->route('admin.product.edit', $product->id)->with('success', 'Product updated successfully');
     }
     public function delete($id) {
         $product = Product::findOrFail($id);
@@ -236,25 +262,16 @@ class AdminController extends Controller
     }
     public function saveImage(Request $request)
     {
-        // $newData = $request->validate([
-        //     'sirina' => 'required|max:255',
-        //     'duzina' => 'required|max:255',
-        //     'cijena' => 'required|max:255',
-        //     'boja-okvira' => 'required|max:255',
-        // ]);
         $imageWidth = $request->input('sirina');
         $imageHeight = $request->input('duzina');
         $imagePrice = $request->input('cijena');
-        $imageColor = $request->input('boja-okvira');
-
-            $imgs = new Images;
-            $imgs->width = $imageWidth;
-            $imgs->height = $imageHeight;
-            $imgs->price = $imagePrice;
-            $imgs->color = $imageColor;
-            $imgs->save();
-
-            return redirect()->route('admin.image.images');
+        $imgs = new Images;
+        $imgs->width = $imageWidth;
+        $imgs->height = $imageHeight;
+        $imgs->price = $imagePrice;
+        $imgs->save();
+        return back();
+            // return redirect()->route('admin.image.images');
     }
     public function editImage($id)
     {
@@ -264,18 +281,19 @@ class AdminController extends Controller
     public function remakeImage(Request $request, $id)
     {
         $img = Images::findOrFail($id);
+        // Update the image dimensions here
         $imageWidth = $request->input('sirina');
+        // dd($imageWidth);
         $imageHeight = $request->input('duzina');
         $imagePrice = $request->input('cijena');
-        $imageColor = $request->input('boja-okvira');
 
         $img->width = $imageWidth;
         $img->height = $imageHeight;
         $img->price = $imagePrice;
-        $img->color = $imageColor;
+
         $img->save();
 
-        return redirect()->route('admin.image.images');
+        return back();
     }
     public function deleteImages($id)
     {
@@ -286,7 +304,7 @@ class AdminController extends Controller
             'message' => 'Uspjesno obrisan',
             'reload' => true
         ]);
-        return redirect()->route('admin.image.images');
+        // return redirect()->route('admin.image.images');
     }
 }
 

@@ -16,4 +16,6 @@ class Images extends Model
         ->withPivot('product_id', 'images_id')
         ->withTimestamps();
     }
+    protected $fillable = ['filename', 'product_id', 'width', 'height', 'price'];
+
 }
