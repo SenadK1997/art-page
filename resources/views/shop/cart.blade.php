@@ -38,6 +38,7 @@
         <?php Cart::destroy(); ?>
         @endif
         @foreach (Cart::content() as $item)
+        {{ dd(Cart::content()); }}
         <div class="flex px-4 border-b-[2px] py-2">
           <div class="flex flex-col gap-y-8 w-full">
             <div class="flex justify-between gap-x-8">

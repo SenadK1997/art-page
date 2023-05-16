@@ -13,6 +13,8 @@ use Illuminate\Console\View\Components\Alert;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
+use Intervention\Image\Facades\Image;
 
 use function App\Providers\cmToPx;
 
@@ -95,6 +97,7 @@ class AdminController extends Controller
 
         return view('admin.product.edit', compact('product', 'tags', 'images', 'imgs'));
     }
+    
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -102,10 +105,23 @@ class AdminController extends Controller
         $product->description = $request->input('description');
         $product->amount = $request->input('amount');
         // image
-        if($request->file('image')) {
+        if ($request->file('image')) {
             $image = $request->file('image');
             $imageName = uniqid() . '_' . $image->getClientOriginalName();
-            $path = $image->storeAs('public/images/', $imageName);
+            // $thumbName = uniqid() . '_' . $image->getClientOriginalName();
+            $img = Image::make($image);
+            $img->resize(1280, 720, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $img->save(storage_path('app/public/images/' . $imageName), 80);
+            $thumbImg = Image::make($image);
+            $thumbImg->resize(426, 240, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $thumbImg->save(storage_path('app/public/thumbnail/' . $imageName), 80);
+            // dd($imageName, $thumbName);
             $product->url = $imageName;
         }
 
