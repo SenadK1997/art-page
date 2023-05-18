@@ -83,6 +83,9 @@ Route::put('admin/image/edit{id}', [AdminController::class, 'remakeImage'])->nam
 // DELETE IMAGES
 Route::delete('/admin/image/delete/{id}', [AdminController::class, 'deleteImages'])->name('admin.image.delete');
 
+// ORDERS SECTION
+Route::get('admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
+
 // CART SECTION
 Route::get('shop/cart', [ProductController::class, 'cart'])->name('shop.cart');
 Route::post('shop/cart/add', [ProductController::class, 'addToCart'])->name('shop.cart.add');

@@ -43,35 +43,25 @@ class AdminController extends Controller
         $product->amount = $request->input('amount');
         // Request od slika
         
-        $image = $request->file('image');
-        if ($image) {
-            $maxSize = 2 * 1024 * 1024; // 2 MB
-            if ($image->getSize() > $maxSize) {
-                $quality = 75; // Starting quality
-                $imagePath = 'public/images/' . $product->url;
-                $image = ImageManagerStatic::make($image);
-                do {
-                    $quality -= 5;
-                    $image->encode('jpg', $quality);
-                } while ($image->filesize() > $maxSize);
-                // Save the image
-                Storage::put($imagePath, $image->__toString());
-            } else {
-                $imageName = uniqid() . '_' . $image->getClientOriginalName();
-                $path = $image->storeAs('public/images', $imageName);
-                $product->url = $imageName;
-            }
+        if ($request->file('image')) {
+            $image = $request->file('image');
+            $imageName = uniqid() . '_' . $image->getClientOriginalName();
+            // $thumbName = uniqid() . '_' . $image->getClientOriginalName();
+            $img = Image::make($image);
+            $img->resize(1280, 720, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $img->save(storage_path('app/public/images/' . $imageName), 80);
+            $thumbImg = Image::make($image);
+            $thumbImg->resize(426, 240, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $thumbImg->save(storage_path('app/public/thumbnail/' . $imageName), 80);
+            // dd($imageName, $thumbName);
+            $product->url = $imageName;
         }
-        // $imageName = uniqid() . '_' . $image->getClientOriginalName(); 
-        // $path = $image->storeAs('public/images', $imageName);
-        // $imagePath = 'public/images/' . $imageName;
-        // dd($image->getClientOriginalExtension());
-        // $img = ImageManagerStatic::make($image);
-        // $img->encode('jpg', 75);
-    
-    // Save the image
-        // Storage::put($imagePath, $img->__toString());
-        // $product->url = $imageName;
         $product->save();
 
         return redirect()->route('admin.product.products');
@@ -321,6 +311,10 @@ class AdminController extends Controller
             'reload' => true
         ]);
         // return redirect()->route('admin.image.images');
+    }
+    public function orders()
+    {
+        return view('admin/orders');
     }
 }
 

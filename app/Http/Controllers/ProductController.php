@@ -92,18 +92,19 @@ class ProductController extends Controller
         $product_price = $request->input('product_price');
         $product_quantity = $request->input('quantity');
 
-    Cart::add([
-        'id' => $product_id,
-        'name' => $product_title,
-        'qty' => $product_quantity,
-        'price' => $product_price,
-        'options' => [
-            'url' => $product_url,
-            'description' => $product_description
-        ]
-    ]);
+        Cart::add([
+            'id' => $product_id,
+            'name' => $product_title,
+            'qty' => $product_quantity,
+            'price' => $product_price,
+            'options' => [
+                'price' => $product_price,
+                'url' => $product_url,
+                'description' => $product_description,
+            ]
+        ]);
 
-    return redirect()->route('shop.cart');
+        return redirect()->route('shop.cart');
     }
 
 
@@ -131,6 +132,7 @@ class ProductController extends Controller
         $paypalToken = $provider->getAccessToken();
 
         $amount = $request->price;
+        $amount = str_replace(',', '', $amount);
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
@@ -141,7 +143,7 @@ class ProductController extends Controller
                 0 => [
                     "amount" => [
                         "currency_code" => "USD",
-                        "value" => "$amount"
+                        "value" => $amount,
                     ]
                 ]
             ]
@@ -166,16 +168,8 @@ class ProductController extends Controller
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
         $provider->getAccessToken();
-        // dd($provider->capturePaymentOrder($request['token']));
         
         $response = $provider->capturePaymentOrder($request['token']);
-        // if ($response === false) {
-        //     $error = json_last_error_msg();
-        //     throw new \Exception("Failed to decode JSON: $error");
-        // }
-        // var_dump($response); // Print out the response
-        // var_dump(json_decode($response)); // Check if the response is valid JSON
-        // die();
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             return redirect()
             ->route('shop.cart')

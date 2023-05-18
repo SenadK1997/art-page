@@ -35,15 +35,14 @@
           </div>
         @endif
         @if (session('success'))
-        <?php Cart::destroy(); ?>
+          <?php Cart::destroy(); ?>
         @endif
         @foreach (Cart::content() as $item)
-        {{ dd(Cart::content()); }}
         <div class="flex px-4 border-b-[2px] py-2">
           <div class="flex flex-col gap-y-8 w-full">
             <div class="flex justify-between gap-x-8">
               <h1 class="text-2xl text-gray-800 hover:text-gray-600 transition-colors uppercase">{{ $item->name }}</h1>
-              <h2 class="text-blue-500 text-xl tracking-wide border-blue-500 whitespace-nowrap">{{ $item->price }} KM</h2>
+              <h2 class="text-blue-500 text-xl tracking-wide border-blue-500 whitespace-nowrap">{{ $item->options->price * $item->qty }} KM</h2>
             </div>
             <div class="flex w-full justify-between gap-x-3">
               <img src="{{ asset('storage/images/'.$item->options->url) }}" alt="" class="max-w-[180px] w-full">
