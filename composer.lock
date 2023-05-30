@@ -3389,16 +3389,16 @@
         },
         {
             "name": "srmklive/paypal",
-            "version": "3.0.20",
+            "version": "3.0.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/srmklive/laravel-paypal.git",
-                "reference": "e5d5d91b21b38922c8130eedf0ee2d3a64527a4e"
+                "reference": "3a55d463f8d5935627c4eee15da702811a03c5ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/srmklive/laravel-paypal/zipball/e5d5d91b21b38922c8130eedf0ee2d3a64527a4e",
-                "reference": "e5d5d91b21b38922c8130eedf0ee2d3a64527a4e",
+                "url": "https://api.github.com/repos/srmklive/laravel-paypal/zipball/3a55d463f8d5935627c4eee15da702811a03c5ea",
+                "reference": "3a55d463f8d5935627c4eee15da702811a03c5ea",
                 "shasum": ""
             },
             "require": {
@@ -3409,7 +3409,7 @@
                 "php": ">=7.2|^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.0|^9.0",
+                "phpunit/phpunit": "^8.0|^9.0|^10.0",
                 "symfony/var-dumper": "~5.0"
             },
             "type": "library",
@@ -3448,9 +3448,9 @@
             ],
             "support": {
                 "issues": "https://github.com/srmklive/laravel-paypal/issues",
-                "source": "https://github.com/srmklive/laravel-paypal/tree/3.0.20"
+                "source": "https://github.com/srmklive/laravel-paypal/tree/3.0.21"
             },
-            "time": "2023-03-29T18:18:45+00:00"
+            "time": "2023-04-26T16:27:35+00:00"
         },
         {
             "name": "symfony/console",

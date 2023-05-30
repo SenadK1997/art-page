@@ -23,4 +23,10 @@ class Product extends Model
         ->withPivot('images_id')
         ->withTimestamps();
     }
+    public function orders():BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'order_product')
+        ->withPivot('order_id')
+        ->withTimestamps();
+    }
 }

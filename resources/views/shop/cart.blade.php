@@ -11,7 +11,7 @@
         </a>
     </div>
   <div class="flex max-w-screen-xl mx-auto w-full gap-x-4 justify-between max-md:flex-col max-md:gap-y-5">
-    <div class="flex flex-col max-w-[540px] w-full">
+    <div class="flex flex-col max-w-[540px] w-full gap-y-6">
       @if (Session::has('error'))
       <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
         <strong class="font-bold">Error:</strong>
@@ -28,7 +28,7 @@
       <div class="pb-3">
         <h1 class="text-3xl font-bold text-gray-800 mt-8">Your items:</h1>
       </div>
-      <div class="border border-rounded border-[#ccc] block">
+      {{-- <div class="relative"> --}}
         @if (Cart::content()->isEmpty())
           <div class="p-6">
             <h1>Your cart is empty.</h1>
@@ -38,17 +38,25 @@
           <?php Cart::destroy(); ?>
         @endif
         @foreach (Cart::content() as $item)
-        <div class="flex px-4 border-b-[2px] py-2">
-          <div class="flex flex-col gap-y-8 w-full">
-            <div class="flex justify-between gap-x-8">
-              <h1 class="text-2xl text-gray-800 hover:text-gray-600 transition-colors uppercase">{{ $item->name }}</h1>
-              <h2 class="text-blue-500 text-xl tracking-wide border-blue-500 whitespace-nowrap">{{ $item->options->price * $item->qty }} KM</h2>
+        <div class="flex flex-col justify-center">
+          <div class="relative flex flex-col md:flex-row md:space-x-5 space-y-3 md:space-y-0 rounded-xl shadow-lg p-3 max-w-xs md:max-w-3xl mx-auto border border-white bg-white">
+            <div class="w-full md:w-1/3 bg-white grid place-items-center">
+              <img src="{{ asset('storage/images/'.$item->options->url) }}" alt="tailwind logo" class="rounded-xl" />
             </div>
-            <div class="flex w-full justify-between gap-x-3">
-              <img src="{{ asset('storage/images/'.$item->options->url) }}" alt="" class="max-w-[180px] w-full">
-              <div class="flex flex-col max-w-[250px] w-full gap-y-4">
-                <p class="text-gray-600 text-lg leading-relaxed my-4 text-justify break-words h-[150px] overflow-y-scroll">{{ $item->options->description }}</p>
-                <div class="flex justify-between">
+              <div class="w-full md:w-2/3 bg-white flex flex-col space-y-2 p-3 gap-y-5">
+                <div class="flex justify-between item-center">
+                  <h3 class="font-black text-gray-800 md:text-3xl text-xl">{{ $item->name }}</h3>
+                  <form action="{{ route('shop.cart.remove', $item->rowId) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-500 hover:text-red-700">Remove</button>
+                  </form>
+                </div>
+                <div>
+                  {{ $item->options->width }} x {{ $item->options->height }}
+                </div>
+                <p class="md:text-lg text-gray-500 text-base">{{ $item->options->description }}</p>
+                <div class="flex justify-between item-center">
                   <div class="flex items-center">
                     <form action="{{ route('shop.cart.update', $item->rowId) }}" method="POST" class="flex h-full">
                       @csrf
@@ -62,18 +70,16 @@
                       <button type="submit" class="px-2 text-blue-500 hover:text-blue-700">+</button>
                     </form>
                   </div>
-                  <form action="{{ route('shop.cart.remove', $item->rowId) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-red-500 hover:text-red-700">Remove</button>
-                  </form>
+                  <p class="text-xl font-black text-gray-800">
+                    {{ $item->options->price * $item->qty }} KM
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         @endforeach
-      </div>
+      {{-- </div> --}}
+      
     </div>
     <form action="{{ route('request.payment') }}" method="POST" class="flex flex-col border border-[2px] max-w-[540px] w-full p-4 bg-gray-200 rounded-xl gap-y-5 h-fit">
     @csrf
@@ -165,4 +171,39 @@
                 </tr>
             </tfoot>
         </table>
+    </div> --}}
+
+    {{-- <div class="flex px-4 border-b-[2px] py-2">
+      <div class="flex flex-col gap-y-8 w-full">
+        <div class="flex justify-between gap-x-8">
+          <h1 class="text-2xl text-gray-800 hover:text-gray-600 transition-colors uppercase">{{ $item->name }}</h1>
+          <h2 class="text-blue-500 text-xl tracking-wide border-blue-500 whitespace-nowrap">{{ $item->options->price * $item->qty }} KM</h2>
+        </div>
+        <div class="flex w-full justify-between gap-x-3">
+          <img src="{{ asset('storage/images/'.$item->options->url) }}" alt="" class="max-w-[180px] w-full">
+          <div class="flex flex-col max-w-[250px] w-full gap-y-4">
+            <p class="text-gray-600 text-lg leading-relaxed my-4 text-justify break-words h-[150px] overflow-y-scroll">{{ $item->options->description }}</p>
+            <div class="flex justify-between">
+              <div class="flex items-center">
+                <form action="{{ route('shop.cart.update', $item->rowId) }}" method="POST" class="flex h-full">
+                  @csrf
+                  <input type="hidden" name="product_qty" value="{{ $item->qty - 1 }}">
+                  <button type="submit" class="px-2 text-blue-500 hover:text-blue-700">-</button>
+                </form>
+                <span class="px-2 h-full">{{ $item->qty }}</span>
+                <form action="{{ route('shop.cart.update', $item->rowId) }}" method="POST" class="flex h-full">
+                  @csrf
+                  <input type="hidden" name="product_qty" value="{{ $item->qty + 1}}">
+                  <button type="submit" class="px-2 text-blue-500 hover:text-blue-700">+</button>
+                </form>
+              </div>
+              <form action="{{ route('shop.cart.remove', $item->rowId) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="text-red-500 hover:text-red-700">Remove</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div> --}}

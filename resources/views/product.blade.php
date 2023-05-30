@@ -58,7 +58,7 @@ Product || Foco-art
                 <div class="relative">
                     <select id="size-selector" name="color-selector" class="block appearance-none w-full bg-gray-100 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                         @foreach ($product->images->sortBy('price') as $item)
-                            <option value="{{ $item->price }}">{{ $item->width }} x {{ $item->height }} cm</option>
+                            <option value="{{ $item->price }}" data-width="{{ $item->width }}" data-height="{{ $item->height }}">{{ $item->width }} x {{ $item->height }} cm</option>
                         @endforeach
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -80,6 +80,8 @@ Product || Foco-art
             <input type="hidden" name="product_id" value="{{ $product->id }}">
             <input type="hidden" name="product_url" value="{{ $product->url }}">
             <input type="hidden" name="product_title" value="{{ $product->title }}">
+            <input type="hidden" name="product_width" value="{{ $product->images->min('width') }}">
+            <input type="hidden" name="product_height" value="{{ $product->images->min('height') }}">
             <input type="hidden" name="product_description" value="{{ $product->description }}">
             <input type="hidden" name="product_price" value="{{ $product->images->min('price') ?? 0 }}">
             <input type="hidden" name="quantity" value="1" min="1">
@@ -99,13 +101,20 @@ Product || Foco-art
         });
         const sizeSelector = document.getElementById('size-selector');
         const priceDisplay = document.getElementById('product-price');
+        const widthInput = document.querySelector('input[name="product_width"]');
+        const heightInput = document.querySelector('input[name="product_height"]');
 
         sizeSelector.addEventListener('change', (event) => {
             const selectedOption = sizeSelector.options[sizeSelector.selectedIndex];
             const newPrice = selectedOption.value;
+            const width = selectedOption.dataset.width;
+            const height = selectedOption.dataset.height;
+
             const priceInput = document.querySelector('input[name="product_price"]');
             priceInput.value = newPrice;
             priceDisplay.innerText = 'Cijena:' + newPrice + ' KM';
+            widthInput.value = width;
+            heightInput.value = height;
         });
     </script>
 @endpush

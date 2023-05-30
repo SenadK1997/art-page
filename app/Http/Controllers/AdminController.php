@@ -9,6 +9,7 @@ use App\Models\Admins;
 use App\Models\Product;
 use App\Models\Tags;
 use App\Models\Images;
+use App\Models\Order;
 use Illuminate\Console\View\Components\Alert;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
@@ -314,7 +315,24 @@ class AdminController extends Controller
     }
     public function orders()
     {
-        return view('admin/orders');
+        $orders = Order::all();
+        return view('admin/orders', compact('orders'));
+    }
+    public function updateStatus($id)
+    {
+
+        // dd('adasd');
+        // Find the order by ID
+        $order = Order::findOrFail($id);
+        // dd($order);
+        // Update the status to true (1)
+        $order->status = !$order->status;
+        $order->save();
+
+        // You can also use the following query to update the status directly in the database:
+        // DB::table('orders')->where('id', $id)->update(['status' => true]);
+
+        return response()->json(['message' => 'Order status updated successfully']);
     }
 }
 

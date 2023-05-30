@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Tags;
+use App\Models\Order;
 use Illuminate\View\View;
 // use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Http\Request;
@@ -11,8 +12,6 @@ use Illuminate\Support\Arr;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Illuminate\Support\Facades\Log;
-
-
 
 class ProductController extends Controller
 {
@@ -73,9 +72,7 @@ class ProductController extends Controller
     }
     public function cart()
     {
-        // foreach (Cart::content() as $item) {
-        //     dd($item);
-        // }
+        // dd(Cart::content());
         return view('shop.cart', [
             'cartItems' => Cart::content(),
         ]);
@@ -90,8 +87,9 @@ class ProductController extends Controller
         $product_title = $request->input('product_title');
         $product_description = $request->input('product_description');
         $product_price = $request->input('product_price');
+        $product_width = $request->input('product_width');
+        $product_height = $request->input('product_height');
         $product_quantity = $request->input('quantity');
-
         Cart::add([
             'id' => $product_id,
             'name' => $product_title,
@@ -101,6 +99,8 @@ class ProductController extends Controller
                 'price' => $product_price,
                 'url' => $product_url,
                 'description' => $product_description,
+                'width' => $product_width,
+                'height' => $product_height,
             ]
         ]);
 
@@ -111,7 +111,6 @@ class ProductController extends Controller
     public function updateCart(Request $request, $rowId)
     {
         $quantity = $request->input('product_qty');
-
         Cart::update($rowId, $quantity);
 
         return redirect()->route('shop.cart');
@@ -171,14 +170,59 @@ class ProductController extends Controller
         
         $response = $provider->capturePaymentOrder($request['token']);
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-            return redirect()
-            ->route('shop.cart')
-            ->with('success', 'Transaction completed');
+            // Definisanje informacija o produktu
+            $allCartItems = Cart::content();
+            $productIds = collect($allCartItems)->pluck('id')->toArray();
+            // Definisanje informacija o klijentu
+            $payerFullName = $response['payer']['name']['given_name'] . ' ' . $response['payer']['name']['surname'];
+            $payerAdress = $response['purchase_units'][0]['shipping']['address']['address_line_1'];
+            $payerCountry = $response['purchase_units'][0]['shipping']['address']['country_code'];
+            $payerEmail = $response['payer']['email_address'];
+            $payerZipcode = $response['purchase_units'][0]['shipping']['address']['postal_code'];
+            $totalPrice = $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
+            
+            $newOrder = new Order();
+            $newOrder->fullname = $payerFullName;
+            $newOrder->address = $payerAdress;
+            $newOrder->country = $payerCountry;
+            $newOrder->email = $payerEmail;
+            $newOrder->zipcode = $payerZipcode;
+            $newOrder->totalPrice = $totalPrice;
+            $newOrder->save();
+            $cartProducts = Cart::content();
+            // Attach the products to the order and specify the pivot data
+            $orders = [];
+
+            foreach ($cartProducts as $product) {
+                $orders[] = [
+                    'product_id' => $product->id,
+                    'itemId' => $product->id,
+                    'itemName' => $product->name,
+                    'width' => $product->options->width,
+                    'height' => $product->options->height,
+                    'price' => $product->price,
+                    'qty' => $product->qty,
+                ];
+            }
+            $orderId = $newOrder->id;
+            
+            $newOrder->products()->attach($orders);
+            // return redirect()
+            // ->route('shop.cart')
+            // ->with('success', 'Transaction completed');
+            Cart::destroy();
+            return redirect()->route('completed.order', ['id' => $orderId])->with('success', 'Hvala na ukazanom povjerenju');
         } else {
             return redirect()
             ->route('shop.cart')
             ->with('error', 'Something went wrongsuces');
         }
+    }
+    public function completedOrder($id)
+    {
+
+        $orders = Order::findOrFail($id);
+        return view('order', compact('orders'));
     }
 
     public function paymentCancel()

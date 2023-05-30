@@ -83,7 +83,7 @@ Route::put('admin/image/edit{id}', [AdminController::class, 'remakeImage'])->nam
 // DELETE IMAGES
 Route::delete('/admin/image/delete/{id}', [AdminController::class, 'deleteImages'])->name('admin.image.delete');
 
-// ORDERS SECTION
+// ORDERS SECTION FOR ADMIN
 Route::get('admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
 
 // CART SECTION
@@ -99,3 +99,8 @@ Route::delete('shop/cart/remove/{itemId}', [ProductController::class, 'removeFro
 Route::post('shop/cart/checkout/request-payment', [ProductController::class, 'requestPayment'])->name('request.payment');
 Route::get('shop/cart/checkout/success', [ProductController::class, 'paymentSuccess'])->name('payment.success');
 Route::get('shop/cart/checkout/cancel', [ProductController::class, 'paymentCancel'])->name('payment.cancel');
+
+// ORDERS SECTION FOR USER
+
+Route::get('completed/order/{id}', [ProductController::class, 'completedOrder'])->name('completed.order');
+Route::post('completed/order/{id}', [AdminController::class, 'updateStatus'])->name('completed.order.update');
