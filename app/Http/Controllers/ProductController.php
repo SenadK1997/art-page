@@ -90,6 +90,7 @@ class ProductController extends Controller
         $product_width = $request->input('product_width');
         $product_height = $request->input('product_height');
         $product_quantity = $request->input('quantity');
+        $product_frame = $request->input('selected_option');
         Cart::add([
             'id' => $product_id,
             'name' => $product_title,
@@ -101,6 +102,7 @@ class ProductController extends Controller
                 'description' => $product_description,
                 'width' => $product_width,
                 'height' => $product_height,
+                'frame' => $product_frame,
             ]
         ]);
 
@@ -155,11 +157,11 @@ class ProductController extends Controller
             }
             return redirect()
             ->route('shop.cart')
-            ->with('error', 'Something went wrongic');
+            ->with('error', 'Something went wrong');
         } else {
             return redirect()
             ->route('shop.cart')
-            ->with('error', $response['message'] ?? 'Something went wrongetina');
+            ->with('error', $response['message'] ?? 'Something went wrong');
         }
     }
     public function paymentSuccess(Request $request)
@@ -202,6 +204,7 @@ class ProductController extends Controller
                     'height' => $product->options->height,
                     'price' => $product->price,
                     'qty' => $product->qty,
+                    'frame' => $product->options->frame,
                 ];
             }
             $orderId = $newOrder->id;
@@ -215,7 +218,7 @@ class ProductController extends Controller
         } else {
             return redirect()
             ->route('shop.cart')
-            ->with('error', 'Something went wrongsuces');
+            ->with('error', 'Something went wrongs');
         }
     }
     public function completedOrder($id)

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('height');
             $table->integer('price');
             $table->integer('qty');
+            $table->string('frame');
             $table->timestamps();
         });
     }

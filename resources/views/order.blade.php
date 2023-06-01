@@ -7,7 +7,7 @@ Orders || Foco-art
 @endsection
 
 @section('content')
-<div class="flex max-w-screen-xl mx-auto w-full gap-x-4 justify-between max-md:flex-col max-md:gap-y-10 relative top-[120px] mb-[125px] h-full max-md:h-full max-md:flex-col-reverse">
+<div class="flex max-w-screen-xl mx-auto w-full gap-x-4 justify-between max-md:flex-col max-md:gap-y-10 relative top-[120px] mb-[125px] h-full max-md:h-full max-md:flex-col-reverse max-md:mt-6 max-md:p-5">
     <div class="flex flex-col max-w-[540px] gap-y-5 w-full mx-auto">
         @if (Session::has('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-3 mt-3" role="alert">
@@ -24,16 +24,20 @@ Orders || Foco-art
                         </div>
                         <div class="w-full md:w-2/3 bg-white flex flex-col space-y-2 p-3 justify-between">
                             <div class="flex flex-col gap-y-4">
-                                <div class="flex justify-between item-center">
-                                    <h3 class="font-medium text-gray-800 md:text-3xl text-xl">{{ $order->pivot->itemName }}</h3>
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-medium text-gray-800 md:text-3xl text-xl break-all">{{ $order->pivot->itemName }}</h3>
+                                    <p class="text-gray-500 whitespace-nowrap">Okvir: {{ $order->pivot->frame }}</p>
                                 </div>
-                                <p class="md:text-lg text-gray-500 text-base">{{ $order->description }}</p>
+                                <p class="md:text-lg text-gray-500 text-base max-w-[375px] whitespace-normal break-all">{{ $order->description }}</p>
                             </div>
-                            <div class="flex justify-between item-center">
+                            <div class="flex justify-between items-center">
                                 <div class="flex items-center justify-between w-full">
-                                    <p class="text-xl font-medium text-gray-800">
-                                        {{ $order->pivot->price * $order->pivot->qty }} KM
-                                    </p>
+                                    <div class="flex flex-col">
+                                        <p class="text-gray-600 flex">Količina: {{ $order->pivot->qty }} x {{ $order->pivot->price }}</p>
+                                        <p class="text-xl font-medium text-gray-800">
+                                            {{ $order->pivot->price * $order->pivot->qty }} KM
+                                        </p>
+                                    </div>
                                     <div class="bg-gray-200 px-3 py-1 gap-x-2 rounded-full text-xs font-medium text-gray-800 inline-flex items-center">
                                         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M160 288h-56c-4.42 0-8-3.58-8-8v-16c0-4.42 3.58-8 8-8h56v-64h-56c-4.42 0-8-3.58-8-8v-16c0-4.42 3.58-8 8-8h56V96h-56c-4.42 0-8-3.58-8-8V72c0-4.42 3.58-8 8-8h56V32c0-17.67-14.33-32-32-32H32C14.33 0 0 14.33 0 32v448c0 2.77.91 5.24 1.57 7.8L160 329.38V288zm320 64h-32v56c0 4.42-3.58 8-8 8h-16c-4.42 0-8-3.58-8-8v-56h-64v56c0 4.42-3.58 8-8 8h-16c-4.42 0-8-3.58-8-8v-56h-64v56c0 4.42-3.58 8-8 8h-16c-4.42 0-8-3.58-8-8v-56h-41.37L24.2 510.43c2.56.66 5.04 1.57 7.8 1.57h448c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32z"></path>
@@ -64,7 +68,7 @@ Orders || Foco-art
                 <div class="flex w-full justify-between items-center">
                     <p class="text-xl font-semibold my-2">{{ $orders->fullname }}</p>
                         @if ($orders->status == false)
-                                <p class="text-red-700 font-semibold">Nije poslano</p>
+                                <p class="text-red-700 font-semibold">U izradi</p>
                         @else
                             <p class="text-green-700 font-semibold">Poslano</p>
                         @endif
@@ -89,8 +93,8 @@ Orders || Foco-art
                 <div class="flex justify-between">
                     <div class="my-2">
                         <p class="font-semibold text-base mb-2">Email:</p>
-                        <div class="flex space-x-2">
-                            <p class="text-base text-gray-400 font-semibold">{{ $orders->email }}</p>
+                        <div class="flex space-x-2 max-md:w-[180px] max-md:overflow-scroll">
+                            <p class="text-base text-gray-400 font-semibold whitespace-nowrap">{{ $orders->email }}</p>
                         </div>
                     </div>
                     <div class="my-2">
