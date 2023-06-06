@@ -10,17 +10,24 @@ use App\Models\Product;
 use App\Models\Tags;
 use App\Models\Images;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Console\View\Components\Alert;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 use function App\Providers\cmToPx;
 
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login', 'showLoginForm', 'register', 'showRegistrationForm']]);
+    }
     public function index()
     {
         $products = Product::all();
@@ -168,42 +175,73 @@ class AdminController extends Controller
             'reload' => true
         ]);
     }
-
+    // register
+    public function showRegistrationForm()
+    {
+        $user = User::all();
+        return view('register', compact('user'));
+    }
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required|string|min:6'
+        ]);
+        if($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        $user = User::create(array_merge(
+            $validator->validated(),
+            ['password'=>bcrypt($request->password)]
+        ));
+        return response()->json([
+            'message'=>'User successfully registered',
+            'user'=>$user,
+        ], 201);
+        return redirect()->route('login');
+    }
+    // LOGIN
     public function showLoginForm()
     {
         return view('admin.login');
     }
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
-            'password' => ['required', 'string'],
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required'
         ]);
-        $credentials['password'] = bcrypt($credentials['password']);
-        // dd($credentials['password']);
-        // dd(Auth::guard('admins')->attempt($credentials));
-        if (Auth::guard('admins')->attempt($credentials)) {
-            return redirect()->intended(route('admin.dashboard'));
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
         }
-    
-        return redirect()->route('admin.login')
-            ->withErrors(['username' => 'Invalid username or password'])
-            ->withInput($request->except('password'));
+        if(!$token=auth()->attempt($validator->validated())) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        
 
-        //     $credentials = $request->validate([
-        //         'username' => ['required', 'string'],
-        //         'password' => ['required', 'string'],
-        //     ]);
-        // $user = Admins::where('username', $credentials['username'])->first();
-        // if (!$user || !$credentials['password'] === $user->password) {
-        //     return redirect('/admin/login')->withErrors(['username' => 'Invalid username or password']);
-        // }
+        return $this->createNewToken($token);
+    }
 
-        // if ($user && $credentials['password'] === $user->password) {
-        //     Auth::guard('admins')->login($user);
-        //     // dd(Auth::guard('admins')->user());
-        //     return redirect()->route('admin.dashboard');
-        // }        
+    public function createNewToken($token)
+    {   
+        return response()->json([
+            'access_token'=>$token,
+            'token_type'=>'bearer',
+            'expires_in'=>config('jwt.ttl') * 60,
+            'user' => auth()->user(),
+        ]);
+    }
+    public function profile()
+    {
+        return response()->json(auth()->user());
+    }
+    public function logout()
+    {
+        auth()->logout();
+        return response()->json([
+            'message'=>'User logged out',
+        ]);
     }
 
     // FOR TAGS IN WEB.PHP
@@ -249,12 +287,6 @@ class AdminController extends Controller
             'reload' => true
         ]);
         return redirect()->route('admin.tag.tags');
-    }
-    public function logout()
-    {
-        Auth::guard('admins')->logout();
-
-        return redirect()->route('admin.login');
     }
     public function images()
     {
@@ -369,3 +401,17 @@ class AdminController extends Controller
         //     }
         // }
         // return back()->withErrors(['username' => 'Invalid username or password.'])->withInput();
+
+        // od jwt logina ili od prvog auth
+        // ---------------------------------------
+        // $credentials = $request->only('username', 'password');
+        
+        // if (auth()->attempt($credentials)) {
+        //     // Authentication successful
+        //     return redirect()->intended('admin/dashboard');
+        // }
+        // // Authentication failed
+        // return back()->withErrors([
+        //     'username' => 'Invalid username or password.',
+        // ])->withInput();
+        

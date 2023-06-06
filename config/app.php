@@ -197,6 +197,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ],
 
     /*
@@ -214,6 +215,8 @@ return [
         'Cart' => Gloudemans\ShoppingCart\Facades\Cart::class,
         'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTAuthFactory' => Tymon\JWTAuth\Facades\JWTAuthFactory::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

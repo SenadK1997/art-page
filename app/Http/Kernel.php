@@ -5,6 +5,7 @@ namespace App\Http;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Support\Facades\App;
 use App\Http\Middleware\AdminsMiddleware;
+use App\Http\Middleware\Authenticate;
 
 class Kernel extends HttpKernel
 {
@@ -45,8 +46,8 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        // 'admins' => [
-        //     \App\Http\Middleware\AdminsMiddleware::class,
+        // 'auth' => [
+        //     \App\Http\Middleware\Authenticate::class,   
         // ],
     ];
 

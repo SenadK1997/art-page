@@ -15,7 +15,8 @@
         "paypal/rest-api-sdk-php": "^1.6",
         "spatie/image": "^2.2",
         "spatie/image-optimizer": "^1.6",
-        "srmklive/paypal": "^3.0"
+        "srmklive/paypal": "^3.0",
+        "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
