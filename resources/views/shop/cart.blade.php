@@ -1,6 +1,9 @@
-<!-- resources/views/shop/cart.blade.php -->
-
 @extends('layouts.carts')
+@section("title")
+
+Cart || Foco-art
+
+@endsection
 
 @section('content')
 <div class="container mx-auto py-8 p-4">

@@ -20,23 +20,21 @@ Route::get('/', function () {
     return view('home');
 });
 Route::get('/shop', [ProductController::class, 'shop']);
-
 Route::get('/about', function () {
     return view('about');
 });
 
 Route::get('/search', [ProductController::class, 'index']);
-
 Route::get('/product/{id}', [ProductController::class, 'show']);
 
 // LOGIN
-Route::get('/admin/login', [AdminController::class, 'showLoginForm'])
-    ->name('admin.login');
 
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])
-    ->name('admin.login.submit')->middleware('admins');;
+    ->name('admin.login.submit');
+    
 // DASHBOARD
-Route::middleware(['admins'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])
         ->name('admin.dashboard');
     // ALL PRODUCTS
@@ -57,19 +55,19 @@ Route::middleware(['admins'])->group(function () {
     ->name('admin.update.delete');
 
 
-// TAGS SECTION
+    // TAGS SECTION
+    // ALL TAGS
+    Route::get('admin/tag/tags', [AdminController::class, 'tags'])->name('admin.tag.tags');
+    // CREATE TAGS
+    Route::get('admin/tag/create', [AdminController::class, 'make'])->name('admin.tag.create');
+    Route::post('admin/tag/create', [AdminController::class, 'save'])->name('admin.tag.save');
+    // EDIT TAGS
+    Route::get('/admin/tag/edit{id}', [AdminController::class, 'remake'])->name('admin.tag.remake');
+    Route::put('/admin/tag/edit{id}', [AdminController::class, 'update_tags'])->name('admin.tag.update_tags');
+    // DELETE TAGS
+    Route::delete('/admin/tag/trash/{id}', [AdminController::class, 'trash'])
+        ->name('admin.tag.trash');
 
-// ALL TAGS
-Route::get('admin/tag/tags', [AdminController::class, 'tags'])->name('admin.tag.tags');
-// CREATE TAGS
-Route::get('admin/tag/create', [AdminController::class, 'make'])->name('admin.tag.create');
-Route::post('admin/tag/create', [AdminController::class, 'save'])->name('admin.tag.save');
-// EDIT TAGS
-Route::get('/admin/tag/edit{id}', [AdminController::class, 'remake'])->name('admin.tag.remake');
-Route::put('/admin/tag/edit{id}', [AdminController::class, 'update_tags'])->name('admin.tag.update_tags');
-// DELETE TAGS
-Route::delete('/admin/tag/trash/{id}', [AdminController::class, 'trash'])
-    ->name('admin.tag.trash');
 });
 
 // IMAGES SECTION

@@ -93,6 +93,5 @@ Homepage || Foco-art
                 }
             });
         });
-
     </script>
 @endpush

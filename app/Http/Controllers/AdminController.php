@@ -21,6 +21,7 @@ use function App\Providers\cmToPx;
 
 class AdminController extends Controller
 {
+
     public function index()
     {
         $products = Product::all();
@@ -179,12 +180,19 @@ class AdminController extends Controller
             'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
-        $credentials['password'] = bcrypt($credentials['password']);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->put('logged_in', 'konan');
+            return redirect()->intended('admin/dashboard');
+        }
+ 
+
+        // $credentials['password'] = bcrypt($credentials['password']);
         // dd($credentials['password']);
         // dd(Auth::guard('admins')->attempt($credentials));
-        if (Auth::guard('admins')->attempt($credentials)) {
-            return redirect()->intended(route('admin.dashboard'));
-        }
+        // if (Auth::guard('admins')->attempt($credentials)) {
+            // return redirect()->intended(route('admin.dashboard'));
+        // }
     
         return redirect()->route('admin.login')
             ->withErrors(['username' => 'Invalid username or password'])
@@ -250,12 +258,14 @@ class AdminController extends Controller
         ]);
         return redirect()->route('admin.tag.tags');
     }
+
     public function logout()
     {
         Auth::guard('admins')->logout();
 
         return redirect()->route('admin.login');
     }
+
     public function images()
     {
         $imgs = Images::all();

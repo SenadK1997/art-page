@@ -134,6 +134,10 @@ class ProductController extends Controller
 
         $amount = $request->price;
         $amount = str_replace(',', '', $amount);
+        $amount = round($amount / 1.95583, 2);
+        $amount = str_replace(',', '', $amount);
+        // $amount = str_replace(',', '', round($amount / 1.95, 2));
+        // dd($amount);
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
@@ -143,8 +147,8 @@ class ProductController extends Controller
             "purchase_units" => [
                 0 => [
                     "amount" => [
-                        "currency_code" => "USD",
-                        "value" => $amount,
+                        "currency_code" => "EUR",
+                        "value" => $amount
                     ]
                 ]
             ]

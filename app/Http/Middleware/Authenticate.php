@@ -2,16 +2,28 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Authenticate extends Middleware
 {
     /**
-     * Get the path the user should be redirected to when they are not authenticated.
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
      */
-    protected function redirectTo(Request $request): ?string
+    public function handle($request, Closure $next, ...$guards)
     {
-        return $request->expectsJson() ? null : route('login');
+        $isAuthenticatedAdmin = $request->session();
+        //This will be executed if the new authentication fails.
+        if ($isAuthenticatedAdmin->get('logged_in') !== 'konan') {
+            return redirect()->route('admin.login')->with('message', 'Authentication Error.');
+        }
+
+        return $next($request);
     }
 }

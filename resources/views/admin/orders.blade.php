@@ -7,6 +7,11 @@ Orders || Foco-art
 @endsection
 
 @section('content')
+@if ($orders->isEmpty())
+  <div class="relative left-[267px]">
+    <h1 class="text-3xl text-blue-700">Nema ordera</h1>
+  </div>
+@else
 <div class="flex relative left-[350px] top-[100px]">
     <!-- New Orders tab -->        
     <div id="newOrders" class="tabcontent" style="display: block;">
@@ -15,6 +20,7 @@ Orders || Foco-art
               <button class="tablink px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md" onclick="openTab('newOrders')">New Orders</button>
                 <button class="tablink px-4 py-2 text-sm font-medium text-gray-600 bg-gray-200 rounded-md" onclick="openTab('completedOrders')">Completed Orders</button>
             </div>
+            
             <table class="min-w-full bg-white border border-gray-300">
               <thead>
                 <tr>
@@ -30,41 +36,41 @@ Orders || Foco-art
                 </tr>
               </thead>
               <tbody>
-                @foreach ($orders as $order)
-                    @if ($order->status == 0)
-                        <tr>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap text-center">
-                                <a href="/completed/order/{{$order->id}}" target="_blank">
-                                    {{ $order->id }}
-                                </a>
-                            </td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->fullname }}</td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->address }}</td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->zipcode }}</td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->country }}</td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->email }}</td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} BAM</td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">
-                                @if ($order->status == 0)
-                                Nije poslano
-                                @else
-                                Poslano
-                                @endif
-                            </td>
-                            <td class="py-2 px-4 border-b">
-                                <button onclick="updateStatus({{$order->id}})" class="px-4 py-2 text-sm text-white bg-blue-500 rounded-md">
-                                    @if ($order->status == 0)
-                                        Poslano
-                                    @else
-                                        Vrati u neposlane
-                                    @endif
-                                </button>
-                                {{-- <button id="updateButton-{{$order->id}}" class="px-4 py-2 text-sm text-white bg-blue-500 rounded-md" onclick="updateStatus({{$order->id}})">Poslano</button> --}}
-                                {{-- onclick="transferRow(event, 'completedOrders', this)" --}}
-                            </td>
-                        </tr>
-                    @endif
-                @endforeach
+                  @foreach ($orders as $order)
+                      @if ($order->status == 0)
+                          <tr>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap text-center">
+                                  <a href="/completed/order/{{$order->id}}" target="_blank">
+                                      {{ $order->id }}
+                                  </a>
+                              </td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->fullname }}</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->address }}</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->zipcode }}</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->country }}</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->email }}</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} BAM</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">
+                                  @if ($order->status == 0)
+                                  Nije poslano
+                                  @else
+                                  Poslano
+                                  @endif
+                              </td>
+                              <td class="py-2 px-4 border-b">
+                                  <button onclick="updateStatus({{$order->id}})" class="px-4 py-2 text-sm text-white bg-blue-500 rounded-md">
+                                      @if ($order->status == 0)
+                                          Poslano
+                                      @else
+                                          Vrati u neposlane
+                                      @endif
+                                  </button>
+                                  {{-- <button id="updateButton-{{$order->id}}" class="px-4 py-2 text-sm text-white bg-blue-500 rounded-md" onclick="updateStatus({{$order->id}})">Poslano</button> --}}
+                                  {{-- onclick="transferRow(event, 'completedOrders', this)" --}}
+                              </td>
+                          </tr>
+                      @endif
+                  @endforeach
             </tbody>
         </table>
     </div>
@@ -135,6 +141,7 @@ Orders || Foco-art
                         </tr>
                     @endif
                 @endforeach
+                @endif
               </tbody>
             </table>
         </div>

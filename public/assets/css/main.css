@@ -9,6 +9,15 @@ p {
 a {
     font-family: 'Futura Pt', sans-serif;
 }
+h2 {
+  font-family: 'Futura Pt', sans-serif;
+}
+h3 {
+  font-family: 'Futura Pt', sans-serif;
+}
+button {
+  font-family: 'Futura Pt', sans-serif;
+}
 .content__height {
     min-height: calc(100vh - 85px);
 }
