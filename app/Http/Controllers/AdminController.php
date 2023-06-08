@@ -184,34 +184,17 @@ class AdminController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->put('logged_in', 'konan');
             return redirect()->intended('admin/dashboard');
-        }
- 
-
-        // $credentials['password'] = bcrypt($credentials['password']);
-        // dd($credentials['password']);
-        // dd(Auth::guard('admins')->attempt($credentials));
-        // if (Auth::guard('admins')->attempt($credentials)) {
-            // return redirect()->intended(route('admin.dashboard'));
-        // }
-    
+        }    
         return redirect()->route('admin.login')
             ->withErrors(['username' => 'Invalid username or password'])
             ->withInput($request->except('password'));
+    }
+    public function logout(Request $request)
+    {
+        // $request->session()->forget('logged_in');
 
-        //     $credentials = $request->validate([
-        //         'username' => ['required', 'string'],
-        //         'password' => ['required', 'string'],
-        //     ]);
-        // $user = Admins::where('username', $credentials['username'])->first();
-        // if (!$user || !$credentials['password'] === $user->password) {
-        //     return redirect('/admin/login')->withErrors(['username' => 'Invalid username or password']);
-        // }
-
-        // if ($user && $credentials['password'] === $user->password) {
-        //     Auth::guard('admins')->login($user);
-        //     // dd(Auth::guard('admins')->user());
-        //     return redirect()->route('admin.dashboard');
-        // }        
+        // Or, if you want to completely remove all session data
+        $request->session()->flush();
     }
 
     // FOR TAGS IN WEB.PHP
@@ -257,13 +240,6 @@ class AdminController extends Controller
             'reload' => true
         ]);
         return redirect()->route('admin.tag.tags');
-    }
-
-    public function logout()
-    {
-        Auth::guard('admins')->logout();
-
-        return redirect()->route('admin.login');
     }
 
     public function images()

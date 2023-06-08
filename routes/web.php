@@ -67,22 +67,22 @@ Route::middleware(['auth'])->group(function () {
     // DELETE TAGS
     Route::delete('/admin/tag/trash/{id}', [AdminController::class, 'trash'])
         ->name('admin.tag.trash');
+    // IMAGES SECTION
+    Route::get('admin/image/images', [AdminController::class, 'images'])->name('admin.image.images');
+    // CREATE IMAGES
+    Route::get('admin/image/create', [AdminController::class, 'createImage'])->name('admin.image.create');
+    Route::post('admin/image/create', [AdminController::class, 'saveImage'])->name('admin.image.save');
+    // EDIT IMAGES
+    Route::get('admin/image/edit{id}', [AdminController::class, 'editImage'])->name('admin.image.edit');
+    Route::put('admin/image/edit{id}', [AdminController::class, 'remakeImage'])->name('admin.image.edit_images');
+    // DELETE IMAGES
+    Route::delete('/admin/image/delete/{id}', [AdminController::class, 'deleteImages'])->name('admin.image.delete');
 
+    // ORDERS SECTION FOR ADMIN
+    Route::get('admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
 });
 
-// IMAGES SECTION
-Route::get('admin/image/images', [AdminController::class, 'images'])->name('admin.image.images');
-// CREATE IMAGES
-Route::get('admin/image/create', [AdminController::class, 'createImage'])->name('admin.image.create');
-Route::post('admin/image/create', [AdminController::class, 'saveImage'])->name('admin.image.save');
-// EDIT IMAGES
-Route::get('admin/image/edit{id}', [AdminController::class, 'editImage'])->name('admin.image.edit');
-Route::put('admin/image/edit{id}', [AdminController::class, 'remakeImage'])->name('admin.image.edit_images');
-// DELETE IMAGES
-Route::delete('/admin/image/delete/{id}', [AdminController::class, 'deleteImages'])->name('admin.image.delete');
 
-// ORDERS SECTION FOR ADMIN
-Route::get('admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
 
 // CART SECTION
 Route::get('shop/cart', [ProductController::class, 'cart'])->name('shop.cart');

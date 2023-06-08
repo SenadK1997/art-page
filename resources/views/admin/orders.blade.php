@@ -49,7 +49,7 @@ Orders || Foco-art
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->zipcode }}</td>
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->country }}</td>
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->email }}</td>
-                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} BAM</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} EUR</td>
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">
                                   @if ($order->status == 0)
                                   Nije poslano
@@ -125,7 +125,7 @@ Orders || Foco-art
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->zipcode }}</td>
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->country }}</td>
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->email }}</td>
-                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} BAM</td>
+                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} EUR</td>
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">
                                 @if ($order->status == 0)
                                 Nije poslano

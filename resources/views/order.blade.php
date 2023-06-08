@@ -100,7 +100,7 @@ Orders || Foco-art
                     <div class="my-2">
                         <p class="font-semibold text-base mb-2">Ukupna cijena:</p>
                         <div class="text-base text-gray-400 font-semibold">
-                            <p>{{ $orders->totalPrice }} BAM</p>
+                            <p title="Cijena je u EUR zbog Paypal transakcije">~{{ $orders->totalPrice }} €</p>
                         </div>
                     </div>
                 </div>

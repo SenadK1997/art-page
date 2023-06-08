@@ -175,6 +175,7 @@ class ProductController extends Controller
         $provider->getAccessToken();
         
         $response = $provider->capturePaymentOrder($request['token']);
+        // dd();
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             // Definisanje informacija o produktu
             $allCartItems = Cart::content();
@@ -186,7 +187,6 @@ class ProductController extends Controller
             $payerEmail = $response['payer']['email_address'];
             $payerZipcode = $response['purchase_units'][0]['shipping']['address']['postal_code'];
             $totalPrice = $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
-            
             $newOrder = new Order();
             $newOrder->fullname = $payerFullName;
             $newOrder->address = $payerAdress;
@@ -214,9 +214,6 @@ class ProductController extends Controller
             $orderId = $newOrder->id;
             
             $newOrder->products()->attach($orders);
-            // return redirect()
-            // ->route('shop.cart')
-            // ->with('success', 'Transaction completed');
             Cart::destroy();
             return redirect()->route('completed.order', ['id' => $orderId])->with('success', 'Hvala na ukazanom povjerenju');
         } else {
@@ -229,6 +226,8 @@ class ProductController extends Controller
     {
 
         $orders = Order::findOrFail($id);
+        // dd($orders->totalPrice);
+        $orders->totalPrice = $orders->totalPrice;
         return view('order', compact('orders'));
     }
 
