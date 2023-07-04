@@ -100,7 +100,7 @@ Orders || Foco-art
                     <div class="my-2">
                         <p class="font-semibold text-base mb-2">Ukupna cijena:</p>
                         <div class="text-base text-gray-400 font-semibold">
-                            <p title="Cijena je u EUR zbog Paypal transakcije">~{{ $orders->totalPrice }} €</p>
+                            <p title="Cijena je u EUR zbog Paypal transakcije">≈ {{ $orders->totalPrice }} €</p>
                         </div>
                     </div>
                 </div>
@@ -109,50 +109,3 @@ Orders || Foco-art
     </div>
 </div>
 @endsection
-
-{{-- <div class="flex items-center justify-center h-[500px]">
-    <div class="max-w-4xl w-full bg-white shadow overflow-hidden sm:rounded-lg">
-        <table class="max-w-screen-xl divide-y divide-gray-200">
-            <thead>
-              <tr>
-                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Naziv artikla
-                </th>
-                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Sirina
-                </th>
-                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Duzina
-                </th>
-                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cijena
-                </th>
-                <th scope="col" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kolicina
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach ($orders->products as $order)
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $order->title }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $order->pivot->width}}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $order->pivot->height }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $order->pivot->price }} BAM
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $order->pivot->qty }}
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-  </div> --}}

@@ -126,6 +126,10 @@ class ProductController extends Controller
 
         return redirect()->route('shop.cart');
     }
+    public function createOrder(Request $request)
+    {
+
+    }
     public function requestPayment(Request $request)
     {
         $provider = new PayPalClient;
@@ -217,6 +221,7 @@ class ProductController extends Controller
             Cart::destroy();
             return redirect()->route('completed.order', ['id' => $orderId])->with('success', 'Hvala na ukazanom povjerenju');
         } else {
+            // dd($response);
             return redirect()
             ->route('shop.cart')
             ->with('error', 'Something went wrongs');

@@ -12,7 +12,6 @@
 <body>
     @yield('content')
 </body>
-@stack('script');
+@stack('script')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>
-<script src="https://www.paypal.com/sdk/js?client-id={{env('PAYPAL_LIVE_CLIENT_ID')}}"></script>
 </html>

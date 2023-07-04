@@ -13,6 +13,9 @@ Shop || Foco-art
         <form class="flex w-full max-w-screen-xl pt-[10px]" type="get" action="{{ url('/shop') }}">
             <div class="flex w-full max-w-screen-xl justify-between items-center gap-x-5 max-md:flex-col max-md:gap-y-3">
                 <input type="search" class="mr-sm-2 p-2 border-gray-200 border-b-[2px] w-full outline-none" placeholder="Search" name="query">
+                <a href="/shop" class="text-red-400 flex text-[16px] items-center ml-2 font-medium text-gray-900 rounded dark:text-gray-300 mt-2">
+                    X
+                </a>  
                 <div class="hidden max-md:flex">
                     <button type="submit" class="hidden max-md:block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Trazi</button>
                 </div>
@@ -43,7 +46,7 @@ Shop || Foco-art
                             <a href="/shop" class="flex text-[16px] items-center gap-x-2 w-full ml-2 font-medium text-gray-900 rounded dark:text-gray-300 mt-2">
                                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="#B39DDB" d="M30.6,44H17.4c-2,0-3.7-1.4-4-3.4L9,11h30l-4.5,29.6C34.2,42.6,32.5,44,30.6,44z"></path><path fill="#7E57C2" d="M38,13H10c-1.1,0-2-0.9-2-2v0c0-1.1,0.9-2,2-2h28c1.1,0,2,0.9,2,2v0C40,12.1,39.1,13,38,13z"></path></svg>
                                 Ocisti filtere
-                            </a>     
+                            </a>   
                         </form>
                     </ul>
                 </div>
