@@ -12,10 +12,12 @@ Shop || Foco-art
     <div class="flex max-w-screen-xl mx-auto items-center w-full m-10 justify-between max-md:flex-col max-md:gap-y-4">
         <form class="flex w-full max-w-screen-xl pt-[10px]" type="get" action="{{ url('/shop') }}">
             <div class="flex w-full max-w-screen-xl justify-between items-center gap-x-5 max-md:flex-col max-md:gap-y-3">
-                <input type="search" class="mr-sm-2 p-2 border-gray-200 border-b-[2px] w-full outline-none" placeholder="Search" name="query">
-                <a href="/shop" class="text-red-400 flex text-[16px] items-center ml-2 font-medium text-gray-900 rounded dark:text-gray-300 mt-2">
-                    X
-                </a>  
+                <div class="flex w-full">
+                    <input type="search" class="mr-sm-2 p-2 border-gray-200 border-b-[2px] w-full outline-none" placeholder="Search" name="query">
+                    <a href="/shop" class="text-red-400 flex text-[16px] items-center ml-2 font-medium text-gray-900 rounded dark:text-gray-300 mt-2">
+                        X
+                    </a>  
+                </div>
                 <div class="hidden max-md:flex">
                     <button type="submit" class="hidden max-md:block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Trazi</button>
                 </div>

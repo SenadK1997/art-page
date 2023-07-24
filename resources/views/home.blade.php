@@ -11,12 +11,12 @@ Homepage || Foco-art
 <section class="flex flex-col max-w-screen-xl mx-auto items-center mt-[120px] max-md:mt-18 mb-[64px] max-md:mb-[0px] max-md:w-full">
     <div class="flex max-w-screen-xl mx-auto justify-between w-full gap-x-3 p-2 max-md:flex-col max-md:items-center max-md:w-full max-md:p-[40px]">
         <div class="flex flex-col w-full h-[450px] p-5 bg-[url('https://i.ibb.co/7ktbnPC/focoslika1.jpg')] bg-cover max-md:bg-contain max-md:bg-no-repeat max-md:min-h-full hover:animate-pulse max-md:mb-[-100px]">
-            <p class="text-white text-xl">Umjetnicko djelo</p>
-            <p class="text-white">Kupi sada</p>
+            <p class="text-white text-xl">Katedrala Srca Isusova</p>
+            <a href="/shop" class="text-white">Kupi sada</a>
         </div>
         <div class="flex flex-col w-full h-[450px] p-5 bg-[url('https://i.ibb.co/TRLVbgb/focoslika2.jpg')] bg-cover max-md:bg-contain max-md:bg-no-repeat max-md:min-h-full hover:animate-pulse max-md:mb-[-150px]">
-            <p class="text-white text-xl">Umjetnicko djelo broj 2</p>
-            <p class="text-white">Saznaj vise</p>
+            <p class="text-white text-xl">Sebilj</p>
+            <a href="/shop" class="text-white">Kupi sada</a>
         </div>
     </div>
     <div class="flex max-w-screen-xl mx-auto items-center mt-[60px] max-md:mt-0 max-md:p-5">
