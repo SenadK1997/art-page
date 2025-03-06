@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="left-[262px] relative overflow-x-auto sm:rounded-lg p-7 w-full flex flex-col table__width">
+    <div class="md:left-[262px] relative overflow-x-auto sm:rounded-lg md:max-w-screen-lg md:min-w-max p-7 min-w-full flex flex-col table__width">
         <div class="px-4 py-6 sm:px-0">
             <h1 class="text-3xl font-bold mb-4">Create a New Image</h1>
 

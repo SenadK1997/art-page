@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<div class="left-[262px] relative overflow-x-auto sm:rounded-lg p-7 w-full flex flex-col table__width h-[100vh] justify-center">
+<div class="md:left-[262px] relative overflow-x-auto sm:rounded-lg p-7 min-w-full md:max-w-screen-lg md:min-w-max flex flex-col table__width h-[100vh] justify-center">
     <form method="POST" action="{{ route('admin.image.edit_images', $img->id) }}" class="max-w-lg mx-auto">
         @csrf
         @method('PUT')

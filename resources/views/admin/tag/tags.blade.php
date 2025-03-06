@@ -5,10 +5,10 @@
 @endsection
 @section('content')
     
-<div class="left-[262px] relative overflow-x-auto sm:rounded-lg p-7 w-full flex flex-col table__width">
+<div class="md:left-[262px] relative overflow-x-auto sm:rounded-lg p-7 min-w-full md:max-w-screen-lg md:min-w-max flex flex-col table__width">
     <div class="flex justify-center">
         <div class="relative flex justify-between w-full p-1 pb-5">
-            <h1 class="text-2xl font-medium text-stone-700 dark:text-white">LISTA TAGOVA<h1>
+            <h1 class="text-2xl font-medium text-stone-50 dark:text-black">LISTA TAGOVA<h1>
             <a href="{{ route('admin.tag.create') }}" class="flex items-center gap-x-2 font-medium text-green-600 dark:text-blue-500 hover:underline pr-5" type="button">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" version="1" viewBox="0 0 48 48" enable-background="new 0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle fill="#4CAF50" cx="24" cy="24" r="21"></circle><g fill="#fff"><rect x="21" y="14" width="6" height="20"></rect><rect x="14" y="21" width="20" height="6"></rect></g></svg>
                 Dodaj

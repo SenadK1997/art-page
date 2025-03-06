@@ -5,11 +5,11 @@
 @endsection
 
 @section('content')
-<div class="relative overflow-x-auto sm:rounded-lg p-7 w-full flex flex-col table__width h-[100vh]">
+<div class="relative overflow-x-auto sm:rounded-lg p-7 min-w-full md:flex md:flex-col table__width h-[100vh]">
   <form method="POST" action="{{ route('admin.product.update', $product->id) }}" class="max-w-xl w-full mx-auto" enctype="multipart/form-data" id="product-update">
       @csrf
       @method('PUT')
-    <div class="flex gap-x-16 max-w-screen-xl">
+    <div class="flex flex-col mb-12 md:mb-0 md:flex md:flex-row md:gap-x-16 md:max-w-screen-lg">
       <div class="flex flex-col gap-y-3 max-w-[300px]">
           @if (session('success'))
               <div class="alert alert-success">
@@ -141,7 +141,7 @@
     </div>
   </form>
   {{-- Postojece Dimenzije za editovanje i brisanje --}}
-  <div class="flex flex-col relative left-[267px] ">
+  <div class="flex flex-col relative md:left-[267px] ">
     <h1 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-x-2">
       Postojeće dimenzije
       <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><g><path fill="none" d="M0 0h24v24H0z"></path><path d="M19 22H5a3 3 0 0 1-3-3V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v12h4v4a3 3 0 0 1-3 3zm-1-5v2a1 1 0 0 0 2 0v-2h-2zm-2 3V4H4v15a1 1 0 0 0 1 1h11zM6 7h8v2H6V7zm0 4h8v2H6v-2zm0 4h5v2H6v-2z"></path></g></svg>
