@@ -20,7 +20,7 @@ Homepage || Foco-art
         </div>
     </div>
     <div class="flex max-w-screen-xl mx-auto items-center mt-[60px] max-md:mt-0 max-md:p-5">
-        <p class="text-center p-7 text-lg">Dobrodošli u moju online umjetničku galeriju! Kao iskusan slikar, uzbuđen sam što mogu s vama podijeliti svoju jedinstvenu perspektivu i kreativnost. Moja strast prema umjetnosti dovela me je do istraživanja raznih stilova i tehnika, od apstraktnog ekspresionizma do realizma, i svega između. Svaka moja slika je rad ljubavi, pedantno izrađen da izazove emocije i uhvati ljepotu svijeta oko nas. Bilo da tražite originalni komad za svoj dom ili ured, ili jednostavno želite da se divite ljepoti umjetnosti, nadam se da ćete ovdje pronaći nešto što će vas inspirirati. Hvala na posjeti!</p>
+        <p class="text-center p-7 text-lg">Dobrodošli u mojuu online umjetničku galeriju! Kao iskusan slikar, uzbuđen sam što mogu s vama podijeliti svoju jedinstvenu perspektivu i kreativnost. Moja strast prema umjetnosti dovela me je do istraživanja raznih stilova i tehnika, od apstraktnog ekspresionizma do realizma, i svega između. Svaka moja slika je rad ljubavi, pedantno izrađen da izazove emocije i uhvati ljepotu svijeta oko nas. Bilo da tražite originalni komad za svoj dom ili ured, ili jednostavno želite da se divite ljepoti umjetnosti, nadam se da ćete ovdje pronaći nešto što će vas inspirirati. Hvala na posjeti!</p>
     </div>
     <div class="flex mb-10 items-center gap-x-3">
         <a href="/shop" class="ease-in duration-300 min-w-[120px] py-2 text-center border-solid border-2 border-stone-900 text-white bg-stone-900 hover:text-stone-900 hover:bg-white">Naruci sliku</a>
