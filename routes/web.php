@@ -32,6 +32,9 @@ Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])
     ->name('admin.login.submit');
+
+Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
     
 // DASHBOARD
 Route::middleware(['auth'])->group(function () {

@@ -191,10 +191,14 @@ class AdminController extends Controller
     }
     public function logout(Request $request)
     {
-        // $request->session()->forget('logged_in');
-
-        // Or, if you want to completely remove all session data
+        // Clear the user's session data
         $request->session()->flush();
+
+        // Optionally, you can also logout the user using Laravel's Auth facade
+        Auth::logout();
+
+        // Redirect the user to the login page or any other desired page
+        return redirect()->route('admin.login');
     }
 
     // FOR TAGS IN WEB.PHP
