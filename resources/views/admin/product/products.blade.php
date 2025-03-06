@@ -18,7 +18,7 @@
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mx-auto relative border">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 justify-between w-full max-w-screen-xl">
             <tr>
-                <th scope="col" class="px-6 py-3">Naslov</th>
+                <th scope="col" class="max-w-20 md:max-w-32 px-6 py-3">Naslov</th>
                 <th scope="col" class="hidden md:table-cell px-6 py-3">Opis</th>
                 <th scope="col" class="hidden md:table-cell px-6 py-3">Kolicina</th>
                 <th scope="col" class="max-w-20 px-6 py-3 text-center">Slika</th>
@@ -36,7 +36,7 @@
             @endif
             @foreach ($products as $product)
             <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->title }}</td>
+                <td title="{{ $product->title }}" scope="row" class="max-w-20 md:max-w-32 px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->title }}</td>
                 <td class="hidden md:table-cell px-6 py-4 overflow-hidden" title="{{$product->description}}">{{ $product->description }}</td>
                 <td class="hidden md:table-cell px-6 py-4">{{ $product->amount }}</td>
                 <td class="max-w-20 px-6 py-4 columns-3xs overflow-scroll">
