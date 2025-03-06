@@ -36,7 +36,7 @@
             @endif
             @foreach ($products as $product)
             <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-                <td title="{{ $product->title }}" scope="row" class="max-w-20 md:max-w-32 px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->title }}</td>
+                <td title="{{ $product->title }}" scope="row" class="max-w-20 md:max-w-32 px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white overflow-clip">{{ $product->title }}</td>
                 <td class="hidden md:table-cell px-6 py-4 overflow-hidden" title="{{$product->description}}">{{ $product->description }}</td>
                 <td class="hidden md:table-cell px-6 py-4">{{ $product->amount }}</td>
                 <td class="max-w-20 px-6 py-4 columns-3xs overflow-scroll">
