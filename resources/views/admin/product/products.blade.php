@@ -5,7 +5,7 @@
 @endsection
 @section('content')
     
-<div class="left-[267px] relative overflow-x-auto sm:rounded-lg p-7 min-w-full md:max-w-screen-lg md:min-w-max flex flex-col table__width sm:max-w-md">
+<div class="md:left-[267px] relative overflow-x-auto sm:rounded-lg p-7 min-w-full md:max-w-screen-lg md:min-w-max flex flex-col table__width sm:max-w-md">
     <div class="flex justify-center">
         <div class="relative flex flex-col items-center justify-center w-full p-1 pb-5">
             <h1 class="flex justify-center text-2xl font-medium text-stone-100 dark:text-black">LISTA SLIKA<h1>
