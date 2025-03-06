@@ -58,7 +58,7 @@ Shop || Foco-art
     <div class="flex flex-row flex-wrap justify-center w-full p-4 mx-auto max-w-screen-xl items-center max-md:justify-center gap-x-[100px] gap-y-6">
         @foreach ($items as $item)
         <div class="flex flex-col">
-            <a href="/product/{{$item->id}}" class="flex flex-col ">
+            <a href="/product/{{$item->id}}" class="flex flex-col items-center">
                 <div class="relative flex flex-col bg-white h-80 w-52">
                     {{-- <div class="flex justify-center mx-auto items-center h-full"> --}}
                         <div class="border-[10px] rounded-[2px] relative okvir__slike-shop border-y-[#C0C0C0] border-x-[#D3D3D3] h-full">
