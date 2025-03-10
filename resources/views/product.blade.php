@@ -9,7 +9,7 @@ Product || Foco-art
 @section('content')
 <section class="flex mx-auto max-w-screen-xl mt-12 w-full gap-x-9 max-md:flex-col max-md:gap-y-2 max-md:justify-center max-md:pt-[20px] max-md:overflow-y-scroll max-md:items-center overflow-y-scroll">
     <div class="flex flex-col justify-center max-w-screen-xl items-center w-1/2 gap-y-3 mt-12 max-md:w-full max-md:p-5 max-md:mt-[15px]">
-        <div class="border-[10px] rounded-[2px] relative border-y-[#000000] border-x-[#333333]" id="okvir">
+        <div class="border-[10px] rounded-[2px] relative border-y-[#000000] border-x-[#333333] okvir__slike" id="okvir">
             <div class="flex items-center relative">
                 <img src="{{ asset('storage/images/' . $product->url) }}" alt="" 
                     class="object-cover max-h-[500px]">
