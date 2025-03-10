@@ -12,12 +12,7 @@ Product || Foco-art
         <div class="border-[10px] rounded-[2px] okvir__slike relative border-y-[#000000] border-x-[#333333]" id="okvir">
             <div class="flex items-center relative">
                 <img src="{{ asset('storage/images/' . $product->url) }}" alt="" 
-                    class="object-cover max-h-[500px] 
-                    @if($product->tags->contains('name', 'Apstrakcija')) 
-                        {{ '' }} 
-                    @else 
-                        border-solid border-[5px] border-gray-100 
-                @endif">
+                    class="object-cover max-h-[500px]">
                 @if ($product->tags->contains('name', 'Orginal'))
                 <div class="absolute right-2 top-2">
                     <span class="bg-yellow-500 rounded text-white px-2 py-1 text-s">Orginal</span>
