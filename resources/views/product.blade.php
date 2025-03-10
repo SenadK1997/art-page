@@ -32,7 +32,7 @@ Product || Foco-art
             <h1 class="text-[26px]">{{ $product->title }}</h1>
             <p class="text-justify">{{ $product->description }}</p>
         </div>
-        <div class="w-full flex gap-x-4">
+        <div class="w-full justify-center md:justify-start flex gap-x-4">
             <div>
                 <label for="color-selector" class="block font-medium mb-2 whitespace-nowrap">Izaberi okvir</label>
                 <div class="relative">
