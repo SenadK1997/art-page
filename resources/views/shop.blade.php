@@ -68,11 +68,10 @@ Shop || Foco-art
                     {{-- </div> --}}
                 </div>
             </a>
-            <div class="text-center flex flex-col justify-center">
-                <p>{{ $item->title }}</p>
+            <div class="text-center flex flex-col items-center justify-center">
+                <p class="max-w-[150px] truncate text-center" title="{{ $item->title }}">{{ $item->title }}</p>
                 <p class="text-[13px] text-gray-400">Cijena: {{ $item->images->min('price') ?? 'N/A' }} KM</p>
-                {{-- <p>{{ $tags }}</p> --}}
-            </div>
+            </div>            
         </div>
         @endforeach
     </div>

@@ -238,11 +238,11 @@ class AdminController extends Controller
     {
         $tag = Tags::findOrFail($id);
         $tag->delete();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Uspjesno obrisan tag',
-            'reload' => true
-        ]);
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Uspjesno obrisan tag',
+        //     'reload' => true
+        // ]);
         return redirect()->route('admin.tag.tags');
     }
 

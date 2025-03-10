@@ -128,122 +128,60 @@ class ProductController extends Controller
     }
     public function createOrder(Request $request)
     {
+        $allCartItems = Cart::content();
 
-    }
-    public function requestPayment(Request $request)
-    {
-        $provider = new PayPalClient;
-        $provider->setApiCredentials(config('paypal'));
-        $paypalToken = $provider->getAccessToken();
-
-        $amount = $request->price;
-        $amount = str_replace(',', '', $amount);
-        $amount = round($amount / 1.95583, 2);
-        $amount = str_replace(',', '', $amount);
-        // $amount = str_replace(',', '', round($amount / 1.95, 2));
-        // dd($amount);
-        $response = $provider->createOrder([
-            "intent" => "CAPTURE",
-            "application_context" => [
-                "return_url" => route('payment.success'),
-                "cancel_url" => route('payment.cancel'),
-            ],
-            "purchase_units" => [
-                0 => [
-                    "amount" => [
-                        "currency_code" => "EUR",
-                        "value" => $amount
-                    ]
-                ]
-            ]
-        ]);
-        if (isset($response['id'])) {
-            foreach ($response['links'] as $links) {
-                if ($links['rel'] == 'approve') {
-                    return redirect()->away($links['href']);
-                }
-            }
-            return redirect()
-            ->route('shop.cart')
-            ->with('error', 'Something went wrong');
-        } else {
-            return redirect()
-            ->route('shop.cart')
-            ->with('error', $response['message'] ?? 'Something went wrong');
+        if ($allCartItems->isEmpty()) {
+            return redirect()->route('shop.cart')->with('error', 'Your cart is empty.');
         }
-    }
-    public function paymentSuccess(Request $request)
-    {
-        $provider = new PayPalClient;
-        $provider->setApiCredentials(config('paypal'));
-        $provider->getAccessToken();
-        
-        $response = $provider->capturePaymentOrder($request['token']);
-        // dd();
-        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-            // Definisanje informacija o produktu
-            $allCartItems = Cart::content();
-            $productIds = collect($allCartItems)->pluck('id')->toArray();
-            // Definisanje informacija o klijentu
-            $payerFullName = $response['payer']['name']['given_name'] . ' ' . $response['payer']['name']['surname'];
-            $payerAdress = $response['purchase_units'][0]['shipping']['address']['address_line_1'];
-            $payerCountry = $response['purchase_units'][0]['shipping']['address']['country_code'];
-            $payerEmail = $response['payer']['email_address'];
-            $payerZipcode = $response['purchase_units'][0]['shipping']['address']['postal_code'];
-            $totalPrice = $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
-            $newOrder = new Order();
-            $newOrder->fullname = $payerFullName;
-            $newOrder->address = $payerAdress;
-            $newOrder->country = $payerCountry;
-            $newOrder->email = $payerEmail;
-            $newOrder->zipcode = $payerZipcode;
-            $newOrder->totalPrice = $totalPrice;
-            $newOrder->save();
-            $cartProducts = Cart::content();
-            // Attach the products to the order and specify the pivot data
-            $orders = [];
 
-            foreach ($cartProducts as $product) {
-                $orders[] = [
-                    'product_id' => $product->id,
-                    'itemId' => $product->id,
-                    'itemName' => $product->name,
-                    'width' => $product->options->width,
-                    'height' => $product->options->height,
-                    'price' => $product->price,
-                    'qty' => $product->qty,
-                    'frame' => $product->options->frame,
-                ];
-            }
-            $orderId = $newOrder->id;
-            
-            $newOrder->products()->attach($orders);
-            Cart::destroy();
-            return redirect()->route('completed.order', ['id' => $orderId])->with('success', 'Hvala na ukazanom povjerenju');
-        } else {
-            // dd($response);
-            return redirect()
-            ->route('shop.cart')
-            ->with('error', 'Something went wrongs');
+        $fullName = $request->input('full_name');
+        $address = $request->input('address');
+        $country = $request->input('country');
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+        $req = $request->input('request') ;
+        $zipcode = $request->input('zipcode');
+        $totalPrice = str_replace(',', '', Cart::subTotal());
+
+        $newOrder = new Order();
+        $newOrder->fullname = $fullName;
+        $newOrder->address = $address;
+        $newOrder->country = $country;
+        $newOrder->email = $email;
+        $newOrder->phone = $phone;
+        $newOrder->request = $req;
+        $newOrder->zipcode = $zipcode;
+        $newOrder->totalPrice = $totalPrice;
+        $newOrder->save();
+
+        $orders = [];
+
+        foreach ($allCartItems as $product) {
+            $orders[] = [
+                'product_id' => $product->id,
+                'itemId' => $product->id,
+                'itemName' => $product->name,
+                'width' => $product->options->width,
+                'height' => $product->options->height,
+                'price' => $product->price,
+                'qty' => $product->qty,
+                'frame' => $product->options->frame,
+            ];
         }
+
+        $newOrder->products()->attach($orders);
+        Cart::destroy();
+        $orderId = $newOrder->id;
+
+        return redirect()->route('completed.order', ['id' => $orderId])->with('success', 'Hvala na ukazanom povjerenju');
     }
+
     public function completedOrder($id)
     {
 
         $orders = Order::findOrFail($id);
         // dd($orders->totalPrice);
-        $orders->totalPrice = $orders->totalPrice;
+        // $order->totalPrice = $order->totalPrice;
         return view('order', compact('orders'));
     }
-
-    public function paymentCancel()
-    {
-        return redirect()
-        ->route('shop.cart')
-        ->with('error', $response['message'] ?? 'You have canceled the transaction');
-    }
-    // public function checkout()
-    // {
-
-    // }
 }

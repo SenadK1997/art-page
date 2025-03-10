@@ -9,14 +9,32 @@ Homepage || Foco-art
 @section('content')
 
 <section class="flex flex-col max-w-screen-xl mx-auto items-center mt-[120px] max-md:mt-18 mb-[64px] max-md:mb-[0px] max-md:w-full">
-    <div class="flex max-w-screen-xl mx-auto justify-between w-full gap-x-3 p-2 max-md:flex-col max-md:items-center max-md:w-full max-md:p-[40px]">
-        <div class="flex flex-col w-full h-[450px] p-5 bg-[url('https://i.ibb.co/7ktbnPC/focoslika1.jpg')] bg-cover max-md:bg-contain max-md:bg-no-repeat max-md:min-h-full hover:animate-pulse max-md:mb-[-100px]">
+    <div class="flex max-w-screen-xl mx-auto justify-between w-full gap-x-3 gap-y-4 md:gap-y-0 p-2 max-md:flex-col max-md:items-center max-md:w-full max-md:p-[40px]">
+        {{-- <div class="flex flex-col w-full h-[450px] p-5 bg-[url('https://i.ibb.co/7ktbnPC/focoslika1.jpg')] bg-cover max-md:bg-contain max-md:bg-no-repeat max-md:min-h-full hover:animate-pulse max-md:mb-[-100px]">
             <p class="text-white text-xl">Sarajevska Katedrala</p>
             <a href="/shop" class="text-white">Kupi sada</a>
         </div>
         <div class="flex flex-col w-full h-[450px] p-5 bg-[url('https://i.ibb.co/TRLVbgb/focoslika2.jpg')] bg-cover max-md:bg-contain max-md:bg-no-repeat max-md:min-h-full hover:animate-pulse max-md:mb-[-150px]">
             <p class="text-white text-xl">Sebilj</p>
             <a href="/shop" class="text-white">Kupi sada</a>
+        </div> --}}
+        <div class="relative bg-black bg-opacity-10 transition-opacity duration-300 ease-in-out hover:animate-pulse hover:bg-opacity-40">
+            <img src="https://i.ibb.co/7NGpPHpY/focoslikaa1.jpg" alt="Card Image" class="w-full h-auto rounded-lg">
+        
+            <a href="/shop" class="absolute top-2 right-2 rounded-md">
+                <span class="text-stone-100 text-lg font-semibold px-4 py-2 rounded-md bg-yellow-400 hover:bg-yellow-500 transition-colors duration-200">
+                    Kupi sada
+                </span>
+            </a>
+        </div>
+        <div class="relative bg-black bg-opacity-10 transition-opacity duration-300 ease-in-out hover:animate-pulse hover:bg-opacity-40">
+            <img src="https://i.ibb.co/YB0RNmVH/1741296084809046.jpg" alt="Card Image" class="w-full h-auto rounded-lg">
+        
+            <a href="/shop" class="absolute top-2 right-2 rounded-md">
+                <span class="text-stone-100 text-lg font-semibold px-4 py-2 rounded-md bg-yellow-400 hover:bg-yellow-500 transition-colors duration-200">
+                    Kupi sada
+                </span>
+            </a>
         </div>
     </div>
     <div class="flex max-w-screen-xl mx-auto items-center mt-[60px] max-md:mt-0 max-md:p-5">

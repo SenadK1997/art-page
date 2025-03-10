@@ -11,7 +11,7 @@ Orders || Foco-art
     <div class="flex flex-col max-w-[540px] gap-y-5 w-full mx-auto">
         @if (Session::has('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-3 mt-3" role="alert">
-                <strong class="font-bold">Uspjesno obavljena transakcija! </strong>
+                <strong class="font-bold">Uspješno je izvršena narudžba! Narudžbu možete pratiti preko ovog <a href="{{ request()->fullUrl() }}" target="_blank" class="text-blue-600 text-[18px] no-underline">linka</a></strong>
                 <span class="block sm:inline">{{ Session::get('success') }}</span>
             </div>
         @endif
@@ -66,7 +66,7 @@ Orders || Foco-art
             </div>
             <div class="mt-8">
                 <div class="flex w-full justify-between items-center">
-                    <p class="text-xl font-semibold my-2">{{ $orders->fullname }}</p>
+                    <p class="text-xl font-semibold my-2">{{ explode(' ', $orders->fullname)[0] }} ***</p>
                         @if ($orders->status == false)
                                 <p class="text-red-700 font-semibold">U izradi</p>
                         @else
@@ -79,7 +79,14 @@ Orders || Foco-art
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <p>{{ $orders->zipcode }}, {{ $orders->address }}</p> 
+                    @php
+                        $maskedZipcode = substr($orders->zipcode, 0, 2) . '***';
+                        $maskedAddress = explode(' ', $orders->address);
+                        $maskedStreet = $maskedAddress[0] ?? 'Hidden';
+                        $maskedNumber = isset($maskedAddress[1]) ? '***' : ''; 
+                    @endphp
+                    <p>{{ $maskedZipcode }}, {{ $maskedStreet }} {{ $maskedNumber }}</p>
+
                 </div>
                 <div class="flex space-x-2 text-gray-400 text-sm my-3">
                     <!-- svg  -->
@@ -94,13 +101,22 @@ Orders || Foco-art
                     <div class="my-2">
                         <p class="font-semibold text-base mb-2">Email:</p>
                         <div class="flex space-x-2 max-md:w-[180px] max-md:overflow-scroll">
-                            <p class="text-base text-gray-400 font-semibold whitespace-nowrap">{{ $orders->email }}</p>
+                            @php
+                                if ($orders->email) {
+                                    $emailParts = explode("@", $orders->email);
+                                    $maskedEmail = substr($emailParts[0], 0, 2) . '***@' . ($emailParts[1] ?? '');
+                                } else {
+                                    $maskedEmail = 'N/A'; // Show 'N/A' or something else if email is null
+                                }
+                            @endphp
+
+                            <p class="text-base text-gray-400 font-semibold whitespace-nowrap">{{ $maskedEmail }}</p>
                         </div>
                     </div>
                     <div class="my-2">
                         <p class="font-semibold text-base mb-2">Ukupna cijena:</p>
                         <div class="text-base text-gray-400 font-semibold">
-                            <p title="Cijena je u EUR zbog Paypal transakcije">≈ {{ $orders->totalPrice }} €</p>
+                            <p>{{ $orders->totalPrice }} KM</p>
                         </div>
                     </div>
                 </div>

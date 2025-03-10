@@ -9,7 +9,7 @@ Product || Foco-art
 @section('content')
 <section class="flex mx-auto max-w-screen-xl mt-12 w-full gap-x-9 max-md:flex-col max-md:gap-y-2 max-md:justify-center max-md:pt-[20px] max-md:overflow-y-scroll max-md:items-center overflow-y-scroll">
     <div class="flex flex-col justify-center max-w-screen-xl items-center w-1/2 gap-y-3 mt-12 max-md:w-full max-md:p-5 max-md:mt-[15px]">
-        <div class="border-[20px] rounded-[2px] relative okvir__slike border-y-[#C0C0C0] border-x-[#D3D3D3]" id="okvir">
+        <div class="border-[10px] rounded-[2px] okvir__slike relative border-y-[#000000] border-x-[#333333]" id="okvir">
             <div class="flex items-center relative">
                 <img src="{{ asset('storage/images/' . $product->url) }}" alt="" 
                     class="object-cover max-h-[500px] 
@@ -37,15 +37,15 @@ Product || Foco-art
             <h1 class="text-[26px]">{{ $product->title }}</h1>
             <p class="text-justify">{{ $product->description }}</p>
         </div>
-        <div class="w-full justify-center flex gap-x-4">
+        <div class="w-full flex gap-x-4">
             <div>
                 <label for="color-selector" class="block font-medium mb-2 whitespace-nowrap">Izaberi okvir</label>
                 <div class="relative">
                     <select id="color-selector" name="color-selector" class="block appearance-none w-full bg-gray-100 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                         {{-- @foreach ($product->images as $item) --}}
+                        <option value="border-y-[#000000] border-x-[#333333]">Crni</option>
                         <option value="border-y-[#C0C0C0] border-x-[#D3D3D3]">Srebrni</option>
                         <option value="border-y-[#FFD700] border-x-[#FFDF80]">Zlatni</option>
-                        <option value="border-y-[#000000] border-x-[#333333]">Crni</option>
                         <option value="border-y-[#B87333] border-x-[#E7AD7C]">Bakarni</option>
                         <option value="border-y-[#F2F2F2] border-x-[#FFFFFF]">Bijeli</option>
                         <option value="border-y-[#808080] border-x-[#A9A9A9]">Sivi</option>
@@ -103,7 +103,7 @@ Product || Foco-art
             let color = $(this).val();
             let selectedOptionText = $(this).find('option:selected').text();
             let selectedOption = document.getElementById('selected-option');
-            $('#okvir').removeClass().addClass('border-[20px] rounded-[2px] relative okvir__slike ' + color);
+            $('#okvir').removeClass().addClass('border-[10px] rounded-[2px] relative okvir__slike ' + color);
             // Promjena okvira u input hiddenu
             console.log(selectedOptionText);
             // $('#selected-option').val(selectedOptionText);

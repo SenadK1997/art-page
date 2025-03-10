@@ -30,6 +30,8 @@ Orders || Foco-art
                   <th class="py-2 px-4 border-b font-medium">Zip Code</th>
                   <th class="py-2 px-4 border-b font-medium">Country</th>
                   <th class="py-2 px-4 border-b font-medium">Email</th>
+                  <th class="py-2 px-4 border-b font-medium">Phone</th>
+                  <th class="py-2 px-4 border-b font-medium">Request</th>
                   <th class="py-2 px-4 border-b font-medium">Total Price</th>
                   <th class="py-2 px-4 border-b font-medium">Status</th>
                   <th class="py-2 px-4 border-b font-medium">Action</th>
@@ -49,7 +51,9 @@ Orders || Foco-art
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->zipcode }}</td>
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->country }}</td>
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->email }}</td>
-                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} EUR</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->phone }}</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->request }}</td>
+                              <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }}</td>
                               <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">
                                   @if ($order->status == 0)
                                   Nije poslano
@@ -106,6 +110,8 @@ Orders || Foco-art
                   <th class="py-2 px-4 border-b font-medium">Zip Code</th>
                   <th class="py-2 px-4 border-b font-medium">Country</th>
                   <th class="py-2 px-4 border-b font-medium">Email</th>
+                  <th class="py-2 px-4 border-b font-medium">Phone</th>
+                  <th class="py-2 px-4 border-b font-medium">Request</th>
                   <th class="py-2 px-4 border-b font-medium">Total Price</th>
                   <th class="py-2 px-4 border-b font-medium">Status</th>
                   <th class="py-2 px-4 border-b font-medium">Action</th>
@@ -125,6 +131,8 @@ Orders || Foco-art
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->zipcode }}</td>
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->country }}</td>
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->email }}</td>
+                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->phone }}</td>
+                            <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->request }}</td>
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">{{ $order->totalPrice }} EUR</td>
                             <td class="py-2 px-4 border-b overflow-x-scroll max-w-[150px] whitespace-nowrap">
                                 @if ($order->status == 0)
