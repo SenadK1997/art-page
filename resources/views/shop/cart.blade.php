@@ -72,13 +72,7 @@ Cart || Foco-art
             <input type="hidden" name="price" value="{{ Cart::subtotal() }}">
           </div>
           <div class="border-b border-gray-500"></div>
-          <div class="mt-4">
-            <div class="g-recaptcha" 
-                data-sitekey="6LeMiPAqAAAAAGzwmmLNfG2kVlUNFqAJoR-mb4iK" 
-                data-callback="onSubmit" 
-                data-action="submit">
-            </div>
-          </div>
+          <div class="g-recaptcha" data-sitekey="6Le2n_AqAAAAAOCAQ74hbyvY_srdBx8InA7KE9pO"></div>
           <div class="flex flex-col">
             <div class="mt-4">
               <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700" id="checkoutBtn">Naruči</button>
