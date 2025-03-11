@@ -34,9 +34,9 @@ Product || Foco-art
         </div>
         <div class="w-full justify-center md:justify-start flex gap-x-4">
             <div>
-                <label for="color-selector" class="block font-medium mb-2 whitespace-nowrap">Izaberi okvir</label>
+                <label for="color-selector" class="block font-medium mb-2 whitespace-nowrap text-2xl">Izaberi okvir</label>
                 <div class="relative">
-                    <select id="color-selector" name="color-selector" class="block appearance-none w-full bg-gray-100 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <select id="color-selector" name="color-selector" class="block font-medium appearance-none w-full bg-gray-100 border border-gray-200 text-gray-700 py-2 px-5 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-2xl">
                         {{-- @foreach ($product->images as $item) --}}
                         <option value="border-y-[#000000] border-x-[#333333]">Crni</option>
                         <option value="border-y-[#C0C0C0] border-x-[#D3D3D3]">Srebrni</option>
@@ -53,9 +53,9 @@ Product || Foco-art
                 </div>
             </div>
             <div>
-                <label for="size-selector" class="block font-medium mb-2 whitespace-nowrap">Izaberi dimenziju</label>
+                <label for="size-selector" class="block font-medium mb-2 whitespace-nowrap text-2xl">Izaberi dimenziju</label>
                 <div class="relative">
-                    <select id="size-selector" name="color-selector" class="block appearance-none w-full bg-gray-100 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <select id="size-selector" name="color-selector" class="block appearance-none text-xl font-medium w-full bg-gray-100 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                         @foreach ($product->images->sortBy('price') as $item)
                             <option value="{{ $item->price }}" data-width="{{ $item->width }}" data-height="{{ $item->height }}">{{ $item->width }} x {{ $item->height }} cm</option>
                         @endforeach
@@ -84,9 +84,9 @@ Product || Foco-art
             <input type="hidden" name="product_price" value="{{ $product->images->min('price') ?? 0 }}">
             <input type="hidden" name="selected_option" id="selected-option" value="Srebrni">
             <input type="hidden" name="quantity" value="1" min="1">
-            <button type="submit" class="flex px-2 rounded-lg justify-center items-center ease-in duration-300 min-w-[120px] max-w-[150px] py-2 text-center border-solid border-2 border-stone-900 text-white bg-stone-900 hover:text-stone-900 hover:bg-white gap-x-3 max-md:mx-auto max-md:mb-[50px]">
+            <button type="submit" class="flex px-3 rounded-lg justify-center items-center ease-in duration-300 min-w-[120px] max-w-[150px] py-2 text-center border-solid border-2 border-stone-900 text-white bg-stone-900 hover:text-stone-900 hover:bg-white gap-x-3 max-md:mx-auto max-md:mb-[50px]">
                 <svg stroke="currentColor" fill="#ccb17a" stroke-width="1" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                Naruci sliku
+                Naruči sliku
             </button>
         </form>
     </div>
