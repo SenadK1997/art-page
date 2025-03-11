@@ -61,9 +61,9 @@ Shop || Foco-art
             <a href="/product/{{$item->id}}" class="flex flex-col items-center">
                 <div class="relative flex flex-col bg-white h-80 w-52">
                     {{-- <div class="flex justify-center mx-auto items-center h-full"> --}}
-                        <div class="border-[10px] rounded-[2px] relative okvir__slike-shop border-y-[#C0C0C0] border-x-[#D3D3D3] h-full">
+                        <div class="border-[10px] rounded-[2px] relative okvir__slike-shop border-y-[#000000] border-x-[#333333] h-full">
                             <div class="absolute bottom-[3px] left-[5px] whitespace-wrap w-[75px] leading-none text-yellow-100 text-[12px]">Klikni za prikaz cijele slike</div>
-                            <img src="{{'storage/thumbnail/' . $item->url}}" alt="" class="w-full h-full object-cover p-[2px]">
+                            <img src="{{'storage/thumbnail/' . $item->url}}" alt="" class="w-full h-full object-cover p-[0.5px]">
                         </div>
                     {{-- </div> --}}
                 </div>
