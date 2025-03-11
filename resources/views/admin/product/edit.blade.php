@@ -94,6 +94,7 @@
           <h1 class="text-2xl font-bold text-gray-800">Dodaj dimenziju</h1>
           <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="2em" width="2em" xmlns="http://www.w3.org/2000/svg"><path fill="#00FF00" stroke="#000" stroke-width="2" d="M12,22 C17.5228475,22 22,17.5228475 22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 Z M12,18 L12,6 M6,12 L18,12"></path></svg>
         </div>
+        <p id="price" class="font-semibold text-xs text-green-500"></p>
         {{-- <form action="{{ route('admin.image.save', $product->id) }}" method="POST" class="mt-6 max-w-[600px] gap-x-4 flex"> --}}
         <div class="mt-6 max-w-[600px] gap-x-4 flex" id="addDimensionBlock">
           <div class="mb-4">
@@ -192,6 +193,28 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+  $(document).ready(function() {
+    $('#sirina, #duzina').on('change', function() {
+        var width = $('#sirina').val();
+        var height = $('#duzina').val();
+
+        if (width && height) {
+            var price5 = Math.round((width * height) / 100 * 5);
+            var price10 = Math.round((width * height) / 100 * 10);
+            var price15 = Math.round((width * height) / 100 * 15);
+
+            $('#price').html(
+                'Cijena (Apstrakcija): ' + price5 + ' BAM<br>' +
+                'Cijena (Realizam): ' + price10 + ' BAM<br>' +
+                'Cijena (Panorama): ' + price15 + ' BAM'
+            );
+        } else {
+            $('#price').html('');
+        }
+    });
+});
+</script>
   <script>
     var tagSelect = document.getElementById("tagSelect");
     var selectedTagsContainer = document.getElementById("selectedTagsContainer");
@@ -345,7 +368,7 @@
       });
     });
   </script>
-  <script>
+<script>
     // Function to handle tag deletion
     function deleteImage(imageId) {
         // Send an AJAX request to the delete route
@@ -372,35 +395,4 @@
         deleteImage(imageId);
     });
 </script>
-  {{-- <script>
-    const sizeSelector = document.getElementById('size-selector');
-    const priceDisplay = document.getElementById('imagePrice');
-      sizeSelector.addEventListener('change', (event) => {
-              const selectedOption = sizeSelector.options[sizeSelector.selectedIndex];
-              const newPrice = selectedOption.value;
-              const priceInput = document.querySelector('input[id="imagePrice"]');
-              priceInput.value = newPrice;
-              priceDisplay.value = newPrice;
-              priceDisplay.innerText = 'Cijena:' + newPrice + ' KM';
-      });
-  </script> --}}
 @endpush
-
-{{-- <div class="flex items-center justify-center">
-  <div type="submit" class="flex items-center justify-center text-white font-bold">
-    <a href="{{ route('admin.image.edit_images', $item->id) }}" class="flex items-center justify-end gap-x-2 font-medium text-blue-600 dark:text-blue-500 hover:underline">
-      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"></path></svg>
-      Edit
-    </a>
-    <svg class="hidden" stroke="currentColor" fill="#00C356" stroke-width="0" viewBox="0 0 448 512" height="2em" width="2em" xmlns="http://www.w3.org/2000/svg"><path d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM272 80v80H144V80h128zm122 352H54a6 6 0 0 1-6-6V86a6 6 0 0 1 6-6h42v104c0 13.255 10.745 24 24 24h176c13.255 0 24-10.745 24-24V83.882l78.243 78.243a6 6 0 0 1 1.757 4.243V426a6 6 0 0 1-6 6zM224 232c-48.523 0-88 39.477-88 88s39.477 88 88 88 88-39.477 88-88-39.477-88-88-88zm0 128c-22.056 0-40-17.944-40-40s17.944-40 40-40 40 17.944 40 40-17.944 40-40 40z"></path></svg>
-  </div>
-</div> --}}
-
-{{-- <form class="delete-form flex justify-end" action="{{ route('admin.image.delete', $item->id) }}" method="POST" id="deleteDimension_{{ $item->id }}">
-              @csrf
-              @method('DELETE')
-              <button form="deleteDimension_{{ $item->id }}" type="submit" class="flex items-center justify-end gap-x-2 font-medium text-red-600 dark:text-blue-500 hover:underline">
-                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M346.5 240h-181c-8.8 0-16 6-16 16s7.5 16 16 16h181c8.8 0 16-7.2 16-16s-7.2-16-16-16z"></path><path d="M256 76c48.1 0 93.3 18.7 127.3 52.7S436 207.9 436 256s-18.7 93.3-52.7 127.3S304.1 436 256 436c-48.1 0-93.3-18.7-127.3-52.7S76 304.1 76 256s18.7-93.3 52.7-127.3S207.9 76 256 76m0-28C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48z"></path></svg>
-                Obrisi
-              </button>
-            </form>   --}}
