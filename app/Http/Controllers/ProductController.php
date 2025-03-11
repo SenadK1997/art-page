@@ -12,6 +12,8 @@ use Illuminate\Support\Arr;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\IpUtils;
+use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
@@ -132,6 +134,24 @@ class ProductController extends Controller
 
         if ($allCartItems->isEmpty()) {
             return redirect()->route('shop.cart')->with('error', 'Your cart is empty.');
+        }
+
+        $recaptcha_response = $request->input('g-recaptcha-response');
+        if (is_null($recaptcha_response)) {
+            return redirect()->back()->with('error', 'Please Complete the Recaptcha to proceed');
+        }
+        $url = "https://www.google.com/recaptcha/api/siteverify";
+        $body = [
+            'secret' => env('RECAPTCHA_SITE_SECRET'),
+            'response' => $recaptcha_response,
+            'remoteip' => IpUtils::anonymize($request->ip())
+        ];
+        $response = Http::asForm()->post($url, $body);
+
+        $result = json_decode($response);
+
+        if (!$response->successful() || $result->success != true) {
+            return redirect()->back()->with('error', 'Please complete the reCAPTCHA again to proceed');
         }
 
         $fullName = $request->input('full_name');

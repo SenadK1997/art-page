@@ -13,14 +13,13 @@ Cart || Foco-art
     </a>
   </div>
   <div class="flex flex-col md:flex-row gap-6 max-w-screen-xl mx-auto w-full">
-    @if (Session::has('error'))
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <strong class="font-bold">Error:</strong>
-        <span class="block sm:inline">{{ Session::get('error') }}</span>
-      </div>
-    @endif
-
     <div class="flex flex-col w-full max-w-[540px] gap-y-6">
+      @if (Session::has('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong class="font-bold">Error:</strong>
+          <span class="block sm:inline">{{ Session::get('error') }}</span>
+        </div>
+      @endif
       @if (Session::has('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
           <strong class="font-bold">Success:</strong>
@@ -72,10 +71,10 @@ Cart || Foco-art
             <input type="hidden" name="price" value="{{ Cart::subtotal() }}">
           </div>
           <div class="border-b border-gray-500"></div>
-          <div class="g-recaptcha" data-sitekey="6Le2n_AqAAAAAOCAQ74hbyvY_srdBx8InA7KE9pO"></div>
+          <div class="g-recaptcha" data-sitekey={{ env('RECAPTCHA_SITE_KEY') }}></div>
           <div class="flex flex-col">
             <div class="mt-4">
-              <button type="button" onclick="grecaptcha.execute()" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700" id="checkoutBtn">Naruči</button>
+              <button type="submit" class="g-recaptcha px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700" id="checkoutBtn">Naruči</button>
             </div>
           </div>
         </div>
@@ -133,10 +132,3 @@ Cart || Foco-art
   </div>
 </div>
 @endsection
-@push('script')
-  <script>
-    function onSubmit(token) {
-      document.getElementById("create_order").submit();
-    }
-  </script>
-@endpush
