@@ -75,7 +75,7 @@ Cart || Foco-art
           <div class="g-recaptcha" data-sitekey="6Le2n_AqAAAAAOCAQ74hbyvY_srdBx8InA7KE9pO"></div>
           <div class="flex flex-col">
             <div class="mt-4">
-              <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700" id="checkoutBtn">Naruči</button>
+              <button type="button" onclick="grecaptcha.execute() class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700" id="checkoutBtn">Naruči</button>
             </div>
           </div>
         </div>
@@ -133,6 +133,10 @@ Cart || Foco-art
   </div>
 </div>
 @endsection
-  {{-- @push('script')
-  <script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_LIVE_CLIENT_ID') }}"></script>
-  @endpush --}}
+@push('script')
+  <script>
+    function onSubmit(token) {
+      document.getElementById("create_order").submit();
+    }
+  </script>
+@endpush
