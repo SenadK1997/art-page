@@ -67,7 +67,7 @@
 
         @if ($selected && $product->imageUrl())
             <x-wall-preview class="mt-10" :image="$product->imageUrl()" :width="$selected->width" :height="$selected->height"
-                :frame-color="$frames[$frame]['color'] ?? null" wire:key="wall-{{ $selected->id }}-{{ $frame }}" />
+                :frame="$frame" wire:key="wall-{{ $selected->id }}-{{ $frame }}" />
         @endif
 
         @error('sizeId') <p class="mt-4 text-[13px] text-red-600">{{ $message }}</p> @enderror

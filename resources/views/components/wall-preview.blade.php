@@ -1,6 +1,6 @@
-@props(['image', 'width', 'height', 'frameColor' => null])
-{{-- The painting hung over a ~200 cm sofa, drawn to real scale. --}}
-<div x-data="wallPreview({{ (int) $width }}, {{ (int) $height }}, @js($frameColor))" {{ $attributes->merge(['class' => 'overflow-hidden']) }}>
+@props(['image', 'width', 'height', 'frame' => 'none'])
+{{-- Product page: the chosen size and frame hung over a ~200 cm sofa, to scale. --}}
+<div x-data="wallPreview({{ (int) $width }}, {{ (int) $height }}, @js($frame), @js($image))" {{ $attributes }}>
     <div class="mb-3 flex items-center justify-between gap-3">
         <p class="text-[12px] uppercase tracking-[0.14em] text-stone">Na zidu · {{ $width }} × {{ $height }} cm</p>
         <div class="flex gap-2" role="group" aria-label="Boja zida">
@@ -11,19 +11,6 @@
             </template>
         </div>
     </div>
-    <div x-ref="room" class="relative w-full transition-colors duration-500" :style="'height:' + roomHeight() + 'px;background:' + current().color">
-        <div class="absolute inset-0" :style="current().light ? 'background:radial-gradient(ellipse 70% 60% at 50% 10%, rgba(255,255,255,.35), transparent 70%)' : 'background:radial-gradient(ellipse 60% 55% at 50% 0%, rgba(226,190,126,.10), transparent 70%)'"></div>
-        <div class="absolute left-1/2 -translate-x-1/2 transition-all duration-300"
-             :style="paintingBox() + 'box-shadow:0 18px 30px -12px rgba(0,0,0,.55);'"
->
-            <img src="{{ $image }}" alt="" class="block h-full w-full object-cover">
-        </div>
-        <div class="absolute bottom-0 left-1/2 -translate-x-1/2" :style="'width:' + (200 * scale()) + 'px'">
-            <div class="mx-auto rounded-t-[10px]" :style="'height:' + (45 * scale()) + 'px;background:' + current().sofa[0]"></div>
-            <div class="rounded-t-[6px]" :style="'height:' + (35 * scale()) + 'px;background:' + current().sofa[1]"></div>
-        </div>
-        <div class="absolute inset-x-0 bottom-0 h-1.5" :style="'background:' + current().floor"></div>
-        <x-room-try class="absolute left-3 top-3" :image="''.json_encode($image)" size="[width, height]" frame="frameColor" />
-        <p class="absolute bottom-3 right-3 text-[11px]" :class="current().light ? 'text-black/40' : 'text-ash'">kauč ≈ 200 cm</p>
-    </div>
+    <x-room-scene tone="wall" />
+    <p class="mt-2 text-[12px] leading-snug text-ash">Ilustracija — okvirni prikaz veličine. Stvarna slika, boje i ram mogu izgledati drugačije.</p>
 </div>

@@ -194,6 +194,76 @@
     animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
+/* ---------- Room scene (painting on a wall over a sofa) ---------- */
+
+.room {
+    --wall: #ebe4d9;
+    --wall-light: rgba(255, 252, 245, 0.75);
+    --wall-shade: rgba(90, 70, 45, 0.18);
+    --floor-a: #b08a62;
+    --floor-b: #8a6744;
+    --skirting: #f5f1ea;
+    --sofa-hi: #c4b7a4;
+    --sofa-mid: #ab9d89;
+    --sofa-lo: #9c8e7a;
+    --sofa-base: #8e806d;
+    --label: rgba(60, 45, 30, 0.45);
+    background: var(--wall);
+}
+.room--sage {
+    --wall: #a8b29f;
+    --wall-light: rgba(245, 248, 238, 0.55);
+    --wall-shade: rgba(40, 55, 35, 0.22);
+    --sofa-hi: #eee8dd;
+    --sofa-mid: #ddd5c7;
+    --sofa-lo: #cfc6b6;
+    --sofa-base: #bdb3a2;
+}
+.room--dark {
+    --wall: #2a2724;
+    --wall-light: rgba(226, 190, 126, 0.14);
+    --wall-shade: rgba(0, 0, 0, 0.35);
+    --floor-a: #4a3727;
+    --floor-b: #33261b;
+    --skirting: #3a3632;
+    --sofa-hi: #57504a;
+    --sofa-mid: #47413c;
+    --sofa-lo: #3d3833;
+    --sofa-base: #322e2a;
+    --label: rgba(237, 233, 227, 0.4);
+}
+.room__wall {
+    background:
+        radial-gradient(ellipse 65% 55% at 50% -5%, var(--wall-light), transparent 70%),
+        radial-gradient(ellipse 120% 90% at 50% 100%, transparent 55%, var(--wall-shade)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .32 0 0 0 0 .22 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.room__floor {
+    border-top: 5px solid var(--skirting);
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.08), inset 0 3px 6px -2px rgba(0, 0, 0, 0.35);
+    background:
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 74px),
+        linear-gradient(180deg, var(--floor-a), var(--floor-b));
+}
+.room__label {
+    color: var(--label);
+}
+.room .sofa-hi {
+    stop-color: var(--sofa-hi);
+}
+.room .sofa-mid {
+    stop-color: var(--sofa-mid);
+}
+.room .sofa-lo {
+    stop-color: var(--sofa-lo);
+}
+.room .sofa-base {
+    fill: var(--sofa-base);
+}
+.room .sofa-leg {
+    fill: #2f2a25;
+}
+
 /* ---------- Homepage effects ---------- */
 
 /* Slow cinematic zoom on the main image. */

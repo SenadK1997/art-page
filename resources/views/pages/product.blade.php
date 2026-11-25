@@ -64,7 +64,7 @@
                         <div><dt class="text-ash">Dostava</dt><dd class="mt-1">Kurirskom službom, zapakovano</dd></div>
                         <div><dt class="text-ash">Plaćanje</dt><dd class="mt-1">Pouzećem, pri preuzimanju</dd></div>
                         @if ($product->tags->isNotEmpty())
-                            <div class="col-span-2"><dt class="text-ash">Teme</dt>
+                            <div class="col-span-2"><dt class="text-ash">Kategorije</dt>
                                 <dd class="mt-2 flex flex-wrap gap-2">
                                     @foreach ($product->tags as $tag)
                                         <a href="{{ route('gallery', ['tema' => $tag->slug]) }}" wire:navigate class="border border-line px-3 py-1 text-[12px] text-stone hover:border-gold hover:text-gold">{{ $tag->name }}</a>

@@ -1,3 +1,47 @@
+// ---- Shared by the made-to-measure calculator and the product page wall ----
+
+// Where the painting hangs: floor (14 cm) + sofa (85 cm) + a hand's width above it.
+const PAINTING_FLOOR_CM = 14 + 85 + 22;
+
+// Frame materials, lit from the top left like a gallery.
+const FRAME_MATERIALS = {
+    black: 'linear-gradient(135deg, #4a4642 0%, #2b2926 28%, #1d1b19 62%, #36322e 100%)',
+    gold: 'linear-gradient(135deg, #f6dc98 0%, #c9a150 20%, #8d6a2b 42%, #ead08a 60%, #a67d35 80%, #f2d790 100%)',
+    silver: 'linear-gradient(135deg, #ffffff 0%, #cfcfcf 22%, #8e8e8e 45%, #ececec 62%, #a2a2a2 82%, #f6f6f6 100%)',
+    copper: 'linear-gradient(135deg, #f3c194 0%, #bd7542 25%, #7b4220 48%, #dc9867 66%, #9b552a 86%, #edb17f 100%)',
+    white: 'linear-gradient(135deg, #ffffff 0%, #f3f0ea 45%, #dcd6cc 100%)',
+    walnut: 'repeating-linear-gradient(97deg, rgba(255,255,255,.05) 0 1px, transparent 1px 5px, rgba(0,0,0,.10) 5px 6px, transparent 6px 11px), linear-gradient(135deg, #93613b 0%, #5c3a21 48%, #3e2615 100%)',
+};
+
+const artFraming = {
+    frameWidthPx() {
+        // About 3.5 cm of moulding, never thinner than a few pixels.
+        return this.frame && this.frame !== 'none' && FRAME_MATERIALS[this.frame] ? Math.max(4, 3.5 * this.sceneScale()) : 0;
+    },
+    artBox() {
+        const s = this.sceneScale();
+        const fw = this.frameWidthPx();
+        const material = FRAME_MATERIALS[this.frame];
+        const depth = Math.max(2, 1.2 * s);
+        const shadow = `0 ${10 * s}px ${22 * s}px -${4 * s}px rgba(35, 22, 10, .42), 0 ${2 * s}px ${5 * s}px rgba(35, 22, 10, .22)`;
+        const look = material
+            // Moulding with a bevel: light on the top/left edge, shade on the bottom/right.
+            ? `background:${material};padding:${fw}px;box-shadow:${shadow}, inset ${depth / 2}px ${depth / 2}px 0 rgba(255,255,255,.35), inset -${depth / 2}px -${depth / 2}px 0 rgba(0,0,0,.35);`
+            // No frame: a stretched canvas with its side edge catching the light.
+            : `box-shadow:${shadow}, ${depth}px ${depth}px 0 rgba(0,0,0,.18);`;
+        return `width:${this.width * s + 2 * fw}px;height:${this.height * s + 2 * fw}px;bottom:${PAINTING_FLOOR_CM * s}px;${look}`;
+    },
+    artCanvas() {
+        const s = this.sceneScale();
+        const lip = this.frameWidthPx() ? `inset 0 0 0 1px rgba(0,0,0,.35), inset ${1.2 * s}px ${1.6 * s}px ${3 * s}px rgba(0,0,0,.38)` : 'inset 0 0 0 1px rgba(0,0,0,.08)';
+        const img = this.sceneImage();
+        const surface = img
+            ? `background-image:url("${img}");`
+            : 'background:#ece6da;';
+        return `${surface}box-shadow:${lip};`;
+    },
+};
+
 document.addEventListener('alpine:init', () => {
     Alpine.data('commissionCalculator', (cfg) => ({
         styles: cfg.styles,
@@ -77,9 +121,6 @@ document.addEventListener('alpine:init', () => {
         image() {
             return (this.current().photo && this.localPhoto) || this.current().image;
         },
-        frameColor() {
-            return this.frames.find((x) => x.key === this.frame)?.color ?? null;
-        },
         // Same rule as App\Support\PriceCalculator: round(w × h / 100 × multiplier)
         price() {
             return Math.round((this.width * this.height) / 100 * this.current().multiplier);
@@ -93,94 +134,45 @@ document.addEventListener('alpine:init', () => {
         },
         wallHeight() {
             // Smaller on phones, where the wall stays pinned above the controls.
-            return this.wallWidth < 520 ? 250 : 460;
+            return this.wallWidth < 520 ? 260 : 470;
         },
         // Pixels per cm: the sofa (~200 cm) fills about two thirds of the wall,
         // zooming out only when a tall painting would not fit above it.
         scale() {
             const byWidth = this.wallWidth / 300;
-            const byHeight = (this.wallHeight() - 30) / (95 + this.height + 15);
+            const byHeight = (this.wallHeight() - 14) / (PAINTING_FLOOR_CM + this.height + 14);
             return Math.min(byWidth, byHeight);
         },
-        paintingStyle() {
-            const s = this.scale();
-            const color = this.frameColor();
-            const border = color ? `border: ${Math.max(3, 4 * s)}px solid ${color};` : '';
-            return `width:${this.width * s}px;height:${this.height * s}px;bottom:${95 * s}px;${border}`;
+        // Used by <x-room-scene>.
+        sceneScale() {
+            return this.scale();
         },
+        sceneHeight() {
+            return this.wallHeight();
+        },
+        sceneImage() {
+            return this.image();
+        },
+        ...artFraming,
     }));
 
-    // "Try it on your own wall": the visitor's own photo of a wall, with the
-    // painting dragged and sized on top. Nothing is uploaded.
-    // getImage / getSize / getFrame are functions so it follows the parent's choices.
-    Alpine.data('roomTry', (getImage, getSize, getFrame) => ({
-        open: false,
-        room: null,
-        x: 50,
-        y: 38,
-        widthPct: 28,
-        dragging: false,
-
-        img() {
-            return getImage();
-        },
-        ratio() {
-            const [w, h] = getSize();
-            return h / w;
-        },
-        frameColor() {
-            return getFrame();
-        },
-        pick(event) {
-            const file = event.target.files?.[0];
-            if (!file) return;
-            if (this.room) URL.revokeObjectURL(this.room);
-            this.room = URL.createObjectURL(file);
-            this.open = true;
-        },
-        close() {
-            this.open = false;
-        },
-        destroy() {
-            if (this.room) URL.revokeObjectURL(this.room);
-        },
-        overlay() {
-            const color = this.frameColor();
-            return `left:${this.x}%;top:${this.y}%;width:${this.widthPct}%;aspect-ratio:1/${this.ratio()};`
-                + (color ? `border:4px solid ${color};` : '');
-        },
-        start(event) {
-            this.dragging = true;
-            event.target.setPointerCapture?.(event.pointerId);
-        },
-        move(event) {
-            if (!this.dragging) return;
-            const box = this.$refs.stage.getBoundingClientRect();
-            this.x = Math.min(100, Math.max(0, ((event.clientX - box.left) / box.width) * 100));
-            this.y = Math.min(100, Math.max(0, ((event.clientY - box.top) / box.height) * 100));
-        },
-        stop() {
-            this.dragging = false;
-        },
-    }));
-
-
-    // Product page: the chosen size hung over a sofa, on a light or dark wall.
-    Alpine.data('wallPreview', (width, height, frameColor = null) => ({
-        frameColor,
+    // Product page: the chosen size hung over a sofa, on a light, green or dark wall.
+    Alpine.data('wallPreview', (width, height, frame = 'none', image = null) => ({
         width,
         height,
+        frame,
+        image,
         roomWidth: 500,
         wall: 'light',
         walls: [
-            { key: 'light', label: 'Svijetli zid', color: '#e9e4dc', light: true, sofa: ['#8c8173', '#9d9284'], floor: '#b9ab95' },
-            { key: 'sage', label: 'Zeleni zid', color: '#a9b3a0', light: true, sofa: ['#e6dfd3', '#f1ebe1'], floor: '#8a7a63' },
-            { key: 'dark', label: 'Tamni zid', color: '#24211e', light: false, sofa: ['#2f2b27', '#3a3530'], floor: '#151311' },
+            { key: 'light', label: 'Svijetli zid', color: '#ebe4d9' },
+            { key: 'sage', label: 'Zeleni zid', color: '#a8b29f' },
+            { key: 'dark', label: 'Tamni zid', color: '#2a2724' },
         ],
         init() {
             this.wall = sessionStorage.getItem('wall') ?? 'light';
             this.$watch('wall', (v) => sessionStorage.setItem('wall', v));
-            const room = this.$refs.room;
+            const room = this.$refs.wall;
             const measure = () => {
                 if (room.isConnected) this.roomWidth = room.clientWidth;
             };
@@ -191,20 +183,16 @@ document.addEventListener('alpine:init', () => {
         destroy() {
             this.observer?.disconnect();
         },
-        current() {
-            return this.walls.find((w) => w.key === this.wall);
+        sceneHeight() {
+            return Math.round(Math.min(440, Math.max(270, this.roomWidth * 0.74)));
         },
-        roomHeight() {
-            return Math.round(Math.min(420, Math.max(260, this.roomWidth * 0.72)));
+        sceneScale() {
+            return Math.min(this.roomWidth / 300, (this.sceneHeight() - 14) / (PAINTING_FLOOR_CM + this.height + 14));
         },
-        scale() {
-            return Math.min(this.roomWidth / 300, (this.roomHeight() - 25) / (95 + this.height + 15));
+        sceneImage() {
+            return this.image;
         },
-        paintingBox() {
-            const s = this.scale();
-            const border = this.frameColor ? `border:${Math.max(3, 3.5 * s)}px solid ${this.frameColor};` : '';
-            return `width:${this.width * s}px;height:${this.height * s}px;bottom:${95 * s}px;${border}`;
-        },
+        ...artFraming,
     }));
 
     // Product page on phones: sticky price bar until the real button is visible.

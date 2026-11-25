@@ -88,25 +88,15 @@
 
     {{-- Wall preview: first and pinned under the header on phones, so every change is visible --}}
     <div class="sticky top-20 z-10 order-1 bg-panel shadow-[0_8px_16px_-12px_rgba(0,0,0,.35)] lg:static lg:order-none lg:shadow-none">
-        <div class="relative overflow-hidden bg-wall" x-ref="wall" :style="'height:' + wallHeight() + 'px'">
-            <div class="spotlight absolute inset-0"></div>
-            <div class="absolute left-1/2 -translate-x-1/2 transition-all duration-300 ease-out frame-shadow" :style="paintingStyle()">
-                <div class="h-full w-full bg-cover bg-center" :style="image() ? 'background-image:url(' + image() + ')' : 'background:#3a352f'"></div>
-            </div>
-            <div class="absolute bottom-0 left-1/2 -translate-x-1/2" :style="'width:' + (200 * scale()) + 'px'">
-                <div class="mx-auto rounded-t-[10px] bg-[#8c8173]" :style="'height:' + (45 * scale()) + 'px'"></div>
-                <div class="rounded-t-[6px] bg-[#9d9284]" :style="'height:' + (35 * scale()) + 'px'"></div>
-                <div class="h-1.5 bg-[#6d6357]"></div>
-            </div>
-            <p class="absolute bottom-3 right-4 text-[11px] tracking-[0.08em] text-ash">kauč ≈ 200 cm</p>
-            <div class="absolute left-3 top-3 sm:left-4 sm:top-4">
-                <x-room-try image="image()" size="[width, height]" frame="frameColor()" />
-            </div>
+        <x-room-scene height="wallHeight()">
             {{-- Price badge on the pinned phone preview --}}
             <p class="absolute right-3 top-3 bg-[#0e0d0c]/85 px-3 py-1.5 font-display text-[20px] leading-none text-[#e2be7e] lg:hidden">
                 <span x-text="formatted()"></span> KM
             </p>
-        </div>
+        </x-room-scene>
+        <p class="border-t border-line bg-panel px-4 py-2.5 text-[12px] leading-snug text-ash sm:px-6">
+            Ilustracija — okvirni prikaz veličine. Stvarna slika, boje i ram mogu izgledati drugačije.
+        </p>
     </div>
 
     {{-- Price and add to cart --}}
