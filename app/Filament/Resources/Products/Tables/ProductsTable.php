@@ -33,6 +33,8 @@ class ProductsTable
             ->columns([
                 ImageColumn::make('image')
                     ->label('')
+                    // Painting photo, or the first room photo when there is none.
+                    ->state(fn (Product $record) => $record->image ?: ($record->room_images[0] ?? null))
                     ->disk('public')
                     ->imageHeight(64)
                     ->imageWidth(52),

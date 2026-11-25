@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'description', 'image', 'gallery', 'technique', 'year',
+        'title', 'slug', 'description', 'image', 'room_images', 'gallery', 'technique', 'year',
         'painting_style_id', 'is_featured', 'is_available', 'made_to_order',
         'discount_percent', 'discount_ends_at', 'sort',
     ];
@@ -22,6 +22,7 @@ class Product extends Model
     {
         return [
             'gallery' => 'array',
+            'room_images' => 'array',
             'is_featured' => 'boolean',
             'is_available' => 'boolean',
             'made_to_order' => 'boolean',
@@ -70,6 +71,12 @@ class Product extends Model
         $query->where('is_available', true)->whereHas('sizes');
     }
 
+    /** Has at least one photo (of the painting or in a room). */
+    public function scopeWithPhoto(Builder $query): void
+    {
+        $query->where(fn ($q) => $q->whereNotNull('image')->orWhereNotNull('room_images'));
+    }
+
     public function scopeOnSale(Builder $query): void
     {
         $query->where('discount_percent', '>', 0)
@@ -111,19 +118,53 @@ class Product extends Model
         return ! $this->made_to_order && ! $this->isInStock();
     }
 
-    public function imageUrl(): ?string
+    /** The plain photo of the painting itself (no room), used for the wall preview. */
+    public function artworkUrl(): ?string
     {
         return $this->image ? Storage::disk('public')->url($this->image) : null;
+    }
+
+    public function hasArtwork(): bool
+    {
+        return filled($this->image);
+    }
+
+    /** Cover for cards and lists: the painting photo, else the first room photo. */
+    public function imageUrl(): ?string
+    {
+        $path = $this->image ?: ($this->room_images[0] ?? null);
+
+        return $path ? Storage::disk('public')->url($path) : null;
+    }
+
+    /** The cover is a room photo, so it must not get a second frame. */
+    public function coverIsRoomPhoto(): bool
+    {
+        return ! $this->hasArtwork() && filled($this->room_images);
+    }
+
+    /**
+     * Every photo for the product page, in order: painting, room photos, details.
+     * `framed` is true only for the plain painting photo.
+     *
+     * @return list<array{url: string, framed: bool}>
+     */
+    public function photos(): array
+    {
+        $url = fn ($path) => Storage::disk('public')->url($path);
+
+        return collect()
+            ->when($this->image, fn ($c) => $c->push(['url' => $url($this->image), 'framed' => true]))
+            ->concat(collect($this->room_images ?? [])->filter()->map(fn ($p) => ['url' => $url($p), 'framed' => false]))
+            ->concat(collect($this->gallery ?? [])->filter()->map(fn ($p) => ['url' => $url($p), 'framed' => false]))
+            ->values()
+            ->all();
     }
 
     /** @return list<string> */
     public function galleryUrls(): array
     {
-        return collect([$this->image, ...($this->gallery ?? [])])
-            ->filter()
-            ->map(fn ($path) => Storage::disk('public')->url($path))
-            ->values()
-            ->all();
+        return array_column($this->photos(), 'url');
     }
 
     /** Lowest regular price across sizes. */

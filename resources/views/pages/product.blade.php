@@ -10,12 +10,16 @@
             </nav>
 
             <div class="mt-5 grid gap-8 sm:mt-10 sm:gap-14 lg:grid-cols-[1.25fr_1fr]">
-                @php($images = $product->galleryUrls())
-                <div x-data="{ active: 0, zoom: false, images: @js($images) }">
-                    <div class="-mx-6 bg-wall p-6 sm:mx-0 sm:p-14">
-                        @if (count($images))
-                            <button type="button" @click="zoom = true" class="frame-shadow mx-auto block w-full cursor-zoom-in border-[10px] border-frame outline outline-1 outline-line-strong" aria-label="Uvećaj sliku">
-                                <img :src="images[active]" src="{{ $images[0] }}" alt="{{ $product->title }}" class="block max-h-[75vh] w-full object-contain">
+                @php($photos = $product->photos())
+                @php($images = array_column($photos, 'url'))
+                <div x-data="{ active: 0, zoom: false, photos: @js($photos), get current() { return this.photos[this.active] ?? {} } }">
+                    {{-- The plain painting photo is framed; room and detail photos are shown as they are --}}
+                    <div class="-mx-6 bg-wall sm:mx-0" :class="current.framed ? 'p-6 sm:p-14' : 'p-0'">
+                        @if (count($photos))
+                            <button type="button" @click="zoom = true" aria-label="Uvećaj sliku"
+                                    class="mx-auto block w-full cursor-zoom-in"
+                                    :class="current.framed ? 'frame-shadow border-[10px] border-frame outline outline-1 outline-line-strong' : ''">
+                                <img :src="current.url" src="{{ $photos[0]['url'] }}" alt="{{ $product->title }}" class="block max-h-[75vh] w-full object-contain">
                             </button>
                         @else
                             <div class="aspect-[4/5] bg-line"></div>
@@ -34,7 +38,7 @@
                     <template x-teleport="body">
                         <div x-show="zoom" x-cloak x-transition.opacity @keydown.escape.window="zoom = false" @click="zoom = false"
                              class="fixed inset-0 z-50 flex cursor-zoom-out items-center justify-center bg-ink/95 p-6">
-                            <img :src="images[active]" alt="{{ $product->title }}" class="max-h-full max-w-full object-contain">
+                            <img :src="current.url" alt="{{ $product->title }}" class="max-h-full max-w-full object-contain">
                             <button type="button" class="absolute right-6 top-6 text-bone" aria-label="Zatvori">✕</button>
                         </div>
                     </template>

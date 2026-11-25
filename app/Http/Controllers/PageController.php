@@ -58,8 +58,8 @@ class PageController extends Controller
                 ->each(function (Tag $t) use (&$usedCovers) {
                     // A different painting on each category tile where possible.
                     $usedCovers ??= [];
-                    $cover = $t->products()->visible()->whereNotNull('image')->whereNotIn('products.id', $usedCovers)->orderBy('sort')->first()
-                        ?? $t->products()->visible()->whereNotNull('image')->orderBy('sort')->first();
+                    $cover = $t->products()->visible()->withPhoto()->whereNotIn('products.id', $usedCovers)->orderBy('sort')->first()
+                        ?? $t->products()->visible()->withPhoto()->orderBy('sort')->first();
                     $usedCovers[] = $cover?->id;
                     $t->setRelation('cover', $cover);
                 }),
@@ -92,7 +92,7 @@ class PageController extends Controller
     public function about(): View
     {
         return view('pages.about', [
-            'works' => Product::visible()->whereNotNull('image')->inRandomOrder()->take(3)->get(),
+            'works' => Product::visible()->withPhoto()->inRandomOrder()->take(3)->get(),
         ]);
     }
 

@@ -93,10 +93,17 @@
     @if ($spotlight)
         <section class="pt-20 sm:pt-32">
             <div class="mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:px-10">
-                <a href="{{ route('gallery.show', $spotlight) }}" wire:navigate class="group relative block bg-wall p-8 sm:p-14" data-reveal>
-                    <div class="frame-shadow mx-auto max-w-md overflow-hidden border-[8px] border-frame transition duration-700 group-hover:-translate-y-1.5">
-                        <img src="{{ $spotlight->imageUrl() }}" alt="{{ $spotlight->title }}" loading="lazy" class="block aspect-[4/5] w-full object-cover transition duration-[1.2s] group-hover:scale-[1.04]">
-                    </div>
+                <a href="{{ route('gallery.show', $spotlight) }}" wire:navigate class="group relative block bg-wall {{ $spotlight->coverIsRoomPhoto() ? 'p-3 sm:p-4' : 'p-8 sm:p-14' }}" data-reveal>
+                    @if ($spotlight->coverIsRoomPhoto())
+                        {{-- Room photo: no extra frame --}}
+                        <div class="overflow-hidden">
+                            <img src="{{ $spotlight->imageUrl() }}" alt="{{ $spotlight->title }}" loading="lazy" class="block aspect-[4/5] w-full object-cover transition duration-[1.2s] group-hover:scale-[1.04]">
+                        </div>
+                    @else
+                        <div class="frame-shadow mx-auto max-w-md overflow-hidden border-[8px] border-frame transition duration-700 group-hover:-translate-y-1.5">
+                            <img src="{{ $spotlight->imageUrl() }}" alt="{{ $spotlight->title }}" loading="lazy" class="block aspect-[4/5] w-full object-cover transition duration-[1.2s] group-hover:scale-[1.04]">
+                        </div>
+                    @endif
                     <span class="absolute left-0 top-0 h-16 w-16 border-l border-t border-gold/70"></span>
                     <span class="absolute bottom-0 right-0 h-16 w-16 border-b border-r border-gold/70"></span>
                 </a>

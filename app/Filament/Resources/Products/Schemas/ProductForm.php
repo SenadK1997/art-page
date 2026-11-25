@@ -37,11 +37,13 @@ class ProductForm
         return $schema
             ->columns(1)
             ->components([
-                Section::make('1 · Fotografija')
-                    ->description('Glavna fotografija slike. Dodatne fotografije (detalji, slika na zidu) su dolje u „Više detalja“.')
+                Section::make('1 · Fotografije')
+                    ->description('Dodajte bar jednu. Najbolje je oboje: samu sliku i sliku na zidu.')
+                    ->columns(['default' => 1, 'md' => 2])
                     ->schema([
                         FileUpload::make('image')
-                            ->hiddenLabel()
+                            ->label('Fotografija slike')
+                            ->helperText('Samo slika, snimljena ravno — bez zida i namještaja. Koristi se i za prikaz „Na zidu“.')
                             ->image()
                             ->imageEditor()
                             ->disk('public')
@@ -51,9 +53,29 @@ class ProductForm
                             ->automaticallyResizeImagesMode('contain')
                             ->automaticallyResizeImagesToWidth('2400')
                             ->automaticallyResizeImagesToHeight('2400')
-                            ->imagePreviewHeight('280')
-                            ->required()
-                            ->validationMessages(['required' => 'Dodajte fotografiju slike.']),
+                            ->imagePreviewHeight('240')
+                            ->live()
+                            ->required(fn (Get $get) => blank($get('room_images')))
+                            ->validationMessages(['required' => 'Dodajte fotografiju slike ili fotografiju u prostoru.']),
+                        FileUpload::make('room_images')
+                            ->label('Fotografije u prostoru')
+                            ->helperText('Slika okačena na zid, u sobi. Prikazuju se bez dodatnog rama.')
+                            ->image()
+                            ->multiple()
+                            ->reorderable()
+                            ->appendFiles()
+                            ->panelLayout('grid')
+                            ->disk('public')
+                            ->directory('paintings')
+                            ->visibility('public')
+                            ->maxSize(15 * 1024)
+                            ->maxFiles(6)
+                            ->automaticallyResizeImagesMode('contain')
+                            ->automaticallyResizeImagesToWidth('2400')
+                            ->automaticallyResizeImagesToHeight('2400')
+                            ->live()
+                            ->required(fn (Get $get) => blank($get('image')))
+                            ->validationMessages(['required' => 'Dodajte fotografiju slike ili fotografiju u prostoru.']),
                     ]),
 
                 Section::make('2 · Naziv i stil')
@@ -182,7 +204,7 @@ class ProductForm
                     ]),
 
                 Section::make('Više detalja')
-                    ->description('Nije obavezno: tehnika, godina, opis i dodatne fotografije.')
+                    ->description('Nije obavezno: tehnika, godina, opis i fotografije detalja.')
                     ->collapsible()
                     ->collapsed()
                     ->columns(['default' => 1, 'md' => 2])
@@ -201,7 +223,7 @@ class ProductForm
                             ->maxLength(5000)
                             ->columnSpanFull(),
                         FileUpload::make('gallery')
-                            ->label('Dodatne fotografije')
+                            ->label('Fotografije detalja (izbliza, potpis, poleđina)')
                             ->image()
                             ->multiple()
                             ->reorderable()

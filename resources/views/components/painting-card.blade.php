@@ -6,15 +6,22 @@
     $many = $product->sizes->count() > 1;
 @endphp
 <a href="{{ route('gallery.show', $product) }}" wire:navigate class="group block">
-    <div class="relative overflow-hidden bg-wall p-3 transition-colors duration-500 group-hover:bg-panel sm:p-8">
-        <div class="frame-shadow mx-auto overflow-hidden border-4 border-frame outline outline-1 outline-line transition duration-700 group-hover:-translate-y-1.5 sm:border-[6px] {{ $soldOut ? 'opacity-60 grayscale-[40%]' : '' }}">
-            @if ($product->imageUrl())
-                <img src="{{ $product->imageUrl() }}" alt="{{ $product->title }}" loading="lazy" decoding="async"
-                     class="block aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03]">
-            @else
-                <div class="aspect-[4/5] w-full bg-line"></div>
-            @endif
-        </div>
+    @if ($product->coverIsRoomPhoto())
+        {{-- A photo of the painting in a room: shown edge to edge, never in a second frame --}}
+        <div class="relative overflow-hidden bg-wall">
+            <img src="{{ $product->imageUrl() }}" alt="{{ $product->title }}" loading="lazy" decoding="async"
+                 class="block aspect-[4/5] w-full object-cover transition duration-[1.2s] group-hover:scale-[1.04] {{ $soldOut ? 'opacity-60 grayscale-[40%]' : '' }}">
+    @else
+        <div class="relative overflow-hidden bg-wall p-3 transition-colors duration-500 group-hover:bg-panel sm:p-8">
+            <div class="frame-shadow mx-auto overflow-hidden border-4 border-frame outline outline-1 outline-line transition duration-700 group-hover:-translate-y-1.5 sm:border-[6px] {{ $soldOut ? 'opacity-60 grayscale-[40%]' : '' }}">
+                @if ($product->imageUrl())
+                    <img src="{{ $product->imageUrl() }}" alt="{{ $product->title }}" loading="lazy" decoding="async"
+                         class="block aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03]">
+                @else
+                    <div class="aspect-[4/5] w-full bg-line"></div>
+                @endif
+            </div>
+    @endif
         <div class="absolute left-1.5 top-1.5 flex flex-col items-start gap-1 sm:left-3 sm:top-3 sm:gap-1.5">
             @if ($soldOut)
                 <span class="bg-[#0e0d0c] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.1em] text-[#ede9e3] sm:px-2.5 sm:py-1 sm:text-[11px]">Prodano</span>

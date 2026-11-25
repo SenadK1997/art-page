@@ -65,8 +65,9 @@
             <p class="mt-3 text-[12px] text-ash">Ram ne mijenja cijenu slike.</p>
         </fieldset>
 
-        @if ($selected && $product->imageUrl())
-            <x-wall-preview class="mt-10" :image="$product->imageUrl()" :width="$selected->width" :height="$selected->height"
+        {{-- Only with a plain photo of the painting: a room photo on our wall would be a wall on a wall --}}
+        @if ($selected && $product->hasArtwork())
+            <x-wall-preview class="mt-10" :image="$product->artworkUrl()" :width="$selected->width" :height="$selected->height"
                 :frame="$frame" wire:key="wall-{{ $selected->id }}-{{ $frame }}" />
         @endif
 
