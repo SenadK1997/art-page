@@ -335,11 +335,11 @@ document.addEventListener('alpine:init', () => {
             g.fillRect(box.x, box.y, box.w, box.h);
             const ratio = this.width / this.height;
             const maxW = box.w - 160;
-            const maxH = box.h - 120;
+            const maxH = box.h - 160; // leaves room for the note under the painting
             const pw = ratio > maxW / maxH ? maxW : maxH * ratio;
             const ph = pw / ratio;
             const px = box.x + (box.w - pw) / 2;
-            const py = box.y + (box.h - ph) / 2;
+            const py = box.y + (box.h - 50 - ph) / 2;
             g.shadowColor = 'rgba(60, 40, 20, 0.35)';
             g.shadowBlur = 40;
             g.shadowOffsetY = 18;
@@ -375,6 +375,19 @@ document.addEventListener('alpine:init', () => {
             // Size as an L of measuring lines inside the canvas:
             // width along the top, height down the left side.
             this.drawSizeLines(g, px, py, pw, ph, sans, Boolean(sample));
+
+            // Small note under the painting: the image is only an example, not the motif.
+            g.save();
+            g.textAlign = 'center';
+            g.textBaseline = 'middle';
+            g.fillStyle = '#8a8073';
+            g.font = `italic 400 26px ${sans}`;
+            g.fillText(
+                sample ? 'Slika je samo primjer stila — motiv dogovaramo s vama.' : 'Okvirni prikaz veličine.',
+                W / 2,
+                box.y + box.h - 30,
+            );
+            g.restore();
 
             // Style name under the painting, then the price.
             g.textAlign = 'center';
