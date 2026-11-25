@@ -40,6 +40,10 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->maxContentWidth('full')
             ->navigationItems([
+                NavigationItem::make('Kalkulator')
+                    ->url('/kalkulator', shouldOpenInNewTab: true)
+                    ->icon(Heroicon::OutlinedCalculator)
+                    ->sort(98),
                 NavigationItem::make('Otvori stranicu')
                     ->url('/', shouldOpenInNewTab: true)
                     ->icon(Heroicon::OutlinedArrowTopRightOnSquare)

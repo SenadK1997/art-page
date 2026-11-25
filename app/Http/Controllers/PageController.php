@@ -43,6 +43,22 @@ class PageController extends Controller
         ]);
     }
 
+    /** Owner's quick price calculator, installable as a phone app (PWA). */
+    public function calculator(): View
+    {
+        return view('pages.calculator', [
+            'styles' => PaintingStyle::active()->get()->map(fn (PaintingStyle $s) => [
+                'id' => $s->id,
+                'name' => $s->name,
+                'multiplier' => $s->multiplier,
+                'minW' => $s->min_width,
+                'maxW' => $s->max_width,
+                'minH' => $s->min_height,
+                'maxH' => $s->max_height,
+            ])->values(),
+        ]);
+    }
+
     public function commission(): View
     {
         return view('pages.commission', ['styles' => PaintingStyle::active()->get()]);

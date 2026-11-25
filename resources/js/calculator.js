@@ -223,4 +223,109 @@ document.addEventListener('alpine:init', () => {
             document.body.classList.remove('has-buy-bar');
         },
     }));
+    // /kalkulator: the owner's quick price calculator (installable app).
+    Alpine.data('quickCalc', (styles, orderUrl) => ({
+        styles,
+        styleId: Number(localStorage.getItem('qc.style')) || styles[0]?.id,
+        width: Number(localStorage.getItem('qc.w')) || 50,
+        height: Number(localStorage.getItem('qc.h')) || 70,
+        discount: 0,
+        presets: [[30, 40], [40, 50], [50, 70], [60, 80], [60, 90], [70, 100], [80, 120], [100, 150]],
+        copied: false,
+        offline: !navigator.onLine,
+        canInstall: false,
+        installEvent: null,
+        showIosHint: false,
+
+        init() {
+            if (!this.styles.some((s) => s.id === this.styleId)) this.styleId = this.styles[0]?.id;
+            // Remember the last calculation between visits.
+            this.$watch('styleId', (v) => localStorage.setItem('qc.style', v));
+            this.$watch('width', (v) => localStorage.setItem('qc.w', v));
+            this.$watch('height', (v) => localStorage.setItem('qc.h', v));
+
+            addEventListener('online', () => (this.offline = false));
+            addEventListener('offline', () => (this.offline = true));
+
+            // Android/Chrome: offer our own "Instaliraj" button.
+            addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                this.installEvent = e;
+                this.canInstall = true;
+            });
+            addEventListener('appinstalled', () => (this.canInstall = false));
+
+            // iPhone: there is no prompt, so explain "Add to Home Screen" once.
+            const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+            const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            this.showIosHint = ios && !standalone && !localStorage.getItem('qc.iosHint');
+        },
+        current() {
+            return this.styles.find((s) => s.id === this.styleId) ?? this.styles[0];
+        },
+        step(dim, delta) {
+            this[dim] = Math.max(5, Math.min(999, (Number(this[dim]) || 0) + delta));
+        },
+        // Same rule as the website: round(w × h / 100 × multiplier)
+        priceFor(style) {
+            const w = Number(this.width) || 0;
+            const h = Number(this.height) || 0;
+            return Math.round((w * h) / 100 * style.multiplier);
+        },
+        price() {
+            return this.priceFor(this.current());
+        },
+        finalPrice() {
+            const d = Math.min(90, Math.max(0, Number(this.discount) || 0));
+            return Math.round(this.price() * (100 - d) / 100);
+        },
+        outOfRange() {
+            const s = this.current();
+            return this.width < s.minW || this.width > s.maxW || this.height < s.minH || this.height > s.maxH;
+        },
+        fmt(n) {
+            return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        },
+        quote() {
+            const discount = this.discount > 0 ? ` (popust ${this.discount}%, umjesto ${this.fmt(this.price())} KM)` : '';
+            return `Slika po mjeri — ${this.current().name}, ${this.width} × ${this.height} cm: ${this.fmt(this.finalPrice())} KM${discount}.
+`
+                + `Plaćanje pouzećem. Naručite: ${orderUrl}`;
+        },
+        async share() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({ title: 'Foco Art — ponuda', text: this.quote() });
+                    return;
+                } catch (e) {
+                    if (e.name === 'AbortError') return;
+                }
+            }
+            window.open('https://wa.me/?text=' + encodeURIComponent(this.quote()), '_blank');
+        },
+        async copy() {
+            try {
+                await navigator.clipboard.writeText(this.quote());
+            } catch {
+                const t = Object.assign(document.createElement('textarea'), { value: this.quote() });
+                document.body.append(t);
+                t.select();
+                document.execCommand('copy');
+                t.remove();
+            }
+            this.copied = true;
+            setTimeout(() => (this.copied = false), 1800);
+        },
+        async install() {
+            if (!this.installEvent) return;
+            this.installEvent.prompt();
+            await this.installEvent.userChoice;
+            this.installEvent = null;
+            this.canInstall = false;
+        },
+        dismissIosHint() {
+            localStorage.setItem('qc.iosHint', '1');
+            this.showIosHint = false;
+        },
+    }));
 });

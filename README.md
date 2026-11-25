@@ -14,6 +14,16 @@ price (KM) = round(width_cm × height_cm / 100 × multiplier)
 
 The multiplier is the price of 100 cm² for a style: Apstrakcija 5, Realizam 10, Panorama 15. The artist can change these in the admin under **Stilovi i cijene**. The calculator and the admin's size form both use this formula. The browser shows the price live, and the server always recomputes it.
 
+## Owner's calculator app (`/kalkulator`)
+
+A one-page price calculator for the artist. It has style buttons, width and height with +/− buttons and presets, a big price, an optional discount, the same size in all styles, and "Pošalji ponudu" (share to WhatsApp, Viber or SMS) or "Kopiraj".
+
+It installs as its own phone app (PWA) called "Kalkulator" with the FA icon:
+- **Android/Chrome:** tap "Instaliraj" in the page header, or use the browser menu → "Add to Home screen".
+- **iPhone/Safari:** Share → "Dodaj na početni ekran" (the page explains this once).
+
+The icon opens straight into the calculator, full screen, and keeps working offline. Prices come from Admin → Stilovi i cijene. The app updates whenever it's opened online. Installing needs **https** (localhost works for testing).
+
 ## Admin (`/admin`)
 
 - **Narudžbe:** a badge for new orders, one-click "Potvrdi", and status buttons. Each item shows whether it ships from stock, is still to paint, or is a gift, plus the customer's own photo. **Cijena** lets the admin change item prices and quantities and add a discount and delivery cost after talking to the customer. The total recalculates, and the original stays visible.
