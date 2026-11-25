@@ -15,7 +15,7 @@ class PaintingStyleSeeder extends Seeder
     {
         $styles = [
             ['slug' => 'apstrakcija', 'name' => 'Apstrakcija', 'multiplier' => 5, 'min_width' => 20, 'min_height' => 20, 'max_width' => 200, 'max_height' => 200, 'description' => 'Boja, tekstura i pokret — slobodne kompozicije.'],
-            ['slug' => 'realizam', 'name' => 'Realizam', 'multiplier' => 10, 'min_width' => 20, 'min_height' => 20, 'max_width' => 150, 'max_height' => 150, 'description' => 'Prizori, portreti i motivi naslikani do detalja.'],
+            ['slug' => 'realizam', 'name' => 'Realizam', 'multiplier' => 10, 'min_width' => 20, 'min_height' => 20, 'max_width' => 150, 'max_height' => 150, 'description' => 'Prizori, gradovi i motivi naslikani do detalja.'],
             ['slug' => 'panorama', 'name' => 'Panorama', 'multiplier' => 15, 'min_width' => 60, 'min_height' => 30, 'max_width' => 250, 'max_height' => 150, 'description' => 'Široki prizori gradova i pejzaža.'],
         ];
 

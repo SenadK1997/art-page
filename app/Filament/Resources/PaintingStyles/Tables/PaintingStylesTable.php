@@ -19,18 +19,22 @@ class PaintingStylesTable
             ->paginated(false)
             ->columns([
                 ImageColumn::make('image')->label('')->disk('public')->imageHeight(48),
-                TextColumn::make('name')->label('Naziv')->weight('medium'),
+                TextColumn::make('name')->label('Naziv')->weight('medium')->wrap()
+                    ->description(fn (PaintingStyle $record) => $record->multiplier.' KM / 100 cm² · '."{$record->min_width}×{$record->min_height}–{$record->max_width}×{$record->max_height} cm"),
                 TextColumn::make('multiplier')
                     ->label('Cijena / 100 cm²')
-                    ->formatStateUsing(fn (int $state) => $state.' KM'),
+                    ->formatStateUsing(fn (int $state) => $state.' KM')
+                    ->visibleFrom('md'),
                 TextColumn::make('example')
                     ->label('Primjer 50 × 70 cm')
-                    ->state(fn (PaintingStyle $record) => $record->priceFor(50, 70).' KM'),
+                    ->state(fn (PaintingStyle $record) => $record->priceFor(50, 70).' KM')
+                    ->visibleFrom('md'),
                 TextColumn::make('limits')
                     ->label('Veličine po mjeri')
-                    ->state(fn (PaintingStyle $record) => "{$record->min_width}×{$record->min_height} – {$record->max_width}×{$record->max_height} cm"),
-                TextColumn::make('products_count')->label('Slika u galeriji')->counts('products'),
-                ToggleColumn::make('is_active')->label('U kalkulatoru'),
+                    ->state(fn (PaintingStyle $record) => "{$record->min_width}×{$record->min_height} – {$record->max_width}×{$record->max_height} cm")
+                    ->visibleFrom('lg'),
+                TextColumn::make('products_count')->label('Slika u galeriji')->counts('products')->visibleFrom('lg'),
+                ToggleColumn::make('is_active')->label('U kalkulatoru')->visibleFrom('md'),
             ])
             ->recordActions([
                 EditAction::make(),

@@ -23,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        // Upload boxes in the admin: the upload library has no Bosnian text of its own.
+        \Filament\Forms\Components\FileUpload::configureUsing(fn ($upload) => $upload->placeholder(
+            'Dodirnite ovdje i izaberite fotografiju <span class="filepond--label-action">(ili je prevucite)</span>'
+        ));
+
         // Painting and customer photos may be up to 15 MB (Livewire's default is 12 MB).
         config(['livewire.temporary_file_upload.rules' => ['required', 'file', 'max:20480']]);
 

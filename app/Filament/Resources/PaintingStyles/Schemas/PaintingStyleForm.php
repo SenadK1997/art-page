@@ -80,7 +80,7 @@ class PaintingStyleForm
                         TextInput::make('max_height')->label('Najveća visina')->numeric()->integer()->gte('min_height')->default(200)->suffix('cm')->required(),
                         Toggle::make('allows_photo')
                             ->label('Kupac može poslati svoju fotografiju')
-                            ->helperText('Npr. portret ili kuća po fotografiji kupca.')
+                            ->helperText('Npr. kuća, grad ili omiljeno mjesto po fotografiji kupca.')
                             ->default(true)
                             ->columnSpanFull(),
                     ]),

@@ -22,10 +22,12 @@ class OrdersTable
             ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('number')
-                    ->label('Broj')
-                    ->searchable()
+                    ->label('Narudžba')
+                    ->searchable(['number', 'full_name', 'phone'])
                     ->weight('medium')
-                    ->description(fn (Order $record) => $record->created_at->format('d.m.Y. H:i')),
+                    ->wrap()
+                    // On phones the other columns are hidden, so the essentials sit here.
+                    ->description(fn (Order $record) => $record->full_name.' · '.number_format($record->total, 0, ',', '.').' KM · '.$record->created_at->format('d.m. H:i')),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -33,9 +35,9 @@ class OrdersTable
                     ->color(fn (string $state) => OrderForm::STATUS_COLORS[$state] ?? 'gray'),
                 TextColumn::make('full_name')
                     ->label('Kupac')
-                    ->searchable()
-                    ->description(fn (Order $record) => $record->phone),
-                TextColumn::make('city')->label('Grad')->searchable()->toggleable(),
+                    ->description(fn (Order $record) => $record->phone)
+                    ->visibleFrom('md'),
+                TextColumn::make('city')->label('Grad')->toggleable()->visibleFrom('lg'),
                 TextColumn::make('items')
                     ->label('Slike')
                     ->state(fn (Order $record) => $record->items
@@ -43,13 +45,15 @@ class OrdersTable
                         ->all())
                     ->listWithLineBreaks()
                     ->limitList(2)
-                    ->expandableLimitedList(),
+                    ->expandableLimitedList()
+                    ->visibleFrom('lg'),
                 TextColumn::make('total')
                     ->label('Ukupno')
                     ->formatStateUsing(fn (int $state) => number_format($state, 0, ',', '.').' KM')
                     ->description(fn (Order $record) => $record->wasAdjusted() ? 'naručeno '.number_format($record->original_total, 0, ',', '.').' KM' : null)
                     ->alignEnd()
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
             ])
             ->filters([
                 SelectFilter::make('status')->label('Status')->options(config('shop.order_statuses')),
@@ -57,6 +61,8 @@ class OrdersTable
             ->recordActions([
                 Action::make('confirm')
                     ->label('Potvrdi')
+                    ->iconButton()
+                    ->tooltip('Potvrdi narudžbu')
                     ->icon(Heroicon::OutlinedCheck)
                     ->color('success')
                     ->visible(fn (Order $record) => $record->status === 'new')

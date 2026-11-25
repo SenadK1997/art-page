@@ -64,7 +64,7 @@
 
         <fieldset class="mt-10" x-show="current().photo">
             <legend class="field-label">4 · Vaša fotografija <span class="normal-case tracking-normal text-ash">(nije obavezno)</span></legend>
-            <p class="text-[13px] leading-relaxed text-stone">Pošaljite fotografiju koju želite naslikanu — portret, vaš grad, kuća, ljubimac. Umjetnik je pregleda i javi vam se prije izrade.</p>
+            <p class="text-[13px] leading-relaxed text-stone">Pošaljite fotografiju koju želite naslikanu — vaš grad, kuća, pejzaž ili omiljeno mjesto. Umjetnik je pregleda i javi vam se prije izrade.</p>
 
             <label x-show="!localPhoto" class="mt-4 flex cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-line-strong px-6 py-8 text-center transition hover:border-gold">
                 <svg class="h-7 w-7 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 16l4-4 4 4 3-3 5 5M4 6h16v14H4zM9 9.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>

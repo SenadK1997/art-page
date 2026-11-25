@@ -18,15 +18,17 @@ class PromotionsTable
             ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('title')->label('Naziv')->weight('medium')
-                    ->description(fn (Promotion $record) => $record->conditionText()),
+                    ->wrap()
+                    ->description(fn (Promotion $record) => $record->conditionText().($record->ends_at ? ' · do '.$record->ends_at->format('d.m.') : '').($record->is_active ? '' : ' · ugašena')),
                 TextColumn::make('gifts_list')
                     ->label('Pokloni')
                     ->state(fn (Promotion $record) => $record->gifts->map(fn ($g) => $g->product->title.' '.$g->label())->all())
-                    ->listWithLineBreaks()->limitList(2)->expandableLimitedList(),
+                    ->listWithLineBreaks()->limitList(2)->expandableLimitedList()->visibleFrom('md'),
                 TextColumn::make('period')
                     ->label('Traje')
-                    ->state(fn (Promotion $record) => ($record->starts_at?->format('d.m.Y.') ?? 'odmah').' – '.($record->ends_at?->format('d.m.Y.') ?? 'dok ne ugasite')),
-                ToggleColumn::make('is_active')->label('Aktivna'),
+                    ->state(fn (Promotion $record) => ($record->starts_at?->format('d.m.Y.') ?? 'odmah').' – '.($record->ends_at?->format('d.m.Y.') ?? 'dok ne ugasite'))
+                    ->visibleFrom('lg'),
+                ToggleColumn::make('is_active')->label('Aktivna')->visibleFrom('md'),
             ])
             ->recordActions([
                 EditAction::make(),

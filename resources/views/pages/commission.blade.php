@@ -4,7 +4,7 @@
             <p class="eyebrow">Slika po mjeri</p>
             <h1 class="display mt-4 max-w-3xl text-[42px] sm:mt-5 sm:text-[72px]">Vaša ideja, <em class="text-gold-light">naslikana rukom.</em></h1>
             <p class="mt-6 max-w-xl text-[16px] leading-relaxed text-stone">
-                Izaberite stil i dimenzije — ili pošaljite svoju fotografiju: portret, kuću, grad, ljubimca. Cijenu vidite odmah, a plaćate tek kada slika stigne.
+                Izaberite stil i dimenzije — ili pošaljite svoju fotografiju: kuću, grad, pejzaž ili omiljeno mjesto. Cijenu vidite odmah, a plaćate tek kada slika stigne.
             </p>
         </div>
     </section>

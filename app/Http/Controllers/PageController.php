@@ -36,7 +36,7 @@ class PageController extends Controller
             : ($hero && $hero->imageUrl() ? [
                 'image' => $hero->imageUrl(),
                 'alt' => $hero->title,
-                'caption' => $hero->title.($hero->technique ? ' — '.$hero->technique : '').($hero->sizes->first() ? ', '.$hero->sizes->first()->label() : ''),
+                'caption' => null, // only the caption typed in Admin → Postavke is shown
                 'url' => route('gallery.show', $hero),
                 'natural' => false,
             ] : null);
@@ -44,7 +44,9 @@ class PageController extends Controller
         return view('pages.home', [
             'hero' => $hero,
             'heroView' => $heroView,
-            'featured' => $featured->skip(1)->take(6),
+            // One painting shown large; when the hero already uses the first featured painting, take the next.
+            'spotlight' => $spotlight = ($heroImage ? $featured->first() : $featured->skip(1)->first()),
+            'featured' => $featured->reject(fn ($p) => $p->is($spotlight) || (! $heroImage && $p->is($hero)))->take(6)->values(),
             'onSale' => $base()->onSale()->orderBy('sort')->take(6)->get(),
             'inStock' => $base()->inStock()->orderBy('sort')->take(6)->get(),
             'styles' => PaintingStyle::active()->get(),

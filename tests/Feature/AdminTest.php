@@ -88,6 +88,43 @@ class AdminTest extends TestCase
         $this->assertSame([525, 2250], $product->sizes()->pluck('price')->all());
     }
 
+    public function test_standard_sizes_are_added_with_formula_prices(): void
+    {
+        Storage::fake('public');
+        $realizam = PaintingStyle::where('slug', 'realizam')->first(); // 20–150 cm, 10 KM
+
+        $page = Livewire::test(CreateProduct::class)
+            ->fillForm([
+                'title' => 'Brza slika',
+                'painting_style_id' => $realizam->id,
+                'image' => UploadedFile::fake()->image('slika.jpg', 800, 1000),
+            ])
+            ->callAction(\Filament\Actions\Testing\TestAction::make('standardSizes')->schemaComponent('sizes-section', schema: 'form'))
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(
+            ['30x40=120', '50x70=350', '70x100=700'],
+            Product::where('title', 'Brza slika')->sole()->sizes->map(fn ($s) => "{$s->width}x{$s->height}={$s->price}")->all(),
+        );
+    }
+
+    public function test_paintings_can_be_put_on_sale_from_the_list(): void
+    {
+        $style = PaintingStyle::first()->id;
+        $a = Product::create(['title' => 'A', 'painting_style_id' => $style]);
+        $b = Product::create(['title' => 'B', 'painting_style_id' => $style]);
+
+        Livewire::test(\App\Filament\Resources\Products\Pages\ListProducts::class)
+            ->callTableBulkAction('bulkSale', [$a, $b], ['discount_percent' => 20])
+            ->assertHasNoTableBulkActionErrors();
+        $this->assertSame([20, 20], [$a->fresh()->discount_percent, $b->fresh()->discount_percent]);
+
+        Livewire::test(\App\Filament\Resources\Products\Pages\ListProducts::class)
+            ->callTableAction('endSale', $a);
+        $this->assertSame(0, $a->fresh()->discount_percent);
+    }
+
     public function test_order_status_can_be_changed(): void
     {
         $order = Order::create(['full_name' => 'A B', 'phone' => '061', 'address' => 'X', 'city' => 'Y', 'total' => 350]);
