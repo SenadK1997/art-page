@@ -146,6 +146,11 @@ class OrderForm
                 default => '',
             };
             $style = $item->style_name ? e($item->style_name).' · ' : '';
+            if ($item->customer_note) {
+                $style = '<span style="display:block;margin:4px 0;padding:6px 8px;border-left:3px solid #b98a3e;background:rgba(201,161,94,.08)">Kupac želi: <em>'.e($item->customer_note).'</em></span>'.$style;
+            } elseif ($item->kind === 'commission' && ! $item->customer_photo) {
+                $style = '<span style="display:block;margin:4px 0;color:#b98a3e">Motiv nije opisan — nazovite kupca da ga dogovorite.</span>'.$style;
+            }
             if ($item->customer_photo) {
                 $url = route('admin.photo', $item);
                 $style = '<a href="'.$url.'" target="_blank" style="display:inline-block;margin:6px 0"><img src="'.$url.'" alt="" style="height:72px;border-radius:4px;vertical-align:middle"> <span style="color:#b98a3e;text-decoration:underline">Fotografija kupca — otvori</span></a><br>'.$style;

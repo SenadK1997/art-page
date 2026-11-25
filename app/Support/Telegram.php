@@ -31,7 +31,7 @@ class Telegram
 
         $lines = $order->items->map(function ($i) {
             $tag = match ($i->kind) {
-                'commission' => $i->customer_photo ? '🖼 Po fotografiji' : '🎨 Po mjeri',
+                'commission' => $i->customer_photo ? '🖼 Po fotografiji' : ($i->customer_note ? '🎨 Po mjeri' : '🎨 Po mjeri, motiv po dogovoru'),
                 'gift' => '🎁 Poklon',
                 default => $i->from_stock >= $i->qty ? '📦 Sa stanja' : '🖌 Naslikati',
             };
@@ -39,7 +39,8 @@ class Telegram
 
             return "• {$tag}: <b>".e($i->title).'</b>'.($i->style_name ? ' ('.e($i->style_name).')' : '')
                 ."\n   {$i->width}×{$i->height} cm".($i->frameLabel() ? ', ram '.e($i->frameLabel()) : '')
-                .($i->qty > 1 ? ", {$i->qty} kom" : '')." — {$price}";
+                .($i->qty > 1 ? ", {$i->qty} kom" : '')." — {$price}"
+                .($i->customer_note ? "\n   💬 „".e($i->customer_note).'“' : '');
         })->implode("\n");
 
         $text = "🛒 <b>Nova narudžba {$order->number}</b>\n\n"

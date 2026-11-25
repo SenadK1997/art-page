@@ -32,6 +32,8 @@
                                         @if ($line['style_name']){{ $line['style_name'] }} · @endif{{ $line['width'] }} × {{ $line['height'] }} cm
                                         @if ($line['type'] !== 'gift')<br>Ram: {{ $line['frame_label'] }}@endif
                                         @if ($line['photo'])<br><span class="text-ok">Vaša fotografija je priložena</span>@endif
+                                        @if ($line['note'] ?? null)<br><span class="italic">„{{ \Illuminate\Support\Str::limit($line['note'], 90) }}“</span>@endif
+                                        @if ($line['type'] === 'commission' && ! $line['photo'] && ! ($line['note'] ?? null))<br><span>Umjetnik vas kontaktira da dogovorite motiv.</span>@endif
                                     </p>
                                     <div class="mt-4 flex items-center gap-4">
                                         @if ($line['type'] !== 'gift')

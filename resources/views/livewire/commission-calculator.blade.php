@@ -84,6 +84,18 @@
             </div>
             @error('photo') <p class="mt-3 text-[13px] text-red-500">{{ $message }}</p> @enderror
         </fieldset>
+
+        <fieldset class="mt-10">
+            <legend class="field-label">Šta želite da bude naslikano? <span class="normal-case tracking-normal text-ash">(nije obavezno)</span></legend>
+            <textarea wire:model.blur="motif" @input="touch()" rows="3" maxlength="500"
+                      placeholder="Npr. zalazak sunca nad morem, Baščaršija noću, apstrakcija u zlatnoj i plavoj…"
+                      class="field text-[15px]"></textarea>
+            @error('motif') <p class="mt-2 text-[13px] text-red-500">{{ $message }}</p> @enderror
+            <p class="mt-3 flex gap-2 text-[13px] leading-relaxed text-stone">
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+                <span>Niste sigurni šta želite? Samo izaberite stil i veličinu — nakon narudžbe umjetnik vas pozove i zajedno dogovorite motiv.</span>
+            </p>
+        </fieldset>
     </div>
 
     {{-- Wall preview: first and pinned under the header on phones, so every change is visible --}}

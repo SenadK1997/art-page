@@ -32,10 +32,14 @@ class Cart
     }
 
     /** $photo is a path on the private `local` disk, from the customer's upload. */
-    public function addCommission(int $styleId, int $width, int $height, ?string $frame, int $qty = 1, ?string $photo = null): void
+    /** $note: what the customer would like painted (optional; otherwise agreed by phone). */
+    public function addCommission(int $styleId, int $width, int $height, ?string $frame, int $qty = 1, ?string $photo = null, ?string $note = null): void
     {
         $frame = $this->validFrame($frame);
-        $key = "c{$styleId}-{$width}x{$height}-{$frame}".($photo ? '-'.substr(md5($photo), 0, 8) : '');
+        $note = $note !== null ? mb_substr(trim($note), 0, 500) : null;
+        $key = "c{$styleId}-{$width}x{$height}-{$frame}"
+            .($photo ? '-'.substr(md5($photo), 0, 8) : '')
+            .($note ? '-n'.substr(md5($note), 0, 8) : '');
 
         $this->put($key, [
             'type' => 'commission',
@@ -44,6 +48,7 @@ class Cart
             'height' => $height,
             'frame' => $frame,
             'photo' => $photo,
+            'note' => $note ?: null,
         ], $qty);
     }
 
@@ -182,6 +187,7 @@ class Cart
                 'frame' => $frame,
                 'frame_label' => $frames[$frame]['label'] ?? null,
                 'photo' => null,
+                'note' => null,
                 'promotion_title' => null,
             ];
 
@@ -217,13 +223,13 @@ class Cart
             $price = $style->priceFor($line['width'], $line['height']);
             $photo = $line['photo'] ?? null;
 
-            return ['photo' => $photo] + $base + [
+            return ['photo' => $photo, 'note' => $line['note'] ?? null] + $base + [
                 'size_id' => null,
                 'original_unit_price' => null,
                 'in_stock' => 0,
                 'max_qty' => 10,
                 'product_id' => null,
-                'title' => $photo ? 'Slika po vašoj fotografiji' : 'Slika po narudžbi',
+                'title' => $photo ? 'Slika po vašoj fotografiji' : (($line['note'] ?? null) ? 'Slika po mjeri' : 'Slika po mjeri — motiv po dogovoru'),
                 'style_name' => $style->name,
                 'image' => $photo ? route('cart.photo', $key) : $style->imageUrl(),
                 'url' => route('commission'),
@@ -244,6 +250,7 @@ class Cart
             'frame' => 'none',
             'frame_label' => config('shop.frames.none.label'),
             'photo' => null,
+            'note' => null,
             'promotion_title' => $promotion->title,
             'size_id' => $size->id,
             'product_id' => $size->product_id,

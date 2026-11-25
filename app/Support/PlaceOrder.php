@@ -50,6 +50,7 @@ class PlaceOrder
                 $order->items()->create([
                     'kind' => $line['type'],
                     'customer_photo' => $this->keepPhoto($line['photo'], $order),
+                    'customer_note' => $line['note'] ?? null,
                     'promotion_title' => $line['promotion_title'],
                     'product_id' => $line['product_id'],
                     'title' => $line['title'],

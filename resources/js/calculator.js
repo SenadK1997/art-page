@@ -54,6 +54,9 @@ document.addEventListener('alpine:init', () => {
         wallWidth: 600,
         localPhoto: null,
         bar: false,
+        // The sticky "U korpu" bar only appears once the visitor has chosen
+        // something (or came from a shared quote), never just from scrolling past.
+        touched: Boolean(cfg.initial?.style),
 
         init() {
             const wall = this.$refs.wall;
@@ -66,7 +69,17 @@ document.addEventListener('alpine:init', () => {
             this.clamp();
             // Each style has its own size limits (set in the admin).
             this.$watch('styleId', () => this.clamp());
+            this.$nextTick(() => {
+                for (const key of ['styleId', 'width', 'height', 'frame', 'localPhoto']) {
+                    this.$watch(key, () => this.touch());
+                }
+            });
             this.watchBuyBar(this.$root, this.$refs.buy);
+        },
+        touch() {
+            if (this.touched) return;
+            this.touched = true;
+            this.updateBar?.();
         },
         destroy() {
             this.observer?.disconnect();
@@ -80,9 +93,10 @@ document.addEventListener('alpine:init', () => {
             let areaVisible = false;
             let buttonVisible = false;
             const update = () => {
-                this.bar = areaVisible && !buttonVisible;
+                this.bar = this.touched && areaVisible && !buttonVisible;
                 document.body.classList.toggle('has-buy-bar', this.bar);
             };
+            this.updateBar = update;
             this.barObserver = new IntersectionObserver((entries) => {
                 for (const e of entries) {
                     if (e.target === area) areaVisible = e.isIntersecting;

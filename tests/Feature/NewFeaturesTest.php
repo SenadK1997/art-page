@@ -238,4 +238,32 @@ class NewFeaturesTest extends TestCase
         $this->get('/')->assertOk()->assertSee('Pronađite svoj motiv')->assertSee('Priroda');
         $this->get('/galerija?tema=priroda')->assertOk()->assertSee('Sebilj');
     }
+    public function test_commission_without_photo_or_motif_is_agreed_by_phone(): void
+    {
+        Livewire::test(CommissionCalculator::class)
+            ->call('add', $this->style('realizam')->id, 50, 70, 'black');
+
+        $line = app(Cart::class)->lines()->sole();
+        $this->assertSame('Slika po mjeri — motiv po dogovoru', $line['title']);
+        $this->assertNull($line['note']);
+        $this->get('/korpa')->assertSee('Umjetnik vas kontaktira da dogovorite motiv.');
+    }
+
+    public function test_commission_motif_reaches_the_order_and_telegram(): void
+    {
+        Http::fake(['api.telegram.org/*' => Http::response(['ok' => true])]);
+        app(Settings::class)->set(['telegram_enabled' => true, 'telegram_bot_token' => '123456:ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'telegram_chat_id' => '42']);
+
+        Livewire::test(CommissionCalculator::class)
+            ->set('motif', 'Zalazak sunca nad morem')
+            ->call('add', $this->style('realizam')->id, 50, 70, 'black')
+            ->assertHasNoErrors();
+
+        $this->assertSame('Slika po mjeri', app(Cart::class)->lines()->sole()['title']);
+        $order = app(PlaceOrder::class)->handle($this->customer());
+        $this->assertSame('Zalazak sunca nad morem', $order->items->sole()->customer_note);
+
+        app(Telegram::class)->notifyNewOrder($order);
+        Http::assertSent(fn ($r) => str_contains($r['text'], 'Zalazak sunca nad morem'));
+    }
 }

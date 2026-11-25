@@ -16,6 +16,9 @@ class CommissionCalculator extends Component
     /** Optional photo the customer wants painted. */
     public $photo = null;
 
+    /** Optional: what the customer would like painted. Without it the artist calls to agree the motif. */
+    public string $motif = '';
+
     /** Starting choice from a shared quote link: ?stil=realizam&w=70&h=100&ram=gold */
     public array $initial = [];
 
@@ -43,12 +46,13 @@ class CommissionCalculator extends Component
     {
         $style = PaintingStyle::active()->find($styleId);
 
-        validator(compact('styleId', 'width', 'height', 'frame') + ['photo' => $this->photo], [
+        validator(compact('styleId', 'width', 'height', 'frame') + ['photo' => $this->photo, 'motif' => $this->motif], [
             'styleId' => ['required', Rule::exists('painting_styles', 'id')->where('is_active', true)],
             'width' => ['required', 'integer', 'between:'.($style->min_width ?? 1).','.($style->max_width ?? 1)],
             'height' => ['required', 'integer', 'between:'.($style->min_height ?? 1).','.($style->max_height ?? 1)],
             'frame' => ['required', Rule::in(array_keys(config('shop.frames')))],
             'photo' => $this->photoRules(),
+            'motif' => ['nullable', 'string', 'max:500'],
         ], [
             'width.between' => 'Širina za ovaj stil mora biti između :min i :max cm.',
             'height.between' => 'Visina za ovaj stil mora biti između :min i :max cm.',
@@ -60,7 +64,7 @@ class CommissionCalculator extends Component
             $path = $this->photo->storeAs('cart-uploads', Str::uuid().'.'.$this->photo->extension(), 'local');
         }
 
-        $cart->addCommission($styleId, $width, $height, $frame, 1, $path);
+        $cart->addCommission($styleId, $width, $height, $frame, 1, $path, trim($this->motif) ?: null);
         $this->dispatch('cart-updated');
 
         return $this->redirectRoute('cart', navigate: true);
@@ -78,6 +82,7 @@ class CommissionCalculator extends Component
             'photo.mimes' => 'Odaberite fotografiju (JPG, PNG ili WEBP).',
             'photo.max' => 'Fotografija može imati najviše 15 MB.',
             'photo.uploaded' => 'Fotografija se nije učitala. Probajte manju (do 15 MB).',
+            'motif.max' => 'Opis može imati najviše 500 znakova.',
         ];
     }
 
