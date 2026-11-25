@@ -232,8 +232,8 @@ document.addEventListener('alpine:init', () => {
         height: Number(localStorage.getItem('qc.h')) || 70,
         discount: 0,
         presets: [[30, 40], [40, 50], [50, 70], [60, 80], [60, 90], [70, 100], [80, 120], [100, 150]],
-        copied: false,
         sharing: false,
+        saved: false,
         offline: !navigator.onLine,
         canInstall: false,
         installEvent: null,
@@ -287,24 +287,6 @@ document.addEventListener('alpine:init', () => {
         },
         fmt(n) {
             return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        },
-        // Link that opens the order calculator with exactly this style and size.
-        orderLink() {
-            const params = new URLSearchParams({ stil: this.current().slug, w: this.width, h: this.height });
-            return `${orderUrl}?${params}#kalkulator`;
-        },
-        quote() {
-            const lines = [
-                `Ponuda — Foco Art`,
-                `${this.current().name}, ${this.width} × ${this.height} cm`,
-                this.discount > 0
-                    ? `Cijena: ${this.fmt(this.finalPrice())} KM (popust ${this.discount}%, redovna ${this.fmt(this.price())} KM)`
-                    : `Cijena: ${this.fmt(this.finalPrice())} KM`,
-                `Plaćanje pouzećem, pri dostavi.`,
-                ``,
-                `Naručite ovu veličinu: ${this.orderLink()}`,
-            ];
-            return lines.join('\n');
         },
         // A 1080 × 1350 picture of the quote (the size WhatsApp and Instagram show best).
         async quoteImage() {
@@ -369,15 +351,35 @@ document.addEventListener('alpine:init', () => {
                 const sh = ph / s;
                 g.drawImage(sample, (sample.width - sw) / 2, (sample.height - sh) / 2, sw, sh, px, py, pw, ph);
             } else {
-                g.fillStyle = '#5d554b';
+                // Blank canvas colour with a faint weave.
+                g.fillStyle = '#f4f0e8';
                 g.fillRect(px, py, pw, ph);
+                g.strokeStyle = 'rgba(120, 100, 70, 0.05)';
+                g.lineWidth = 1;
+                for (let x = px; x < px + pw; x += 6) {
+                    g.beginPath();
+                    g.moveTo(x, py);
+                    g.lineTo(x, py + ph);
+                    g.stroke();
+                }
+                for (let y = py; y < py + ph; y += 6) {
+                    g.beginPath();
+                    g.moveTo(px, y);
+                    g.lineTo(px + pw, y);
+                    g.stroke();
+                }
             }
 
-            // Style, size and price.
+            // Size as an L of measuring lines inside the canvas:
+            // width along the top, height down the left side.
+            this.drawSizeLines(g, px, py, pw, ph, sans, Boolean(sample));
+
+            // Style name under the painting, then the price.
             g.textAlign = 'center';
-            g.fillStyle = '#5d554b';
-            g.font = `400 34px ${sans}`;
-            g.fillText(`${this.current().name.toUpperCase()}  ·  ${this.width} × ${this.height} cm`, W / 2, 850);
+            g.textBaseline = 'middle';
+            g.fillStyle = '#1c1a17';
+            g.font = `500 64px ${serif}`;
+            g.fillText(this.current().name, W / 2, 852);
             g.fillStyle = '#8d6828';
             g.font = `500 150px ${serif}`;
             g.fillText(`${this.fmt(this.finalPrice())} KM`, W / 2, 990);
@@ -404,6 +406,57 @@ document.addEventListener('alpine:init', () => {
 
             return new Promise((resolve) => c.toBlob(resolve, 'image/png'));
         },
+        drawSizeLines(g, px, py, pw, ph, font, onImage) {
+            const inset = 34;
+            const gap = 46; // keeps the two lines from touching in the corner
+            const lineColor = onImage ? '#f4f0e8' : '#5d554b';
+            const arrow = (x1, y1, x2, y2) => {
+                const a = Math.atan2(y2 - y1, x2 - x1);
+                const s = 16;
+                g.beginPath();
+                g.moveTo(x1, y1);
+                g.lineTo(x2, y2);
+                g.stroke();
+                for (const [x, y, dir] of [[x1, y1, a + Math.PI], [x2, y2, a]]) {
+                    g.beginPath();
+                    g.moveTo(x, y);
+                    g.lineTo(x - s * Math.cos(dir - 0.45), y - s * Math.sin(dir - 0.45));
+                    g.moveTo(x, y);
+                    g.lineTo(x - s * Math.cos(dir + 0.45), y - s * Math.sin(dir + 0.45));
+                    g.stroke();
+                }
+            };
+            const label = (text, x, y, rotation) => {
+                g.save();
+                g.translate(x, y);
+                g.rotate(rotation);
+                g.font = `500 40px ${font}`;
+                g.textAlign = 'center';
+                g.textBaseline = 'middle';
+                const tw = g.measureText(text).width + 24;
+                g.fillStyle = '#f4f0e8';
+                g.fillRect(-tw / 2, -26, tw, 52);
+                g.fillStyle = '#2b2926';
+                g.fillText(text, 0, 2);
+                g.restore();
+            };
+
+            g.save();
+            g.strokeStyle = lineColor;
+            g.lineWidth = 3;
+            if (onImage) {
+                g.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                g.shadowBlur = 6;
+            }
+            const topY = py + inset;
+            const leftX = px + inset;
+            arrow(px + inset + gap, topY, px + pw - inset, topY);
+            arrow(leftX, py + inset + gap, leftX, py + ph - inset);
+            g.restore();
+
+            label(`${this.width} cm`, px + inset + gap + (pw - 2 * inset - gap) / 2, topY, 0);
+            label(`${this.height} cm`, leftX, py + inset + gap + (ph - 2 * inset - gap) / 2, -Math.PI / 2);
+        },
         fileName() {
             return `foco-art-ponuda-${this.current().slug}-${this.width}x${this.height}.png`;
         },
@@ -412,18 +465,17 @@ document.addEventListener('alpine:init', () => {
             try {
                 const blob = await this.quoteImage();
                 const file = blob ? new File([blob], this.fileName(), { type: 'image/png' }) : null;
-                // Phones: share the picture and the text together (WhatsApp, Viber, Messenger…).
+                // Phones: share just the picture (WhatsApp, Viber, Messenger…), no link or text.
                 if (file && navigator.canShare?.({ files: [file] })) {
-                    await navigator.share({ files: [file], text: this.quote(), title: 'Foco Art — ponuda' });
+                    await navigator.share({ files: [file] });
                     return;
                 }
-                if (navigator.share) {
-                    await navigator.share({ title: 'Foco Art — ponuda', text: this.quote() });
-                    return;
+                // Computers can't share pictures: save it so it can be sent by hand.
+                if (blob) {
+                    this.download(blob);
+                    this.saved = true;
+                    setTimeout(() => (this.saved = false), 2500);
                 }
-                // Computers: save the picture and open WhatsApp with the text.
-                if (blob) this.download(blob);
-                window.open('https://wa.me/?text=' + encodeURIComponent(this.quote()), '_blank');
             } catch (e) {
                 if (e?.name !== 'AbortError') console.error(e);
             } finally {
@@ -442,19 +494,6 @@ document.addEventListener('alpine:init', () => {
                 URL.revokeObjectURL(a.href);
                 a.remove();
             }, 1000);
-        },
-        async copy() {
-            try {
-                await navigator.clipboard.writeText(this.quote());
-            } catch {
-                const t = Object.assign(document.createElement('textarea'), { value: this.quote() });
-                document.body.append(t);
-                t.select();
-                document.execCommand('copy');
-                t.remove();
-            }
-            this.copied = true;
-            setTimeout(() => (this.copied = false), 1800);
         },
         async install() {
             if (!this.installEvent) return;

@@ -3,7 +3,7 @@
  * - The page itself: network first (fresh prices), cached copy when offline.
  * - Built assets, fonts, icons, Livewire/Alpine: cache first (file names are versioned).
  */
-const CACHE = 'foco-kalkulator-v2';
+const CACHE = 'foco-kalkulator-v3';
 const PAGE = '/kalkulator';
 
 self.addEventListener('install', (event) => {

@@ -139,9 +139,9 @@
 
     {{-- Send the quote --}}
     <div class="safe-bottom fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-md gap-2 border-t border-line bg-panel/95 px-4 pt-3 backdrop-blur">
-        <button type="button" @click="share()" :disabled="sharing" class="btn-gold min-h-12 flex-1 px-3" x-text="sharing ? 'Pripremam…' : 'Pošalji ponudu'"></button>
-        <button type="button" @click="saveImage()" class="btn-ghost min-h-12 px-3" aria-label="Sačuvaj sliku ponude">Slika</button>
-        <button type="button" @click="copy()" class="btn-ghost min-h-12 px-3" x-text="copied ? '✓' : 'Tekst'" aria-label="Kopiraj tekst ponude"></button>
+        <button type="button" @click="share()" :disabled="sharing" class="btn-gold min-h-12 flex-1 px-3"
+                x-text="sharing ? 'Pripremam…' : (saved ? 'Slika sačuvana' : 'Pošalji ponudu')"></button>
+        <button type="button" @click="saveImage()" class="btn-ghost min-h-12 px-4" aria-label="Sačuvaj sliku ponude">Sačuvaj</button>
     </div>
 </div>
 
