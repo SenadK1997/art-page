@@ -9,7 +9,7 @@
         </div>
     </section>
 
-    <section class="pt-10 sm:pt-16">
+    <section id="kalkulator" class="scroll-mt-20 pt-10 sm:pt-16">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
             <livewire:commission-calculator />
         </div>

@@ -3,13 +3,13 @@
  * - The page itself: network first (fresh prices), cached copy when offline.
  * - Built assets, fonts, icons, Livewire/Alpine: cache first (file names are versioned).
  */
-const CACHE = 'foco-kalkulator-v1';
+const CACHE = 'foco-kalkulator-v2';
 const PAGE = '/kalkulator';
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE)
-            .then((cache) => cache.addAll([PAGE, '/images/logo-160.png', '/images/icon-192.png']))
+            .then((cache) => cache.addAll([PAGE, '/images/logo-160.png', '/images/logo.png', '/images/icon-192.png']))
             .then(() => self.skipWaiting()),
     );
 });
@@ -44,7 +44,7 @@ self.addEventListener('fetch', (event) => {
     }
 
     // Static files the page needs.
-    const isAsset = sameOrigin && (/^\/(build|images|livewire[^/]*)\//.test(url.pathname) || url.pathname === '/favicon.ico');
+    const isAsset = sameOrigin && (/^\/(build|images|storage|livewire[^/]*)\//.test(url.pathname) || url.pathname === '/favicon.ico');
     if (isAsset) {
         event.respondWith(
             caches.match(request).then((cached) => cached || fetch(request).then((response) => {

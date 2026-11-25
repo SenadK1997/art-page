@@ -53,9 +53,26 @@ class PaintingStyleForm
                             ->label('Prikaži u kalkulatoru')
                             ->default(true),
                     ]),
+                Section::make('Slika stila')
+                    ->description('Slika na naslovnoj (Apstrakcija / Realizam / Panorama) i u kalkulatoru. Ako je prazno, koristi se jedna od slika ovog stila iz galerije.')
+                    ->schema([
+                        FileUpload::make('image')
+                            ->hiddenLabel()
+                            ->imagePreviewHeight('240')
+                            ->image()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('styles')
+                            ->visibility('public')
+                            ->maxSize(15 * 1024)
+                            ->automaticallyResizeImagesMode('contain')
+                            ->automaticallyResizeImagesToWidth('1600')
+                            ->automaticallyResizeImagesToHeight('1600'),
+                    ]),
                 Section::make('Dozvoljene veličine po mjeri')
                     ->description('Kupac u kalkulatoru može birati samo veličine u ovim granicama.')
                     ->columns(2)
+                    ->columnSpanFull()
                     ->schema([
                         TextInput::make('min_width')->label('Najmanja širina')->numeric()->integer()->minValue(5)->default(20)->suffix('cm')->required(),
                         TextInput::make('max_width')->label('Najveća širina')->numeric()->integer()->gte('min_width')->default(200)->suffix('cm')->required(),
@@ -66,21 +83,6 @@ class PaintingStyleForm
                             ->helperText('Npr. portret ili kuća po fotografiji kupca.')
                             ->default(true)
                             ->columnSpanFull(),
-                    ]),
-                Section::make('Primjer slike')
-                    ->description('Prikazuje se u kalkulatoru i na naslovnoj.')
-                    ->schema([
-                        FileUpload::make('image')
-                            ->hiddenLabel()
-                            ->image()
-                            ->imageEditor()
-                            ->disk('public')
-                            ->directory('styles')
-                            ->visibility('public')
-                            ->maxSize(15 * 1024)
-                            ->automaticallyResizeImagesMode('contain')
-                            ->automaticallyResizeImagesToWidth('1600')
-                            ->automaticallyResizeImagesToHeight('1600'),
                     ]),
             ]);
     }

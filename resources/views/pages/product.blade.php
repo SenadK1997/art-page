@@ -14,7 +14,7 @@
                 <div x-data="{ active: 0, zoom: false, images: @js($images) }">
                     <div class="-mx-6 bg-wall p-6 sm:mx-0 sm:p-14">
                         @if (count($images))
-                            <button type="button" @click="zoom = true" class="frame-shadow mx-auto block w-full cursor-zoom-in border-[10px] border-ink outline outline-1 outline-line-strong" aria-label="Uvećaj sliku">
+                            <button type="button" @click="zoom = true" class="frame-shadow mx-auto block w-full cursor-zoom-in border-[10px] border-frame outline outline-1 outline-line-strong" aria-label="Uvećaj sliku">
                                 <img :src="images[active]" src="{{ $images[0] }}" alt="{{ $product->title }}" class="block max-h-[75vh] w-full object-contain">
                             </button>
                         @else

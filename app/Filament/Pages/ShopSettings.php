@@ -2,7 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Product;
 use App\Support\Settings;
+use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Components\Grid;
 use App\Support\Telegram;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -50,6 +53,9 @@ class ShopSettings extends Page
             'telegram_enabled' => $settings->bool('telegram_enabled'),
             'telegram_bot_token' => $settings->get('telegram_bot_token'),
             'telegram_chat_id' => $settings->get('telegram_chat_id'),
+            'hero_image' => $settings->get('hero_image'),
+            'hero_caption' => $settings->get('hero_caption'),
+            'hero_product_id' => $settings->get('hero_product_id'),
         ]);
     }
 
@@ -59,6 +65,37 @@ class ShopSettings extends Page
             ->statePath('data')
             ->columns(2)
             ->components([
+                Section::make('Naslovna — glavna slika')
+                    ->description('Velika slika na vrhu početne stranice. Ako je prazno, prikazuje se prva izdvojena slika iz galerije.')
+                    ->columnSpanFull()
+                    ->columns(2)
+                    ->schema([
+                        FileUpload::make('hero_image')
+                            ->label('Slika')
+                            ->image()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('site')
+                            ->visibility('public')
+                            ->maxSize(15 * 1024)
+                            ->automaticallyResizeImagesMode('contain')
+                            ->automaticallyResizeImagesToWidth('2400')
+                            ->automaticallyResizeImagesToHeight('2400')
+                            ->imagePreviewHeight('260'),
+                        Grid::make(1)->schema([
+                            TextInput::make('hero_caption')
+                                ->label('Tekst ispod slike (nije obavezno)')
+                                ->placeholder('Sebilj u sumrak — ulje na platnu, 70 × 100 cm')
+                                ->maxLength(120),
+                            Select::make('hero_product_id')
+                                ->label('Klik na sliku otvara')
+                                ->options(fn () => Product::orderBy('title')->pluck('title', 'id'))
+                                ->searchable()
+                                ->placeholder('Galeriju')
+                                ->helperText('Izaberite sliku iz galerije ako je ovo njena fotografija.'),
+                        ]),
+                    ]),
+
                 Section::make('Kontakt')
                     ->schema([
                         TextInput::make('phone')

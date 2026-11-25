@@ -49,8 +49,16 @@ class PaintingStyle extends Model
         return PriceCalculator::price($width, $height, $this->multiplier);
     }
 
+    /** The style's sample image, or else one of its own paintings so it is never blank. */
     public function imageUrl(): ?string
     {
-        return $this->image ? Storage::disk('public')->url($this->image) : null;
+        if ($this->image) {
+            return Storage::disk('public')->url($this->image);
+        }
+
+        $painting = $this->products()->visible()->whereNotNull('image')
+            ->orderByDesc('is_featured')->orderBy('sort')->first();
+
+        return $painting?->imageUrl();
     }
 }

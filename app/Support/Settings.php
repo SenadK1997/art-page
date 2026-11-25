@@ -25,6 +25,9 @@ class Settings
         'telegram_enabled' => '0',
         'telegram_bot_token' => null,
         'telegram_chat_id' => null,
+        'hero_image' => null,          // path on the public disk; empty = first featured painting
+        'hero_caption' => null,
+        'hero_product_id' => null,     // painting the hero links to; empty = gallery
     ];
 
     public function get(string $key, mixed $default = null): mixed

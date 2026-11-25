@@ -16,6 +16,19 @@ class CommissionCalculator extends Component
     /** Optional photo the customer wants painted. */
     public $photo = null;
 
+    /** Starting choice from a shared quote link: ?stil=realizam&w=70&h=100&ram=gold */
+    public array $initial = [];
+
+    public function mount(): void
+    {
+        $this->initial = array_filter([
+            'style' => request()->query('stil'),
+            'width' => (int) request()->query('w') ?: null,
+            'height' => (int) request()->query('h') ?: null,
+            'frame' => array_key_exists((string) request()->query('ram'), config('shop.frames')) ? request()->query('ram') : null,
+        ]);
+    }
+
     public function updatedPhoto(): void
     {
         $this->validateOnly('photo', ['photo' => $this->photoRules()], $this->photoMessages());
@@ -77,6 +90,7 @@ class CommissionCalculator extends Component
             'payload' => [
                 'styles' => $styles->map(fn ($s) => [
                     'id' => $s->id,
+                    'slug' => $s->slug,
                     'name' => $s->name,
                     'multiplier' => $s->multiplier,
                     'image' => $s->imageUrl(),
@@ -87,6 +101,7 @@ class CommissionCalculator extends Component
                     'photo' => $s->allows_photo,
                 ])->values(),
                 'frames' => collect(config('shop.frames'))->map(fn ($f, $k) => ['key' => $k] + $f)->values(),
+                'initial' => $this->initial,
             ],
         ]);
     }

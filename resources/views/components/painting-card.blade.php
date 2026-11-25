@@ -7,7 +7,7 @@
 @endphp
 <a href="{{ route('gallery.show', $product) }}" wire:navigate class="group block">
     <div class="relative overflow-hidden bg-wall p-3 transition-colors duration-500 group-hover:bg-panel sm:p-8">
-        <div class="frame-shadow mx-auto overflow-hidden border-4 border-ink outline outline-1 outline-line sm:border-[6px] {{ $soldOut ? 'opacity-60 grayscale-[40%]' : '' }}">
+        <div class="frame-shadow mx-auto overflow-hidden border-4 border-frame outline outline-1 outline-line sm:border-[6px] {{ $soldOut ? 'opacity-60 grayscale-[40%]' : '' }}">
             @if ($product->imageUrl())
                 <img src="{{ $product->imageUrl() }}" alt="{{ $product->title }}" loading="lazy" decoding="async"
                      class="block aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03]">

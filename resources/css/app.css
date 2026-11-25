@@ -20,6 +20,8 @@
     --color-gold-light: #e2be7e;
     --color-gold-deep: #9c7a40;
     --color-ok: #7ee2b8;
+    /* Picture frames: matte charcoal, not pure black. */
+    --color-frame: #2b2926;
 }
 
 /*

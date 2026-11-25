@@ -1,4 +1,4 @@
-<x-layouts::site :image="$hero?->imageUrl()" description="Originalne slike Amera Foče i slike po mjeri — Sarajevo, pejzaži, panorame i apstrakcija. Izaberite stil i veličinu, cijenu vidite odmah, plaćanje pouzećem.">
+<x-layouts::site :image="$heroView['image'] ?? null" description="Originalne slike Amera Foče i slike po mjeri — Sarajevo, pejzaži, panorame i apstrakcija. Izaberite stil i veličinu, cijenu vidite odmah, plaćanje pouzećem.">
     {{-- Hero: one painting, lit like a museum wall --}}
     <section class="theme-dark spotlight relative overflow-hidden pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pt-40">
         <div class="mx-auto grid max-w-7xl items-center gap-8 px-6 sm:gap-14 lg:grid-cols-[1fr_1.1fr] lg:px-10">
@@ -17,18 +17,19 @@
             </div>
 
             <div class="reveal order-1 lg:order-2" style="animation-delay: .15s">
-                @if ($hero && $hero->imageUrl())
-                    <a href="{{ route('gallery.show', $hero) }}" wire:navigate class="group block">
-                        <div class="frame-shadow mx-auto w-[72%] max-w-xl border-[8px] border-ink outline outline-1 outline-line-strong sm:w-full sm:border-[10px]">
-                            <img src="{{ $hero->imageUrl() }}" alt="{{ $hero->title }}" class="block aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.015]" fetchpriority="high">
+                @if ($heroView)
+                    <a href="{{ $heroView['url'] }}" wire:navigate class="group block">
+                        <div class="frame-shadow mx-auto w-[72%] max-w-xl overflow-hidden border-[8px] border-frame outline outline-1 outline-line-strong sm:w-full sm:border-[10px]">
+                            {{-- An uploaded homepage image keeps its own shape; a painting is shown 4:5 --}}
+                            <img src="{{ $heroView['image'] }}" alt="{{ $heroView['alt'] }}" fetchpriority="high"
+                                 class="block w-full transition duration-700 group-hover:scale-[1.015] {{ $heroView['natural'] ? 'max-h-[72vh] object-contain' : 'aspect-[4/5] object-cover' }}">
                         </div>
-                        <p class="mt-6 text-center font-display text-[17px] italic text-stone">
-                            {{ $hero->title }}@if($hero->technique) — {{ $hero->technique }}@endif
-                            @if($hero->sizes->first()), {{ $hero->sizes->first()->label() }}@endif
-                        </p>
+                        @if ($heroView['caption'])
+                            <p class="mt-6 text-center font-display text-[17px] italic text-stone">{{ $heroView['caption'] }}</p>
+                        @endif
                     </a>
                 @else
-                    <div class="frame-shadow mx-auto aspect-[4/5] w-full max-w-xl border-[10px] border-ink bg-wall outline outline-1 outline-line-strong"></div>
+                    <div class="frame-shadow mx-auto aspect-[4/5] w-full max-w-xl border-[10px] border-frame bg-wall outline outline-1 outline-line-strong"></div>
                 @endif
             </div>
         </div>

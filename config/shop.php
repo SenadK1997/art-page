@@ -32,7 +32,7 @@ return [
     // Frame colours a buyer can pick. They don't change the price.
     'frames' => [
         'none' => ['label' => 'Bez rama', 'color' => null],
-        'black' => ['label' => 'Crni', 'color' => '#111111'],
+        'black' => ['label' => 'Crni mat', 'color' => '#2b2926'],
         'gold' => ['label' => 'Zlatni', 'color' => '#C9A15E'],
         'silver' => ['label' => 'Srebrni', 'color' => '#C0C0C0'],
         'copper' => ['label' => 'Bakarni', 'color' => '#B87333'],

@@ -21,8 +21,29 @@ class PageController extends Controller
 
         $hero = $featured->first();
 
+        // The artist's own homepage image (Admin → Postavke), else the first featured painting.
+        $settings = app(\App\Support\Settings::class);
+        $heroImage = $settings->get('hero_image');
+        $heroLinkProduct = $settings->int('hero_product_id') ? Product::visible()->find($settings->int('hero_product_id')) : null;
+        $heroView = $heroImage
+            ? [
+                'image' => \Illuminate\Support\Facades\Storage::disk('public')->url($heroImage),
+                'alt' => $settings->get('hero_caption') ?: ($heroLinkProduct?->title ?? config('shop.name')),
+                'caption' => $settings->get('hero_caption'),
+                'url' => $heroLinkProduct ? route('gallery.show', $heroLinkProduct) : route('gallery'),
+                'natural' => true,
+            ]
+            : ($hero && $hero->imageUrl() ? [
+                'image' => $hero->imageUrl(),
+                'alt' => $hero->title,
+                'caption' => $hero->title.($hero->technique ? ' — '.$hero->technique : '').($hero->sizes->first() ? ', '.$hero->sizes->first()->label() : ''),
+                'url' => route('gallery.show', $hero),
+                'natural' => false,
+            ] : null);
+
         return view('pages.home', [
             'hero' => $hero,
+            'heroView' => $heroView,
             'featured' => $featured->skip(1)->take(6),
             'onSale' => $base()->onSale()->orderBy('sort')->take(6)->get(),
             'inStock' => $base()->inStock()->orderBy('sort')->take(6)->get(),
@@ -49,6 +70,8 @@ class PageController extends Controller
         return view('pages.calculator', [
             'styles' => PaintingStyle::active()->get()->map(fn (PaintingStyle $s) => [
                 'id' => $s->id,
+                'slug' => $s->slug,
+                'image' => $s->imageUrl(),
                 'name' => $s->name,
                 'multiplier' => $s->multiplier,
                 'minW' => $s->min_width,

@@ -2,10 +2,11 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('commissionCalculator', (cfg) => ({
         styles: cfg.styles,
         frames: cfg.frames,
-        styleId: cfg.styles[0]?.id ?? null,
-        width: 50,
-        height: 70,
-        frame: 'black',
+        // A shared quote link (?stil=&w=&h=&ram=) opens with exactly that choice.
+        styleId: cfg.styles.find((s) => s.slug === cfg.initial?.style)?.id ?? cfg.styles[0]?.id ?? null,
+        width: cfg.initial?.width ?? 50,
+        height: cfg.initial?.height ?? 70,
+        frame: cfg.initial?.frame ?? 'black',
         wallWidth: 600,
         localPhoto: null,
         bar: false,
@@ -232,6 +233,7 @@ document.addEventListener('alpine:init', () => {
         discount: 0,
         presets: [[30, 40], [40, 50], [50, 70], [60, 80], [60, 90], [70, 100], [80, 120], [100, 150]],
         copied: false,
+        sharing: false,
         offline: !navigator.onLine,
         canInstall: false,
         installEvent: null,
@@ -286,22 +288,160 @@ document.addEventListener('alpine:init', () => {
         fmt(n) {
             return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         },
+        // Link that opens the order calculator with exactly this style and size.
+        orderLink() {
+            const params = new URLSearchParams({ stil: this.current().slug, w: this.width, h: this.height });
+            return `${orderUrl}?${params}#kalkulator`;
+        },
         quote() {
-            const discount = this.discount > 0 ? ` (popust ${this.discount}%, umjesto ${this.fmt(this.price())} KM)` : '';
-            return `Slika po mjeri — ${this.current().name}, ${this.width} × ${this.height} cm: ${this.fmt(this.finalPrice())} KM${discount}.
-`
-                + `Plaćanje pouzećem. Naručite: ${orderUrl}`;
+            const lines = [
+                `Ponuda — Foco Art`,
+                `${this.current().name}, ${this.width} × ${this.height} cm`,
+                this.discount > 0
+                    ? `Cijena: ${this.fmt(this.finalPrice())} KM (popust ${this.discount}%, redovna ${this.fmt(this.price())} KM)`
+                    : `Cijena: ${this.fmt(this.finalPrice())} KM`,
+                `Plaćanje pouzećem, pri dostavi.`,
+                ``,
+                `Naručite ovu veličinu: ${this.orderLink()}`,
+            ];
+            return lines.join('\n');
+        },
+        // A 1080 × 1350 picture of the quote (the size WhatsApp and Instagram show best).
+        async quoteImage() {
+            const W = 1080;
+            const H = 1350;
+            const c = Object.assign(document.createElement('canvas'), { width: W, height: H });
+            const g = c.getContext('2d');
+            const serif = '"Cormorant Garamond", Georgia, serif';
+            const sans = 'Inter, system-ui, sans-serif';
+            await Promise.all([
+                document.fonts.load(`500 120px ${serif}`),
+                document.fonts.load(`400 40px ${sans}`),
+            ]).catch(() => {});
+            const load = (src) => new Promise((resolve) => {
+                if (!src) return resolve(null);
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = src;
+            });
+            const [logo, sample] = await Promise.all([load('/images/logo.png'), load(this.current().image)]);
+
+            // Ivory page, black header like the site.
+            g.fillStyle = '#f6f2ea';
+            g.fillRect(0, 0, W, H);
+            g.fillStyle = '#0e0d0c';
+            g.fillRect(0, 0, W, 200);
+            if (logo) g.drawImage(logo, 64, 40, 120, 120);
+            g.fillStyle = '#ede9e3';
+            g.font = `500 54px ${serif}`;
+            g.textBaseline = 'middle';
+            g.fillText('FOCO', 216, 100);
+            g.fillStyle = '#c9a15e';
+            g.fillText('ART', 216 + g.measureText('FOCO ').width, 100);
+            g.textAlign = 'right';
+            g.fillStyle = '#9a938a';
+            g.font = `400 28px ${sans}`;
+            g.fillText('PONUDA · SLIKA PO MJERI', W - 64, 100);
+            g.textAlign = 'left';
+
+            // The canvas drawn to proportion on a wall, with the style sample inside.
+            const box = { x: 64, y: 250, w: W - 128, h: 520 };
+            g.fillStyle = '#ebe5da';
+            g.fillRect(box.x, box.y, box.w, box.h);
+            const ratio = this.width / this.height;
+            const maxW = box.w - 160;
+            const maxH = box.h - 120;
+            const pw = ratio > maxW / maxH ? maxW : maxH * ratio;
+            const ph = pw / ratio;
+            const px = box.x + (box.w - pw) / 2;
+            const py = box.y + (box.h - ph) / 2;
+            g.shadowColor = 'rgba(60, 40, 20, 0.35)';
+            g.shadowBlur = 40;
+            g.shadowOffsetY = 18;
+            g.fillStyle = '#2b2926'; // matte charcoal frame
+            g.fillRect(px - 12, py - 12, pw + 24, ph + 24);
+            g.shadowColor = 'transparent';
+            if (sample) {
+                // Cover-fit the sample into the canvas rectangle.
+                const s = Math.max(pw / sample.width, ph / sample.height);
+                const sw = pw / s;
+                const sh = ph / s;
+                g.drawImage(sample, (sample.width - sw) / 2, (sample.height - sh) / 2, sw, sh, px, py, pw, ph);
+            } else {
+                g.fillStyle = '#5d554b';
+                g.fillRect(px, py, pw, ph);
+            }
+
+            // Style, size and price.
+            g.textAlign = 'center';
+            g.fillStyle = '#5d554b';
+            g.font = `400 34px ${sans}`;
+            g.fillText(`${this.current().name.toUpperCase()}  ·  ${this.width} × ${this.height} cm`, W / 2, 850);
+            g.fillStyle = '#8d6828';
+            g.font = `500 150px ${serif}`;
+            g.fillText(`${this.fmt(this.finalPrice())} KM`, W / 2, 990);
+            if (this.discount > 0) {
+                const old = `${this.fmt(this.price())} KM`;
+                g.font = `400 36px ${sans}`;
+                g.fillStyle = '#8a8073';
+                const label = `${old}   ·   popust ${this.discount}%`;
+                g.fillText(label, W / 2, 1090);
+                const oldW = g.measureText(old).width;
+                const startX = W / 2 - g.measureText(label).width / 2;
+                g.fillRect(startX, 1090, oldW, 3);
+            }
+
+            // Footer.
+            g.fillStyle = '#0e0d0c';
+            g.fillRect(0, H - 150, W, 150);
+            g.fillStyle = '#ede9e3';
+            g.font = `400 32px ${sans}`;
+            g.fillText('Plaćanje pouzećem  ·  ručno naslikano', W / 2, H - 98);
+            g.fillStyle = '#c9a15e';
+            g.font = `500 34px ${sans}`;
+            g.fillText(new URL(orderUrl).host, W / 2, H - 50);
+
+            return new Promise((resolve) => c.toBlob(resolve, 'image/png'));
+        },
+        fileName() {
+            return `foco-art-ponuda-${this.current().slug}-${this.width}x${this.height}.png`;
         },
         async share() {
-            if (navigator.share) {
-                try {
+            this.sharing = true;
+            try {
+                const blob = await this.quoteImage();
+                const file = blob ? new File([blob], this.fileName(), { type: 'image/png' }) : null;
+                // Phones: share the picture and the text together (WhatsApp, Viber, Messenger…).
+                if (file && navigator.canShare?.({ files: [file] })) {
+                    await navigator.share({ files: [file], text: this.quote(), title: 'Foco Art — ponuda' });
+                    return;
+                }
+                if (navigator.share) {
                     await navigator.share({ title: 'Foco Art — ponuda', text: this.quote() });
                     return;
-                } catch (e) {
-                    if (e.name === 'AbortError') return;
                 }
+                // Computers: save the picture and open WhatsApp with the text.
+                if (blob) this.download(blob);
+                window.open('https://wa.me/?text=' + encodeURIComponent(this.quote()), '_blank');
+            } catch (e) {
+                if (e?.name !== 'AbortError') console.error(e);
+            } finally {
+                this.sharing = false;
             }
-            window.open('https://wa.me/?text=' + encodeURIComponent(this.quote()), '_blank');
+        },
+        async saveImage() {
+            const blob = await this.quoteImage();
+            if (blob) this.download(blob);
+        },
+        download(blob) {
+            const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: this.fileName() });
+            document.body.append(a);
+            a.click();
+            setTimeout(() => {
+                URL.revokeObjectURL(a.href);
+                a.remove();
+            }, 1000);
         },
         async copy() {
             try {
