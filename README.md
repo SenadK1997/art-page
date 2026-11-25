@@ -66,6 +66,21 @@ php artisan optimize && php artisan filament:optimize
 
 Env keys to set in production: `APP_NAME`, `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` (https, so Telegram buttons link to the order), `APP_LOCALE=bs`, `DB_*`, `MAIL_*`. Phone, order email, delivery and Telegram are set in Admin → Postavke. Add the cron line above for the scheduler.
 
+## Coolify (foco-art.com)
+
+The site runs on Coolify with Nixpacks. `nginx.template.conf` is the nginx config Coolify uses (keep it), `public/.user.ini` raises PHP's upload limits, and `package.json` engines pins Node 22 for the build.
+
+1. **Configuration → Git Source:** set Branch to `main` and Save. The source is "Public GitHub", so pushes don't deploy by themselves; use **Redeploy**.
+2. **Create a new MySQL database** in Coolify (or on the same server), e.g. `foco_art_v2`. Keep the old one: it's only read by the import.
+3. **Environment Variables:** keep `APP_KEY`. Set `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://foco-art.com`, `APP_LOCALE=bs`, and `DB_*` → the NEW database. Add `LEGACY_DB_DATABASE` (+ host/user/password if different) → the OLD database. Also set `SESSION_DRIVER=database`, `CACHE_STORE=database` and `QUEUE_CONNECTION=sync`.
+4. **Persistent Storage:** a volume mounted at `/app/storage/app`, so painting photos and customer photos survive redeploys (the old site's images are in `storage/app/public/images`).
+5. **General → Post-deployment command:** `php artisan migrate --force && php artisan storage:link --force && php artisan optimize && php artisan filament:optimize`
+6. **Scheduled Tasks:** `php artisan schedule:run` every minute (cleans up abandoned customer photos).
+7. Click **Redeploy**. When it's running, open the terminal once and run:
+   - `php artisan db:seed --class=PaintingStyleSeeder --force`
+   - `php artisan make:filament-user`
+   - `php artisan app:import-legacy --images=/app/storage/app/public/images --with-orders`
+
 ## Importing the old site
 
 The command reads the old database through the `legacy` connection and never writes to it. It's safe to run more than once.
