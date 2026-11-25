@@ -12,7 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Coolify's Traefik terminates HTTPS; trust its X-Forwarded-* headers so URLs are https://.
+        $middleware->trustProxies(at: '*');
         $middleware->redirectGuestsTo('/admin/login');
+
+        // Coolify's proxy (Caddy) terminates https in front of the app. Trust its
+        // X-Forwarded-* headers so links, assets and signed URLs use https.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
