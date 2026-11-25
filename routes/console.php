@@ -1,19 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Storage;
 
-/*
-|--------------------------------------------------------------------------
-| Console Routes
-|--------------------------------------------------------------------------
-|
-| This file is where you may define all of your Closure based console
-| commands. Each Closure is bound to a command instance allowing a
-| simple approach to interacting with each command's IO methods.
-|
-*/
-
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+// Customer photos uploaded to a cart that never became an order.
+Schedule::call(function () {
+    $disk = Storage::disk('local');
+    foreach ($disk->files('cart-uploads') as $file) {
+        if ($disk->lastModified($file) < now()->subDays(3)->getTimestamp()) {
+            $disk->delete($file);
+        }
+    }
+})->daily()->name('cleanup-cart-uploads');

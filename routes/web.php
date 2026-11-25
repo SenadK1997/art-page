@@ -1,107 +1,36 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\SeoController;
+use App\Livewire\CartPage;
+use App\Livewire\Checkout;
+use App\Livewire\Gallery;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
-use App\Models\Product;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/slika-po-mjeri', [PageController::class, 'commission'])->name('commission');
+Route::get('/o-umjetniku', [PageController::class, 'about'])->name('about');
 
-Route::get('/', function () {
-    return view('home');
-});
-Route::get('/shop', [ProductController::class, 'shop']);
-Route::get('/about', function () {
-    return view('about');
-});
+Route::get('/galerija', Gallery::class)->name('gallery');
+Route::get('/galerija/{product:slug}', [PageController::class, 'product'])->name('gallery.show');
 
-Route::get('/search', [ProductController::class, 'index']);
-Route::get('/product/{id}', [ProductController::class, 'show']);
+Route::get('/korpa', CartPage::class)->name('cart');
+Route::get('/korpa/fotografija/{key}', [PhotoController::class, 'cart'])->name('cart.photo');
+Route::get('/narudzba', Checkout::class)->name('checkout');
+Route::get('/narudzba/{order:number}/hvala', [PageController::class, 'thanks'])
+    ->middleware('signed')
+    ->name('order.thanks');
 
-// LOGIN
+// Customer photos are private; only a signed-in admin can open them.
+Route::get('/admin/fotografija/{item}', [PhotoController::class, 'admin'])
+    ->middleware(['auth'])
+    ->name('admin.photo');
 
-Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [AdminController::class, 'login'])
-    ->name('admin.login.submit');
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 
-Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
-
-    
-// DASHBOARD
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])
-        ->name('admin.dashboard');
-    // ALL PRODUCTS
-    Route::get('/admin/product/products', [AdminController::class, 'products'])
-        ->name('admin.product.products');
-    // CREATE PRODUCT
-    Route::get('admin/product/create', [AdminController::class, 'create'])->name('admin.product.create');
-    Route::post('admin/product/create', [AdminController::class, 'store'])->name('admin.product.store');
-    // EDIT PRODUCT
-    Route::get('/admin/product/edit/{id}', [AdminController::class, 'edit'])
-        ->name('admin.product.edit');
-    Route::put('/admin/product/edit/{id}', [AdminController::class, 'update'])->name('admin.product.update');
-    // DELETE PRODUCT 
-    Route::delete('/admin/product/delete/{id}', [AdminController::class, 'delete'])
-        ->name('admin.product.delete');
-    // DELETE TAGS FROM EDIT PRODUCTS
-    Route::delete('/admin/update/delete/{id}/{name}', [AdminController::class, 'delete_tags'])
-    ->name('admin.update.delete');
-
-
-    // TAGS SECTION
-    // ALL TAGS
-    Route::get('admin/tag/tags', [AdminController::class, 'tags'])->name('admin.tag.tags');
-    // CREATE TAGS
-    Route::get('admin/tag/create', [AdminController::class, 'make'])->name('admin.tag.create');
-    Route::post('admin/tag/create', [AdminController::class, 'save'])->name('admin.tag.save');
-    // EDIT TAGS
-    Route::get('/admin/tag/edit{id}', [AdminController::class, 'remake'])->name('admin.tag.remake');
-    Route::put('/admin/tag/edit{id}', [AdminController::class, 'update_tags'])->name('admin.tag.update_tags');
-    // DELETE TAGS
-    Route::delete('/admin/tag/trash/{id}', [AdminController::class, 'trash'])
-        ->name('admin.tag.trash');
-    // IMAGES SECTION
-    Route::get('admin/image/images', [AdminController::class, 'images'])->name('admin.image.images');
-    // CREATE IMAGES
-    Route::get('admin/image/create', [AdminController::class, 'createImage'])->name('admin.image.create');
-    Route::post('admin/image/create', [AdminController::class, 'saveImage'])->name('admin.image.save');
-    // EDIT IMAGES
-    Route::get('admin/image/edit{id}', [AdminController::class, 'editImage'])->name('admin.image.edit');
-    Route::put('admin/image/edit{id}', [AdminController::class, 'remakeImage'])->name('admin.image.edit_images');
-    // DELETE IMAGES
-    Route::delete('/admin/image/delete/{id}', [AdminController::class, 'deleteImages'])->name('admin.image.delete');
-
-    // ORDERS SECTION FOR ADMIN
-    Route::get('admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
-});
-
-
-
-// CART SECTION
-Route::get('shop/cart', [ProductController::class, 'cart'])->name('shop.cart');
-Route::post('shop/cart/add', [ProductController::class, 'addToCart'])->name('shop.cart.add');
-Route::post('shop/cart/update/{itemId}', [ProductController::class, 'updateCart'])->name('shop.cart.update');
-Route::delete('shop/cart/remove/{itemId}', [ProductController::class, 'removeFromCart'])->name('shop.cart.remove');
-
-// Checkout
-// Route::get('shop/cart/checkout', [ProductController::class, 'checkout'])->name('shop.cart.checkout');
-
-// Payment
-Route::post('shop/cart/checkout/request-payment', [ProductController::class, 'createOrder'])->name('create.order');
-// Route::get('shop/cart/checkout/success', [ProductController::class, 'paymentSuccess'])->name('payment.success');
-// Route::get('shop/cart/checkout/cancel', [ProductController::class, 'paymentCancel'])->name('payment.cancel');
-
-// ORDERS SECTION FOR USER
-
-Route::get('completed/order/{id}', [ProductController::class, 'completedOrder'])->name('completed.order');
-Route::post('completed/order/{id}', [AdminController::class, 'updateStatus'])->name('completed.order.update');
+// Old URLs from the first version of the site.
+Route::redirect('/shop', '/galerija', 301);
+Route::redirect('/about', '/o-umjetniku', 301);
+Route::redirect('/shop/cart', '/korpa', 301);

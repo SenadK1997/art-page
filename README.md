@@ -1,66 +1,81 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Foco Art
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Online gallery and shop for the painter Amer Fočo: original paintings in several sizes, made-to-measure paintings priced by a calculator, stock and sales, and cash-on-delivery ordering.
 
-## About Laravel
+**Stack:** Laravel 13, Livewire 4, Tailwind 4, Filament 5 admin at `/admin`, MySQL.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## The price formula
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Kept from the first version of the site (`app/Support/PriceCalculator.php`):
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+price (KM) = round(width_cm × height_cm / 100 × multiplier)
+```
 
-## Learning Laravel
+The multiplier is the price of 100 cm² for a style: Apstrakcija 5, Realizam 10, Panorama 15. The artist can change these in the admin under **Stilovi i cijene**. The calculator and the admin's size form both use this formula. The browser shows the price live, and the server always recomputes it.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Admin (`/admin`)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Narudžbe:** a badge for new orders, one-click "Potvrdi", and status buttons. Each item shows whether it ships from stock, is still to paint, or is a gift, plus the customer's own photo. **Cijena** lets the admin change item prices and quantities and add a discount and delivery cost after talking to the customer. The total recalculates, and the original stays visible.
+- **Izvještaj prodaje:** revenue, amount collected, average order, discounts and gifts given, a revenue chart, revenue by style and the best sellers, for any period.
+- **Slike:** a photo plus extra photos, the style, categories, and a sizes table (width, height, price, in stock). Typing a size fills the price from the formula, and "Izračunaj sve cijene" refills them all. There's also a sale (% off and an end date) and a one-off-original toggle.
+- **Poklon akcije:** "buy these / N paintings / over X KM → pick one free painting from this list". Every condition is optional, and offers have dates and an on/off switch. Nothing shows on the site while no offer is active.
+- **Stilovi i cijene:** the multiplier per style, min/max made-to-measure sizes, and whether customers may send their own photo.
+- **Kategorije:** Priroda, Sarajevo… shown as gallery filters and on the homepage.
+- **Postavke:** contact phone, the email for new orders, delivery price and the free-delivery threshold, the made-to-order lead time, and **Telegram** (paste the bot token, "Pronađi moj chat", "Pošalji probnu poruku"). The token is stored encrypted.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Customer photos are private (`storage/app/private`). Only a signed-in admin can open them. Photos from carts that never became orders are deleted after 3 days, which needs the scheduler: `* * * * * php artisan schedule:run`.
 
-## Laravel Sponsors
+## Local setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+composer install
+npm install && npm run build
+cp .env.example .env && php artisan key:generate
+php artisan migrate --seed      # styles; demo paintings are added in APP_ENV=local
+php artisan storage:link
+php artisan make:filament-user  # first admin login
+php artisan serve
+```
 
-### Premium Partners
+## Deploy
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+> **First deploy of this version: use a NEW, empty database.** The old site's tables (`products`, `orders`, `users`…) have a different structure, so migrations can't run on top of them. Point `DB_*` at the new database and `LEGACY_DB_*` at the old one, run the commands below, then `php artisan app:import-legacy --images=<old storage/app/public/images> --with-orders` (see "Importing the old site"). The old database is only read, never changed, so you can always go back.
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git pull
+composer install --no-dev --optimize-autoloader
+npm ci && npm run build
+php artisan migrate --force
+php artisan db:seed --class=PaintingStyleSeeder --force   # first deploy only
+php artisan storage:link                                    # first deploy only
+php artisan make:filament-user                              # first deploy only: admin login
+php artisan optimize && php artisan filament:optimize
+```
 
-## Code of Conduct
+Env keys to set in production: `APP_NAME`, `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` (https, so Telegram buttons link to the order), `APP_LOCALE=bs`, `DB_*`, `MAIL_*`. Phone, order email, delivery and Telegram are set in Admin → Postavke. Add the cron line above for the scheduler.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Importing the old site
 
-## Security Vulnerabilities
+The command reads the old database through the `legacy` connection and never writes to it. It's safe to run more than once.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# .env: LEGACY_DB_DATABASE=old_db_name (+ LEGACY_DB_HOST/USERNAME/PASSWORD if different)
+php artisan app:import-legacy --dry-run
+php artisan app:import-legacy --images=/path/to/old/storage/app/public/images --with-orders
+```
 
-## License
+Old paintings come in without a style, so set one in the admin afterwards.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## SEO
+
+- `/sitemap.xml` lists every page, painting (with images) and category. It updates by itself, so submit it once in Google Search Console.
+- `/robots.txt` points to the sitemap and blocks admin, cart and checkout. It allows indexing only when `APP_ENV=production`, so staging never ends up in Google.
+- Each page has a canonical URL, a description and a share image (the painting itself on product pages). Product pages carry schema.org price and availability data, and every page carries the organisation with its Instagram, Facebook and TikTok profiles.
+
+## Tests
+
+```bash
+php artisan test
+```
